@@ -1,0 +1,21 @@
+baseline.raw[WINDOWS]
+SHA256: 4fbc8ddf2cdcdd187e5d74f66ab4c1c2d5fffe2753b34c870015d4ea055aa432  
+
+case01_baseline/baseline.raw{KALI}
+SHA256: 4fbc8ddf2cdcdd187e5d74f66ab4c1c2d5fffe2753b34c870015d4ea055aa432 /cases/case01_baseline/baseline.raw
+
+t1055_5_attack.raw [HOST]
+SHA256: 85e4b855c6b625f79a18982bf5aa98df62801517e65c4887cc5e218675e47db8
+
+case02_t1055_5_attack/t1055_9_attack.raw [KALI]
+SHA256: 85e4b855c6b625f79a18982bf5aa98df62801517e65c4887cc5e218675e47db8
+
+case03_t1059_attack.raw
+
+SHA256: <935d5fd800435c7f949133a0008fe12306c363e32a0a65ffea54c400bf210e59>
+
+Acquisition Tool:
+VirtualBox VBoxManage debugvm dumpvmcore
+
+Purpose:
+Integrity verification of memory image used for forensic analysis
