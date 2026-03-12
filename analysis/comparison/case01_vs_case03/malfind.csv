@@ -1,0 +1,85 @@
+TreeDepth,PID,Process,Start VPN,End VPN,Tag,Protection,CommitCharge,PrivateMemory,File output,Notes,Hexdump,Disasm
+0,7888,powershell.exe,0x1b8d0000,0x1b8dffff,VadS,PAGE_EXECUTE_READWRITE,15,1,Disabled,,"
+00 00 00 00 00 00 00 00 55 2e dc 2b 5d 1f 00 01 ........U..+]...
+ee ff ee ff 02 00 00 00 20 01 8d 1b 00 00 00 00 ........ .......
+20 01 8d 1b 00 00 00 00 00 00 8d 1b 00 00 00 00  ...............
+00 00 8d 1b 00 00 00 00 0f 00 00 00 00 00 00 00 ................","
+0x1b8d0000:	add	byte ptr [rax], al
+0x1b8d0002:	add	byte ptr [rax], al
+0x1b8d0004:	add	byte ptr [rax], al
+0x1b8d0006:	add	byte ptr [rax], al
+0x1b8d0008:	push	rbp
+0x1b8d0009:	fsubr	qword ptr cs:[rbx]
+0x1b8d000c:	pop	rbp"
+0,7888,powershell.exe,0x35d0000,0x35dffff,VadS,PAGE_EXECUTE_READWRITE,2,1,Disabled,,"
+00 00 00 00 00 00 00 00 ac 23 39 96 87 4b 00 01 .........#9..K..
+ee ff ee ff 02 00 00 00 20 01 5d 03 00 00 00 00 ........ .].....
+20 01 5d 03 00 00 00 00 00 00 5d 03 00 00 00 00  .].......].....
+00 00 5d 03 00 00 00 00 0f 00 00 00 00 00 00 00 ..].............","
+0x35d0000:	add	byte ptr [rax], al
+0x35d0002:	add	byte ptr [rax], al
+0x35d0004:	add	byte ptr [rax], al
+0x35d0006:	add	byte ptr [rax], al
+0x35d0008:	lodsb	al, byte ptr [rsi]
+0x35d0009:	and	edi, dword ptr [rcx]
+0x35d000b:	xchg	esi, eax
+0x35d000c:	xchg	dword ptr [rbx], ecx
+0x35d000f:	add	esi, ebp"
+0,7888,powershell.exe,0x1bc70000,0x1bc7cfff,VadS,PAGE_EXECUTE_READWRITE,1,1,Disabled,,"
+00 00 00 00 00 00 00 00 90 78 8d 1b 00 00 00 00 .........x......
+90 78 8d 1b 00 00 00 00 00 00 8d 1b 00 00 00 00 .x..............
+a0 0e c7 1b 00 00 00 00 00 10 c7 1b 00 00 00 00 ................
+00 d0 c7 1b 00 00 00 00 03 00 00 00 00 00 00 00 ................","
+0x1bc70000:	add	byte ptr [rax], al
+0x1bc70002:	add	byte ptr [rax], al
+0x1bc70004:	add	byte ptr [rax], al
+0x1bc70006:	add	byte ptr [rax], al
+0x1bc70008:	nop	
+0x1bc70009:	js	0x1bc6ff98
+0x1bc7000b:	sbb	eax, dword ptr [rax]
+0x1bc7000d:	add	byte ptr [rax], al
+0x1bc7000f:	add	byte ptr [rax + 0x1b8d78], dl
+0x1bc70015:	add	byte ptr [rax], al
+0x1bc70017:	add	byte ptr [rax], al
+0x1bc70019:	add	byte ptr [rbp + 0x1b], cl
+0x1bc7001f:	add	byte ptr [rax + 0x1bc70e], ah
+0x1bc70025:	add	byte ptr [rax], al
+0x1bc70027:	add	byte ptr [rax], al
+0x1bc70029:	adc	bh, al
+0x1bc7002b:	sbb	eax, dword ptr [rax]
+0x1bc7002d:	add	byte ptr [rax], al
+0x1bc7002f:	add	byte ptr [rax], al
+0x1bc70031:	rol	bh, 1
+0x1bc70033:	sbb	eax, dword ptr [rax]
+0x1bc70035:	add	byte ptr [rax], al
+0x1bc70037:	add	byte ptr [rbx], al
+0x1bc70039:	add	byte ptr [rax], al
+0x1bc7003b:	add	byte ptr [rax], al
+0x1bc7003d:	add	byte ptr [rax], al"
+0,7888,powershell.exe,0x7df411450000,0x7df4114effff,VadS,PAGE_EXECUTE_READWRITE,2,1,Disabled,,"
+d8 ff ff ff ff ff ff ff 08 00 00 00 00 00 00 00 ................
+01 00 00 00 00 00 00 00 00 02 0e 03 38 00 00 00 ............8...
+68 01 04 08 0c 00 00 00 b0 0b 6b 57 ff 7f 00 00 h.........kW....
+00 10 66 57 ff 7f 00 00 08 53 7d 57 ff 7f 00 00 ..fW.....S}W....","
+0x7df411450000:	fdivr	st(7)"
+0,7888,powershell.exe,0x7df411440000,0x7df41144ffff,VadS,PAGE_EXECUTE_READWRITE,1,1,Disabled,,"
+00 00 00 00 00 00 00 00 78 0d 00 00 00 00 00 00 ........x.......
+0c 00 00 00 49 c7 c2 00 00 00 00 48 b8 10 ec ec ....I......H....
+58 ff 7f 00 00 ff e0 49 c7 c2 01 00 00 00 48 b8 X......I......H.
+10 ec ec 58 ff 7f 00 00 ff e0 49 c7 c2 02 00 00 ...X......I.....","
+0x7df411440000:	add	byte ptr [rax], al
+0x7df411440002:	add	byte ptr [rax], al
+0x7df411440004:	add	byte ptr [rax], al
+0x7df411440006:	add	byte ptr [rax], al
+0x7df411440008:	js	0x7df411440017
+0x7df41144000a:	add	byte ptr [rax], al
+0x7df41144000c:	add	byte ptr [rax], al
+0x7df41144000e:	add	byte ptr [rax], al
+0x7df411440010:	or	al, 0
+0x7df411440012:	add	byte ptr [rax], al
+0x7df411440014:	mov	r10, 0
+0x7df41144001b:	movabs	rax, 0x7fff58ecec10
+0x7df411440025:	jmp	rax
+0x7df411440027:	mov	r10, 1
+0x7df41144002e:	movabs	rax, 0x7fff58ecec10
+0x7df411440038:	jmp	rax"

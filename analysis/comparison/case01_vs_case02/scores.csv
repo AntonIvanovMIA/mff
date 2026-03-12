@@ -1,0 +1,14 @@
+PID,Process,RiskScore,RiskLevel,Indicators
+992,powershell.exe,100,CRITICAL,Suspicious cmdline pattern; RWX executable memory region (malfind)
+7764,powershell.exe,100,CRITICAL,Suspicious cmdline pattern; RWX executable memory region (malfind)
+7980,ApplicationFra,0,LOW,None
+3016,OfficeClickToR,0,LOW,None
+2864,SgrmBroker.exe,0,LOW,None
+5076,SettingSyncHos,0,LOW,None
+9704,CredentialEnro,0,LOW,None
+10236,SystemSettings,0,LOW,None
+8912,AppVShNotify.e,0,LOW,None
+3136,CalculatorApp.,0,LOW,None
+2184,RWXinjectionLo,0,LOW,None
+6372,audiodg.exe,0,LOW,None
+4680,WmiPrvSE.exe,0,LOW,None

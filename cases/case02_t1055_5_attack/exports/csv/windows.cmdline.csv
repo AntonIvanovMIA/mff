@@ -1,0 +1,178 @@
+TreeDepth,PID,Process,Args
+0,4,System,-
+0,92,Registry,-
+0,328,smss.exe,\\SystemRoot\\System32\\smss.exe
+0,432,csrss.exe,"%SystemRoot%\\system32\\csrss.exe ObjectDirectory=\\Windows SharedSection=1024,20480,768 Windows=On SubSystemType=Windows ServerDll=basesrv,1 ServerDll=winsrv:UserServerDllInitialization,3 ServerDll=sxssrv,4 ProfileControl=Off MaxRequestThreads=16"
+0,520,csrss.exe,"%SystemRoot%\\system32\\csrss.exe ObjectDirectory=\\Windows SharedSection=1024,20480,768 Windows=On SubSystemType=Windows ServerDll=basesrv,1 ServerDll=winsrv:UserServerDllInitialization,3 ServerDll=sxssrv,4 ProfileControl=Off MaxRequestThreads=16"
+0,540,wininit.exe,-
+0,588,winlogon.exe,winlogon.exe
+0,660,services.exe,C:\\Windows\\system32\\services.exe
+0,680,lsass.exe,C:\\Windows\\system32\\lsass.exe
+0,780,svchost.exe,C:\\Windows\\system32\\svchost.exe -k DcomLaunch -p
+0,804,fontdrvhost.ex,-
+0,812,fontdrvhost.ex,"""fontdrvhost.exe"""
+0,900,svchost.exe,C:\\Windows\\system32\\svchost.exe -k RPCSS -p
+0,944,svchost.exe,C:\\Windows\\system32\\svchost.exe -k DcomLaunch -p -s LSM
+0,372,dwm.exe,"""dwm.exe"""
+0,436,svchost.exe,-
+0,756,svchost.exe,C:\\Windows\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p -s NcbService
+0,1028,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p -s TimeBrokerSvc
+0,1080,svchost.exe,C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s Schedule
+0,1104,svchost.exe,C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s ProfSvc
+0,1136,svchost.exe,C:\\Windows\\System32\\svchost.exe -k LocalServiceNetworkRestricted -p -s EventLog
+0,1180,svchost.exe,C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s UserManager
+0,1216,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalServiceNoNetwork -p
+0,1320,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalService -p -s nsi
+0,1424,VBoxService.ex,C:\\Windows\\System32\\VBoxService.exe
+0,1432,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p -s Dhcp
+0,1476,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p -s SysMain
+0,1484,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalService -p -s DispBrokerDesktopSvc
+0,1504,svchost.exe,C:\\Windows\\System32\\svchost.exe -k netsvcs -p -s Themes
+0,1512,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalService -p -s EventSystem
+0,1676,MemCompression,-
+0,1704,svchost.exe,C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s SENS
+0,1728,svchost.exe,C:\\Windows\\System32\\svchost.exe -k NetworkService -p -s NlaSvc
+0,1784,svchost.exe,C:\\Windows\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p -s AudioEndpointBuilder
+0,1800,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalService -p -s FontCache
+0,1880,svchost.exe,C:\\Windows\\System32\\svchost.exe -k LocalServiceNetworkRestricted -p
+0,1896,svchost.exe,C:\\Windows\\System32\\svchost.exe -k LocalService -p -s netprofm
+0,1988,svchost.exe,C:\\Windows\\System32\\svchost.exe -k LocalServiceNetworkRestricted -p
+0,2000,svchost.exe,C:\\Windows\\system32\\svchost.exe -k NetworkService -p -s Dnscache
+0,2008,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p
+0,8,svchost.exe,C:\\Windows\\system32\\svchost.exe -k appmodel -p -s StateRepository
+0,1644,svchost.exe,C:\\Windows\\System32\\svchost.exe -k netsvcs -p -s ShellHWDetection
+0,2128,spoolsv.exe,C:\\Windows\\System32\\spoolsv.exe
+0,2168,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalServiceNoNetworkFirewall -p
+0,2204,svchost.exe,C:\\Windows\\System32\\svchost.exe -k NetworkService -p -s LanmanWorkstation
+0,2268,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p -s WinHttpAutoProxySvc
+0,2400,svchost.exe,C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s LanmanServer
+0,2428,svchost.exe,C:\\Windows\\system32\\svchost.exe -k NetworkServiceNetworkRestricted -p -s PolicyAgent
+0,2436,svchost.exe,C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s IKEEXT
+0,2516,svchost.exe,C:\\Windows\\system32\\svchost.exe -k NetworkService -p -s CryptSvc
+0,2508,svchost.exe,C:\\Windows\\System32\\svchost.exe -k utcsvc -p
+0,2548,svchost.exe,C:\\Windows\\System32\\svchost.exe -k LocalServiceNoNetwork -p -s DPS
+0,2616,svchost.exe,C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s Winmgmt
+0,2648,MpDefenderCore,"""C:\\ProgramData\\Microsoft\\Windows Defender\\Platform\\4.18.26010.5-0\\MpDefenderCoreService.exe"""
+0,2700,svchost.exe,C:\\Windows\\System32\\svchost.exe -k LocalServiceNetworkRestricted -s RmSvc
+0,2724,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalService -p -s SstpSvc
+0,2756,svchost.exe,C:\\Windows\\System32\\svchost.exe -k netsvcs -p -s Browser
+0,2768,svchost.exe,C:\\Windows\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p -s TrkWks
+0,2796,MsMpEng.exe,"""C:\\ProgramData\\Microsoft\\Windows Defender\\Platform\\4.18.26010.5-0\\MsMpEng.exe"""
+0,2812,svchost.exe,C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s WpnService
+0,2916,svchost.exe,C:\\Windows\\System32\\svchost.exe -k NetSvcs -p -s iphlpsvc
+0,2928,svchost.exe,C:\\Windows\\System32\\svchost.exe -k LocalService -p -s WdiServiceHost
+0,2304,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p -s NgcSvc
+0,3144,svchost.exe,C:\\Windows\\System32\\svchost.exe -k netsvcs
+0,3316,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p -s NgcCtnrSvc
+0,3736,dllhost.exe,C:\\Windows\\system32\\DllHost.exe /Processid:{3EB3C877-1F16-487C-9050-104DBCD66683}
+0,772,AggregatorHost,AggregatorHost.exe
+0,2740,svchost.exe,C:\\Windows\\System32\\svchost.exe -k LocalService -p -s LicenseManager
+0,4156,sihost.exe,sihost.exe
+0,4192,svchost.exe,C:\\Windows\\system32\\svchost.exe -k UnistackSvcGroup -s CDPUserSvc
+0,4216,svchost.exe,C:\\Windows\\system32\\svchost.exe -k UnistackSvcGroup -s WpnUserService
+0,4320,MicrosoftEdgeU,"""C:\\Program Files (x86)\\Microsoft\\EdgeUpdate\\MicrosoftEdgeUpdate.exe"" /c"
+0,4328,svchost.exe,C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s TokenBroker
+0,4348,taskhostw.exe,taskhostw.exe {222A245B-E637-4AE9-A93F-A59CA119A75E}
+0,4464,svchost.exe,C:\\Windows\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p -s TabletInputService
+0,4540,ctfmon.exe,"""ctfmon.exe"""
+0,4668,userinit.exe,-
+0,4708,explorer.exe,C:\\Windows\\Explorer.EXE
+0,4772,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalService -p -s CDPSvc
+0,4692,svchost.exe,C:\\Windows\\system32\\svchost.exe -k ClipboardSvcGroup -p -s cbdhsvc
+0,5220,StartMenuExper,"""C:\\Windows\\SystemApps\\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\\StartMenuExperienceHost.exe"" -ServerName:App.AppXywbrabmsek0gm3tkwpr5kwzbs55tkqay.mca"
+0,5332,RuntimeBroker.,C:\\Windows\\System32\\RuntimeBroker.exe -Embedding
+0,5596,svchost.exe,C:\\Windows\\System32\\svchost.exe -k UnistackSvcGroup
+0,5652,SearchApp.exe,-
+0,5832,RuntimeBroker.,C:\\Windows\\System32\\RuntimeBroker.exe -Embedding
+0,5984,svchost.exe,C:\\Windows\\system32\\svchost.exe -k appmodel -p -s camsvc
+0,6152,svchost.exe,C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s UsoSvc
+0,6552,RuntimeBroker.,C:\\Windows\\System32\\RuntimeBroker.exe -Embedding
+0,5584,SecurityHealth,-
+0,5492,SecurityHealth,C:\\Windows\\system32\\SecurityHealthService.exe
+0,2764,VBoxTray.exe,"""C:\\Windows\\System32\\VBoxTray.exe"" "
+0,5452,TextInputHost.,"""C:\\Windows\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\TextInputHost.exe"" -ServerName:InputApp.AppXk0k6mrh4r2q0ct33a9wgbez0x7v9cz5y.mca"
+0,3884,svchost.exe,C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s Appinfo
+0,3020,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p -s PcaSvc
+0,7020,svchost.exe,C:\\Windows\\System32\\svchost.exe -k netsvcs -p
+0,7484,M365Copilot.ex,"""C:\\Program Files\\WindowsApps\\Microsoft.MicrosoftOfficeHub_19.2602.43201.0_x64__8wekyb3d8bbwe\\M365Copilot.exe"" ms-getoffice: autostart reason=AutoStarter"
+0,7724,RuntimeBroker.,C:\\Windows\\System32\\RuntimeBroker.exe -Embedding
+0,7808,svchost.exe,C:\\Windows\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p -s WdiSystemHost
+0,7956,msedgewebview2,"""C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\144.0.3719.115\\msedgewebview2.exe"" --embedded-browser-webview=1 --webview-exe-name=M365Copilot.exe --webview-exe-version=19.2602.43201.0 --user-data-dir=""C:\\Users\\lucif\\AppData\\Local\\Packages\\Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe\\LocalState\\EBWebView"" --noerrdialogs --embedded-browser-webview-dpi-awareness=2 --disable-features=msEnhancedTrackingPreventionEnabled --enable-features=msSingleSignOnOSForPrimaryAccountIsShared --mojo-named-platform-channel-pipe=7484.7792.13322981159174066970"
+0,8000,msedgewebview2,"""C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\144.0.3719.115\\msedgewebview2.exe"" --type=crashpad-handler --user-data-dir=C:\\Users\\lucif\\AppData\\Local\\Packages\\Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe\\LocalState\\EBWebView /prefetch:4 --monitor-self-annotation=ptype=crashpad-handler --database=C:\\Users\\lucif\\AppData\\Local\\Packages\\Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe\\LocalState\\EBWebView\\Crashpad --metrics-dir=C:\\Users\\lucif\\AppData\\Local\\Packages\\Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe\\LocalState\\EBWebView --annotation=IsOfficialBuild=1 --annotation=channel= --annotation=chromium-version=144.0.7559.133 ""--annotation=exe=C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\144.0.3719.115\\msedgewebview2.exe"" --annotation=plat=Win64 ""--annotation=prod=Edge WebView2"" --annotation=ver=144.0.3719.115 --initial-client-data=0x17c,0x180,0x184,0x158,0x18c,0x7ff9da552c98,0x7ff9da552ca4,0x7ff9da552cb0"
+0,6168,msedgewebview2,-
+0,6444,msedgewebview2,"""C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\144.0.3719.115\\msedgewebview2.exe"" --type=gpu-process --noerrdialogs --user-data-dir=""C:\\Users\\lucif\\AppData\\Local\\Packages\\Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe\\LocalState\\EBWebView"" --webview-exe-name=M365Copilot.exe --webview-exe-version=19.2602.43201.0 --embedded-browser-webview=1 --embedded-browser-webview-dpi-awareness=2 --gpu-preferences=SAAAAAAAAADgAAAEAAAAAAAAAAAAAGAAAQAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --startup-read-main-dll --metrics-shmem-handle=1668,i,6953623512535855107,1576577103703906599,262144 --field-trial-handle=2008,i,13740365058626062742,18351376053281142885,262144 --enable-features=msSingleSignOnOSForPrimaryAccountIsShared --disable-features=msEnhancedTrackingPreventionEnabled --variations-seed-version --trace-process-track-uuid=3190708988185955192 --mojo-platform-channel-handle=1996 /prefetch:2"
+0,7344,msedgewebview2,-
+0,7980,ApplicationFra,C:\\Windows\\system32\\ApplicationFrameHost.exe -Embedding
+0,6064,UserOOBEBroker,C:\\Windows\\System32\\oobe\\UserOOBEBroker.exe -Embedding
+0,1460,dllhost.exe,C:\\Windows\\system32\\DllHost.exe /Processid:{973D20D7-562D-44B9-B70B-5A0F49CCDF3F}
+0,3692,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p -s DevQueryBroker
+0,992,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" "
+0,6660,conhost.exe,\\??\\C:\\Windows\\system32\\conhost.exe 0x4
+0,7648,svchost.exe,C:\\Windows\\System32\\svchost.exe -k NetworkService -p -s DoSvc
+0,7032,svchost.exe,C:\\Windows\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p
+0,2864,SgrmBroker.exe,C:\\Windows\\system32\\SgrmBroker.exe
+0,7280,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalService -s W32Time
+0,4164,svchost.exe,C:\\Windows\\System32\\svchost.exe -k LocalServiceNetworkRestricted -p -s wscsvc
+0,7080,svchost.exe,-
+0,7860,ShellExperienc,-
+0,7720,RuntimeBroker.,C:\\Windows\\System32\\RuntimeBroker.exe -Embedding
+0,2712,svchost.exe,C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s lfsvc
+0,7068,msedgewebview2,-
+0,2284,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalServiceAndNoImpersonation -p -s SSDPSRV
+0,2600,SearchApp.exe,-
+0,1620,msedgewebview2,-
+0,6904,msedgewebview2,-
+0,1888,msedgewebview2,-
+0,308,msedgewebview2,-
+0,4476,msedgewebview2,-
+0,256,msedgewebview2,-
+0,4556,msedge.exe,-
+0,5412,msedge.exe,-
+0,4152,msedge.exe,-
+0,552,msedge.exe,-
+0,916,msedge.exe,-
+0,8784,msedge.exe,-
+0,1692,msedge.exe,-
+0,4020,msedge.exe,-
+0,3708,msedge.exe,-
+0,2644,msedge.exe,-
+0,8508,msedge.exe,-
+0,5352,msedge.exe,-
+0,4028,msedge.exe,-
+0,6036,msedge.exe,-
+0,9512,svchost.exe,C:\\Windows\\system32\\svchost.exe -k LocalService -p -s BthAvctpSvc
+0,9600,msedge.exe,-
+0,9484,svchost.exe,C:\\Windows\\system32\\svchost.exe -k WbioSvcGroup -s WbioSrvc
+0,3016,OfficeClickToR,"""C:\\Program Files\\Common Files\\Microsoft Shared\\ClickToRun\\OfficeClickToRun.exe"" /service"
+0,5076,SettingSyncHos,-
+0,9704,CredentialEnro,-
+0,8140,msedge.exe,-
+0,8200,msedge.exe,-
+0,6520,msedge.exe,-
+0,10032,msedge.exe,-
+0,4444,msedge.exe,-
+0,8368,msedge.exe,"""C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"" --no-startup-window"
+0,3524,msedge.exe,-
+0,3560,msedge.exe,-
+0,10064,msedge.exe,-
+0,5576,msedge.exe,-
+0,9384,msedge.exe,-
+0,7556,msedge.exe,-
+0,9132,msedge.exe,-
+0,8912,AppVShNotify.e,-
+0,10228,SearchIndexer.,C:\\Windows\\system32\\SearchIndexer.exe /Embedding
+0,1600,svchost.exe,C:\\Windows\\System32\\svchost.exe -k LocalServiceNetworkRestricted -p -s lmhosts
+0,10236,SystemSettings,-
+0,1640,svchost.exe,C:\\Windows\\System32\\svchost.exe -k netsvcs -p -s BITS
+0,10072,svchost.exe,C:\\Windows\\system32\\svchost.exe -k wusvcs -p -s WaaSMedicSvc
+0,8804,msedge.exe,"""C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"" --type=renderer --extension-process --renderer-sub-type=extension --init-isolate-as-foreground --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags=--ms-user-locale=en_GB --device-scale-factor=1 --num-raster-threads=1 --renderer-client-id=21 --time-ticks-at-unix-epoch=-1771345723977350 --launch-time-ticks=28042762482 --ram-no-pressure-read-main-dll --metrics-shmem-handle=4860,i,14968500006580444710,4149620330620693902,2097152 --field-trial-handle=2656,i,16563613216354169502,2776034545886777605,262144 --variations-seed-version --trace-process-track-uuid=3190709005989750323 --mojo-platform-channel-handle=7564 /prefetch:2"
+0,3136,CalculatorApp.,-
+0,9256,RuntimeBroker.,C:\\Windows\\System32\\RuntimeBroker.exe -Embedding
+0,8148,svchost.exe,C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s gpsvc
+0,4172,svchost.exe,C:\\Windows\\System32\\svchost.exe -k wsappx -p -s ClipSVC
+0,2184,RWXinjectionLo,-
+0,7764,powershell.exe,"\\??\\C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -Command ""Add-Type -AssemblyName PresentationFramework; [System.Windows.MessageBox]::Show('Atomic Red Team', 'Warning', 'OK', 'Warning'); Start-Process 'notepad.exe'"""
+0,4964,conhost.exe,\\??\\C:\\Windows\\system32\\conhost.exe 0x4
+0,6372,audiodg.exe,C:\\Windows\\system32\\AUDIODG.EXE 0x4c8
+0,4680,WmiPrvSE.exe,C:\\Windows\\system32\\wbem\\wmiprvse.exe
+

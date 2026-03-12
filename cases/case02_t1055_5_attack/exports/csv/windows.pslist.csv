@@ -1,0 +1,178 @@
+TreeDepth,PID,PPID,ImageFileName,Offset(V),Threads,Handles,SessionId,Wow64,CreateTime,ExitTime,File output
+0,4,0,System,0xdb84c0a9b040,114,-,N/A,False,2026-02-17 15:28:47.000000 UTC,N/A,Disabled
+0,92,4,Registry,0xdb84c0be4040,4,-,N/A,False,2026-02-17 15:28:46.000000 UTC,N/A,Disabled
+0,328,4,smss.exe,0xdb84c0da9040,2,-,N/A,False,2026-02-17 15:28:47.000000 UTC,N/A,Disabled
+0,432,420,csrss.exe,0xdb84c15f82c0,10,-,0,False,2026-02-17 15:28:49.000000 UTC,N/A,Disabled
+0,520,512,csrss.exe,0xdb84c195f140,13,-,1,False,2026-02-17 15:28:50.000000 UTC,N/A,Disabled
+0,540,420,wininit.exe,0xdb84c1963080,1,-,0,False,2026-02-17 15:28:50.000000 UTC,N/A,Disabled
+0,588,512,winlogon.exe,0xdb84c18d1080,4,-,1,False,2026-02-17 15:28:50.000000 UTC,N/A,Disabled
+0,660,540,services.exe,0xdb84c1956080,5,-,0,False,2026-02-17 15:28:50.000000 UTC,N/A,Disabled
+0,680,540,lsass.exe,0xdb84c19b6080,9,-,0,False,2026-02-17 15:28:50.000000 UTC,N/A,Disabled
+0,780,660,svchost.exe,0xdb84c1718240,11,-,0,False,2026-02-17 15:28:50.000000 UTC,N/A,Disabled
+0,804,540,fontdrvhost.ex,0xdb84c1739140,5,-,0,False,2026-02-17 15:28:50.000000 UTC,N/A,Disabled
+0,812,588,fontdrvhost.ex,0xdb84c173b140,5,-,1,False,2026-02-17 15:28:50.000000 UTC,N/A,Disabled
+0,900,660,svchost.exe,0xdb84c17b32c0,11,-,0,False,2026-02-17 15:28:51.000000 UTC,N/A,Disabled
+0,944,660,svchost.exe,0xdb84c17dc240,4,-,0,False,2026-02-17 15:28:51.000000 UTC,N/A,Disabled
+0,372,588,dwm.exe,0xdb84c1a95080,16,-,1,False,2026-02-17 15:28:51.000000 UTC,N/A,Disabled
+0,436,660,svchost.exe,0xdb84c1ab9300,0,-,0,False,2026-02-17 15:28:52.000000 UTC,2026-02-17 16:32:55.000000 UTC,Disabled
+0,756,660,svchost.exe,0xdb84c1aca280,1,-,0,False,2026-02-17 15:28:52.000000 UTC,N/A,Disabled
+0,1028,660,svchost.exe,0xdb84c1ae3300,1,-,0,False,2026-02-17 15:28:52.000000 UTC,N/A,Disabled
+0,1080,660,svchost.exe,0xdb84c1b4b240,7,-,0,False,2026-02-17 15:28:52.000000 UTC,N/A,Disabled
+0,1104,660,svchost.exe,0xdb84c1b64240,2,-,0,False,2026-02-17 15:28:52.000000 UTC,N/A,Disabled
+0,1136,660,svchost.exe,0xdb84c1b7a300,8,-,0,False,2026-02-17 15:28:52.000000 UTC,N/A,Disabled
+0,1180,660,svchost.exe,0xdb84c1b7e240,6,-,0,False,2026-02-17 15:28:52.000000 UTC,N/A,Disabled
+0,1216,660,svchost.exe,0xdb84c1bb82c0,2,-,0,False,2026-02-17 15:28:52.000000 UTC,N/A,Disabled
+0,1320,660,svchost.exe,0xdb84c2e152c0,6,-,0,False,2026-02-17 15:28:52.000000 UTC,N/A,Disabled
+0,1424,660,VBoxService.ex,0xdb84c2e82240,12,-,0,False,2026-02-17 15:28:52.000000 UTC,N/A,Disabled
+0,1432,660,svchost.exe,0xdb84c2e97300,6,-,0,False,2026-02-17 15:28:52.000000 UTC,N/A,Disabled
+0,1476,660,svchost.exe,0xdb84c1be0080,3,-,0,False,2026-02-17 15:28:52.000000 UTC,N/A,Disabled
+0,1484,660,svchost.exe,0xdb84c2e61300,1,-,0,False,2026-02-17 15:28:52.000000 UTC,N/A,Disabled
+0,1504,660,svchost.exe,0xdb84c2e80080,3,-,0,False,2026-02-17 15:28:52.000000 UTC,N/A,Disabled
+0,1512,660,svchost.exe,0xdb84c2e62080,4,-,0,False,2026-02-17 15:28:52.000000 UTC,N/A,Disabled
+0,1676,4,MemCompression,0xdb84c2f77080,118,-,N/A,False,2026-02-17 16:28:54.000000 UTC,N/A,Disabled
+0,1704,660,svchost.exe,0xdb84c2f11080,2,-,0,False,2026-02-17 16:28:54.000000 UTC,N/A,Disabled
+0,1728,660,svchost.exe,0xdb84c2f9d300,5,-,0,False,2026-02-17 16:28:54.000000 UTC,N/A,Disabled
+0,1784,660,svchost.exe,0xdb84c2fd5280,2,-,0,False,2026-02-17 16:28:54.000000 UTC,N/A,Disabled
+0,1800,660,svchost.exe,0xdb84c2fd72c0,5,-,0,False,2026-02-17 16:28:54.000000 UTC,N/A,Disabled
+0,1880,660,svchost.exe,0xdb84c62112c0,12,-,0,False,2026-02-17 16:28:55.000000 UTC,N/A,Disabled
+0,1896,660,svchost.exe,0xdb84c0a9a0c0,8,-,0,False,2026-02-17 16:28:55.000000 UTC,N/A,Disabled
+0,1988,660,svchost.exe,0xdb84c0a69080,3,-,0,False,2026-02-17 16:28:55.000000 UTC,N/A,Disabled
+0,2000,660,svchost.exe,0xdb84c6210080,12,-,0,False,2026-02-17 16:28:55.000000 UTC,N/A,Disabled
+0,2008,660,svchost.exe,0xdb84c62700c0,4,-,0,False,2026-02-17 16:28:55.000000 UTC,N/A,Disabled
+0,8,660,svchost.exe,0xdb84c6271080,5,-,0,False,2026-02-17 16:28:55.000000 UTC,N/A,Disabled
+0,1644,660,svchost.exe,0xdb84c6272080,2,-,0,False,2026-02-17 16:28:55.000000 UTC,N/A,Disabled
+0,2128,660,spoolsv.exe,0xdb84c634d200,7,-,0,False,2026-02-17 16:28:55.000000 UTC,N/A,Disabled
+0,2168,660,svchost.exe,0xdb84c630a080,13,-,0,False,2026-02-17 16:28:55.000000 UTC,N/A,Disabled
+0,2204,660,svchost.exe,0xdb84c63e4300,3,-,0,False,2026-02-17 16:28:55.000000 UTC,N/A,Disabled
+0,2268,660,svchost.exe,0xdb84c6395300,6,-,0,False,2026-02-17 16:28:56.000000 UTC,N/A,Disabled
+0,2400,660,svchost.exe,0xdb84c64020c0,5,-,0,False,2026-02-17 16:28:56.000000 UTC,N/A,Disabled
+0,2428,660,svchost.exe,0xdb84c6436300,3,-,0,False,2026-02-17 16:28:56.000000 UTC,N/A,Disabled
+0,2436,660,svchost.exe,0xdb84c64340c0,4,-,0,False,2026-02-17 16:28:56.000000 UTC,N/A,Disabled
+0,2516,660,svchost.exe,0xdb84c6440300,10,-,0,False,2026-02-17 16:28:56.000000 UTC,N/A,Disabled
+0,2508,660,svchost.exe,0xdb84c6437340,10,-,0,False,2026-02-17 16:28:56.000000 UTC,N/A,Disabled
+0,2548,660,svchost.exe,0xdb84c64862c0,12,-,0,False,2026-02-17 16:28:56.000000 UTC,N/A,Disabled
+0,2616,660,svchost.exe,0xdb84c64f0240,16,-,0,False,2026-02-17 16:28:56.000000 UTC,N/A,Disabled
+0,2648,660,MpDefenderCore,0xdb84c6533080,10,-,0,False,2026-02-17 16:28:56.000000 UTC,N/A,Disabled
+0,2700,660,svchost.exe,0xdb84c658a300,5,-,0,False,2026-02-17 16:28:56.000000 UTC,N/A,Disabled
+0,2724,660,svchost.exe,0xdb84c655d2c0,1,-,0,False,2026-02-17 16:28:56.000000 UTC,N/A,Disabled
+0,2756,660,svchost.exe,0xdb84c6564240,5,-,0,False,2026-02-17 16:28:57.000000 UTC,N/A,Disabled
+0,2768,660,svchost.exe,0xdb84c6566280,3,-,0,False,2026-02-17 16:28:57.000000 UTC,N/A,Disabled
+0,2796,660,MsMpEng.exe,0xdb84c65a1340,9,-,0,False,2026-02-17 16:28:57.000000 UTC,N/A,Disabled
+0,2812,660,svchost.exe,0xdb84c65a2080,4,-,0,False,2026-02-17 16:28:57.000000 UTC,N/A,Disabled
+0,2916,660,svchost.exe,0xdb84c66450c0,5,-,0,False,2026-02-17 16:28:57.000000 UTC,N/A,Disabled
+0,2928,660,svchost.exe,0xdb84c6646080,2,-,0,False,2026-02-17 16:28:57.000000 UTC,N/A,Disabled
+0,2304,660,svchost.exe,0xdb84c6677080,3,-,0,False,2026-02-17 16:28:57.000000 UTC,N/A,Disabled
+0,3144,660,svchost.exe,0xdb84c66f5240,11,-,0,False,2026-02-17 16:28:57.000000 UTC,N/A,Disabled
+0,3316,660,svchost.exe,0xdb84c6789300,2,-,0,False,2026-02-17 16:28:57.000000 UTC,N/A,Disabled
+0,3736,780,dllhost.exe,0xdb84c68d0300,5,-,0,False,2026-02-17 16:28:59.000000 UTC,N/A,Disabled
+0,772,2508,AggregatorHost,0xdb84c68ce080,5,-,0,False,2026-02-17 16:29:01.000000 UTC,N/A,Disabled
+0,2740,660,svchost.exe,0xdb84c6e0b2c0,6,-,0,False,2026-02-17 16:29:04.000000 UTC,N/A,Disabled
+0,4156,1180,sihost.exe,0xdb84c6e0e300,8,-,1,False,2026-02-17 16:29:04.000000 UTC,N/A,Disabled
+0,4192,660,svchost.exe,0xdb84c6e55080,9,-,1,False,2026-02-17 16:29:04.000000 UTC,N/A,Disabled
+0,4216,660,svchost.exe,0xdb84c6e980c0,3,-,1,False,2026-02-17 16:29:04.000000 UTC,N/A,Disabled
+0,4320,1080,MicrosoftEdgeU,0xdb84c6ece080,4,-,0,True,2026-02-17 16:29:04.000000 UTC,N/A,Disabled
+0,4328,660,svchost.exe,0xdb84c6ecf080,4,-,0,False,2026-02-17 16:29:04.000000 UTC,N/A,Disabled
+0,4348,1080,taskhostw.exe,0xdb84c6ed3080,8,-,1,False,2026-02-17 16:29:04.000000 UTC,N/A,Disabled
+0,4464,660,svchost.exe,0xdb84c6f3a280,3,-,0,False,2026-02-17 16:29:04.000000 UTC,N/A,Disabled
+0,4540,4464,ctfmon.exe,0xdb84c6f43300,8,-,1,False,2026-02-17 16:29:05.000000 UTC,N/A,Disabled
+0,4668,588,userinit.exe,0xdb84c702c080,0,-,1,False,2026-02-17 16:29:05.000000 UTC,2026-02-17 16:29:30.000000 UTC,Disabled
+0,4708,4668,explorer.exe,0xdb84c706e080,60,-,1,False,2026-02-17 16:29:05.000000 UTC,N/A,Disabled
+0,4772,660,svchost.exe,0xdb84c6d60080,7,-,0,False,2026-02-17 16:29:06.000000 UTC,N/A,Disabled
+0,4692,660,svchost.exe,0xdb84c72350c0,12,-,1,False,2026-02-17 16:29:08.000000 UTC,N/A,Disabled
+0,5220,780,StartMenuExper,0xdb84c7288340,6,-,1,False,2026-02-17 16:29:09.000000 UTC,N/A,Disabled
+0,5332,780,RuntimeBroker.,0xdb84c738f080,1,-,1,False,2026-02-17 16:29:10.000000 UTC,N/A,Disabled
+0,5596,660,svchost.exe,0xdb84c7110080,3,-,1,False,2026-02-17 16:29:11.000000 UTC,N/A,Disabled
+0,5652,780,SearchApp.exe,0xdb84c6eb2340,45,-,1,False,2026-02-17 16:29:11.000000 UTC,N/A,Disabled
+0,5832,780,RuntimeBroker.,0xdb84c751f080,6,-,1,False,2026-02-17 16:29:12.000000 UTC,N/A,Disabled
+0,5984,660,svchost.exe,0xdb84c756d080,1,-,0,False,2026-02-17 16:29:13.000000 UTC,N/A,Disabled
+0,6152,660,svchost.exe,0xdb84c6eb1080,6,-,0,False,2026-02-17 16:29:20.000000 UTC,N/A,Disabled
+0,6552,780,RuntimeBroker.,0xdb84c1a9a080,2,-,1,False,2026-02-17 16:29:22.000000 UTC,N/A,Disabled
+0,5584,4708,SecurityHealth,0xdb84c79f7080,1,-,1,False,2026-02-17 16:29:31.000000 UTC,N/A,Disabled
+0,5492,660,SecurityHealth,0xdb84c7497280,6,-,0,False,2026-02-17 16:29:31.000000 UTC,N/A,Disabled
+0,2764,4708,VBoxTray.exe,0xdb84c796c280,11,-,1,False,2026-02-17 16:29:32.000000 UTC,N/A,Disabled
+0,5452,780,TextInputHost.,0xdb84c7d04080,8,-,1,False,2026-02-17 16:29:35.000000 UTC,N/A,Disabled
+0,3884,660,svchost.exe,0xdb84c7d5b240,1,-,0,False,2026-02-17 16:29:36.000000 UTC,N/A,Disabled
+0,3020,660,svchost.exe,0xdb84c7dcf280,8,-,0,False,2026-02-17 16:29:36.000000 UTC,N/A,Disabled
+0,7020,660,svchost.exe,0xdb84c76f2240,2,-,0,False,2026-02-17 16:29:37.000000 UTC,N/A,Disabled
+0,7484,6500,M365Copilot.ex,0xdb84c7f6e080,31,-,1,False,2026-02-17 16:29:39.000000 UTC,N/A,Disabled
+0,7724,780,RuntimeBroker.,0xdb84c77f4080,1,-,1,False,2026-02-17 16:29:40.000000 UTC,N/A,Disabled
+0,7808,660,svchost.exe,0xdb84c77f0080,3,-,0,False,2026-02-17 16:29:40.000000 UTC,N/A,Disabled
+0,7956,7484,msedgewebview2,0xdb84c7d56080,47,-,1,False,2026-02-17 16:29:41.000000 UTC,N/A,Disabled
+0,8000,7956,msedgewebview2,0xdb84c76c0080,7,-,1,False,2026-02-17 16:29:41.000000 UTC,N/A,Disabled
+0,6168,7956,msedgewebview2,0xdb84c81b6080,16,-,1,False,2026-02-17 16:29:42.000000 UTC,N/A,Disabled
+0,6444,7956,msedgewebview2,0xdb84c81b7080,12,-,1,False,2026-02-17 16:29:42.000000 UTC,N/A,Disabled
+0,7344,7956,msedgewebview2,0xdb84c81b8080,8,-,1,False,2026-02-17 16:29:42.000000 UTC,N/A,Disabled
+0,7980,780,ApplicationFra,0xdb84c76cd080,3,-,1,False,2026-02-17 16:30:03.000000 UTC,N/A,Disabled
+0,6064,780,UserOOBEBroker,0xdb84c76ce080,4,-,1,False,2026-02-17 16:30:04.000000 UTC,N/A,Disabled
+0,1460,780,dllhost.exe,0xdb84c8108080,5,-,1,False,2026-02-17 16:30:23.000000 UTC,N/A,Disabled
+0,3692,660,svchost.exe,0xdb84c80e6080,1,-,0,False,2026-02-17 16:30:25.000000 UTC,N/A,Disabled
+0,992,4708,powershell.exe,0xdb84c8172080,24,-,1,False,2026-02-17 16:30:29.000000 UTC,N/A,Disabled
+0,6660,992,conhost.exe,0xdb84c80fb080,4,-,1,False,2026-02-17 16:30:30.000000 UTC,N/A,Disabled
+0,7648,660,svchost.exe,0xdb84c80f8080,15,-,0,False,2026-02-17 16:30:57.000000 UTC,N/A,Disabled
+0,7032,660,svchost.exe,0xdb84c8080080,3,-,0,False,2026-02-17 16:30:58.000000 UTC,N/A,Disabled
+0,2864,660,SgrmBroker.exe,0xdb84c76cb080,7,-,0,False,2026-02-17 16:30:58.000000 UTC,N/A,Disabled
+0,7280,660,svchost.exe,0xdb84c7d10080,4,-,0,False,2026-02-17 16:30:58.000000 UTC,N/A,Disabled
+0,4164,660,svchost.exe,0xdb84c8021080,8,-,0,False,2026-02-17 16:30:59.000000 UTC,N/A,Disabled
+0,7080,660,svchost.exe,0xdb84c7a0f080,0,-,0,False,2026-02-17 16:31:54.000000 UTC,2026-02-17 16:32:00.000000 UTC,Disabled
+0,7860,780,ShellExperienc,0xdb84c76cc080,14,-,1,False,2026-02-17 16:33:00.000000 UTC,N/A,Disabled
+0,7720,780,RuntimeBroker.,0xdb84c80f2080,2,-,1,False,2026-02-17 16:33:02.000000 UTC,N/A,Disabled
+0,2712,660,svchost.exe,0xdb84c7dab080,2,-,0,False,2026-02-17 16:33:06.000000 UTC,N/A,Disabled
+0,7068,7956,msedgewebview2,0xdb84c80c7300,15,-,1,False,2026-02-17 16:33:07.000000 UTC,N/A,Disabled
+0,2284,660,svchost.exe,0xdb84c6eb3080,8,-,0,False,2026-02-17 17:06:14.000000 UTC,N/A,Disabled
+0,2600,780,SearchApp.exe,0xdb84c80eb080,14,-,1,False,2026-02-17 17:32:59.000000 UTC,N/A,Disabled
+0,1620,2600,msedgewebview2,0xdb84c6fb3080,57,-,1,False,2026-02-17 17:32:59.000000 UTC,N/A,Disabled
+0,6904,1620,msedgewebview2,0xdb84c80e8080,10,-,1,False,2026-02-17 17:32:59.000000 UTC,N/A,Disabled
+0,1888,1620,msedgewebview2,0xdb84c85ea080,22,-,1,False,2026-02-17 17:33:05.000000 UTC,N/A,Disabled
+0,308,1620,msedgewebview2,0xdb84c901b080,18,-,1,False,2026-02-17 17:33:05.000000 UTC,N/A,Disabled
+0,4476,1620,msedgewebview2,0xdb84c81ca240,10,-,1,False,2026-02-17 17:33:05.000000 UTC,N/A,Disabled
+0,256,1620,msedgewebview2,0xdb84c80c9080,18,-,1,False,2026-02-17 17:33:06.000000 UTC,N/A,Disabled
+0,4556,8584,msedge.exe,0xdb84c84c6080,0,-,1,False,2026-02-17 18:09:13.000000 UTC,2026-02-17 18:11:52.000000 UTC,Disabled
+0,5412,4556,msedge.exe,0xdb84c7a3b080,0,-,1,False,2026-02-17 18:09:20.000000 UTC,2026-02-17 18:12:00.000000 UTC,Disabled
+0,4152,4556,msedge.exe,0xdb84c7a0e080,0,-,1,False,2026-02-17 18:09:20.000000 UTC,2026-02-17 18:11:52.000000 UTC,Disabled
+0,552,4556,msedge.exe,0xdb84c807c080,0,-,1,False,2026-02-17 18:09:23.000000 UTC,2026-02-17 18:12:00.000000 UTC,Disabled
+0,916,4556,msedge.exe,0xdb84cabee080,0,-,1,False,2026-02-17 18:09:36.000000 UTC,2026-02-17 18:11:50.000000 UTC,Disabled
+0,8784,4556,msedge.exe,0xdb84cb1f2080,0,-,1,False,2026-02-17 18:10:11.000000 UTC,2026-02-17 18:11:50.000000 UTC,Disabled
+0,1692,4556,msedge.exe,0xdb84c816a080,0,-,1,False,2026-02-17 18:10:46.000000 UTC,2026-02-17 18:11:52.000000 UTC,Disabled
+0,4020,4556,msedge.exe,0xdb84c80e9080,0,-,1,False,2026-02-17 18:11:03.000000 UTC,2026-02-17 18:11:51.000000 UTC,Disabled
+0,3708,4556,msedge.exe,0xdb84c80fa080,0,-,1,False,2026-02-17 18:11:06.000000 UTC,2026-02-17 18:11:52.000000 UTC,Disabled
+0,2644,4556,msedge.exe,0xdb84c9ab2080,0,-,1,False,2026-02-17 18:11:06.000000 UTC,2026-02-17 18:11:51.000000 UTC,Disabled
+0,8508,2988,msedge.exe,0xdb84cb50c080,0,-,1,False,2026-02-17 18:11:45.000000 UTC,2026-02-17 18:15:42.000000 UTC,Disabled
+0,5352,2988,msedge.exe,0xdb84cb74d080,0,-,1,False,2026-02-17 18:11:45.000000 UTC,2026-02-17 18:15:42.000000 UTC,Disabled
+0,4028,2988,msedge.exe,0xdb84c7a0c080,0,-,1,False,2026-02-17 18:11:46.000000 UTC,2026-02-17 18:15:52.000000 UTC,Disabled
+0,6036,2988,msedge.exe,0xdb84cabf0080,0,-,1,False,2026-02-17 18:11:46.000000 UTC,2026-02-17 18:15:42.000000 UTC,Disabled
+0,9512,660,svchost.exe,0xdb84cb51a080,2,-,0,False,2026-02-17 18:11:51.000000 UTC,N/A,Disabled
+0,9600,2988,msedge.exe,0xdb84cb519080,0,-,1,False,2026-02-17 18:11:52.000000 UTC,2026-02-17 18:15:52.000000 UTC,Disabled
+0,9484,660,svchost.exe,0xdb84cb80b080,3,-,0,False,2026-02-17 18:11:54.000000 UTC,N/A,Disabled
+0,3016,660,OfficeClickToR,0xdb84c80f3080,17,-,0,False,2026-02-17 18:12:01.000000 UTC,N/A,Disabled
+0,5076,780,SettingSyncHos,0xdb84c808a080,3,-,1,False,2026-02-17 18:14:10.000000 UTC,N/A,Disabled
+0,9704,660,CredentialEnro,0xdb84c8070080,3,-,1,False,2026-02-17 18:14:21.000000 UTC,N/A,Disabled
+0,8140,2988,msedge.exe,0xdb84c94f2080,0,-,1,False,2026-02-17 18:14:39.000000 UTC,2026-02-17 18:15:48.000000 UTC,Disabled
+0,8200,2988,msedge.exe,0xdb84cb643080,0,-,1,False,2026-02-17 18:14:39.000000 UTC,2026-02-17 18:15:42.000000 UTC,Disabled
+0,6520,2988,msedge.exe,0xdb84cb673080,0,-,1,False,2026-02-17 18:14:49.000000 UTC,2026-02-17 18:15:48.000000 UTC,Disabled
+0,10032,2988,msedge.exe,0xdb84c95d72c0,0,-,1,False,2026-02-17 18:14:53.000000 UTC,2026-02-17 18:15:42.000000 UTC,Disabled
+0,4444,2988,msedge.exe,0xdb84c7a3a080,0,-,1,False,2026-02-17 18:15:24.000000 UTC,2026-02-17 18:15:42.000000 UTC,Disabled
+0,8368,2988,msedge.exe,0xdb84c7a39080,50,-,1,False,2026-02-17 18:15:42.000000 UTC,N/A,Disabled
+0,3524,8368,msedge.exe,0xdb84cb2e0080,7,-,1,False,2026-02-17 18:15:43.000000 UTC,N/A,Disabled
+0,3560,8368,msedge.exe,0xdb84caef1080,18,-,1,False,2026-02-17 18:15:43.000000 UTC,N/A,Disabled
+0,10064,8368,msedge.exe,0xdb84c774f080,13,-,1,False,2026-02-17 18:15:43.000000 UTC,N/A,Disabled
+0,5576,8368,msedge.exe,0xdb84c804f080,10,-,1,False,2026-02-17 18:15:43.000000 UTC,N/A,Disabled
+0,9384,8368,msedge.exe,0xdb84cb76d080,16,-,1,False,2026-02-17 18:15:44.000000 UTC,N/A,Disabled
+0,7556,8368,msedge.exe,0xdb84c7bfd080,15,-,1,False,2026-02-17 18:15:44.000000 UTC,N/A,Disabled
+0,9132,8368,msedge.exe,0xdb84cb5e8080,17,-,1,False,2026-02-17 18:15:45.000000 UTC,N/A,Disabled
+0,8912,3016,AppVShNotify.e,0xdb84c80ec080,1,-,1,False,2026-02-17 18:18:11.000000 UTC,N/A,Disabled
+0,10228,660,SearchIndexer.,0xdb84c6b2b080,16,-,0,False,2026-02-17 18:20:44.000000 UTC,N/A,Disabled
+0,1600,660,svchost.exe,0xdb84c6b40340,3,-,0,False,2026-02-17 18:29:40.000000 UTC,N/A,Disabled
+0,10236,780,SystemSettings,0xdb84cb9b8080,19,-,1,False,2026-02-17 18:32:00.000000 UTC,N/A,Disabled
+0,1640,660,svchost.exe,0xdb84c807a080,12,-,0,False,2026-02-17 18:32:47.000000 UTC,N/A,Disabled
+0,10072,660,svchost.exe,0xdb84c8083080,2,-,0,False,2026-02-17 18:34:14.000000 UTC,N/A,Disabled
+0,8804,8368,msedge.exe,0xdb84cb79b0c0,17,-,1,False,2026-02-18 00:15:36.000000 UTC,N/A,Disabled
+0,3136,4156,CalculatorApp.,0xdb84c808d080,14,-,1,False,2026-02-18 00:31:14.000000 UTC,N/A,Disabled
+0,9256,780,RuntimeBroker.,0xdb84cb4f2080,1,-,1,False,2026-02-18 00:31:15.000000 UTC,N/A,Disabled
+0,8148,660,svchost.exe,0xdb84c7231080,3,-,0,False,2026-02-18 00:45:59.000000 UTC,N/A,Disabled
+0,4172,660,svchost.exe,0xdb84c784b080,1,-,0,False,2026-02-18 00:50:11.000000 UTC,N/A,Disabled
+0,2184,9076,RWXinjectionLo,0xdb84c80e3080,0,-,1,False,2026-02-18 00:55:10.000000 UTC,2026-02-18 00:55:16.000000 UTC,Disabled
+0,7764,2184,powershell.exe,0xdb84c7a35080,17,-,1,False,2026-02-18 00:55:10.000000 UTC,N/A,Disabled
+0,4964,7764,conhost.exe,0xdb84c8075080,6,-,1,False,2026-02-18 00:55:10.000000 UTC,N/A,Disabled
+0,6372,1880,audiodg.exe,0xdb84c7a10080,8,-,0,False,2026-02-18 00:55:11.000000 UTC,N/A,Disabled
+0,4680,780,WmiPrvSE.exe,0xdb84c96d7080,10,-,0,False,2026-02-18 00:55:16.000000 UTC,N/A,Disabled
+

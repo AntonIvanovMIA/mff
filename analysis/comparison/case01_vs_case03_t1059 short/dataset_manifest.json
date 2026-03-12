@@ -1,0 +1,67 @@
+{
+    "baseline": {
+        "case_path": "/MFF/cases/case01_baseline",
+        "generated": "2026-03-11 17:52:52 UTC",
+        "files": [
+            {
+                "file": "windows.pslist.csv",
+                "size": 13968
+            },
+            {
+                "file": "windows.cmdline.csv",
+                "size": 22460
+            },
+            {
+                "file": "windows.pstree.csv",
+                "size": 48597
+            },
+            {
+                "file": "windows.dlllist.csv",
+                "size": 948517
+            },
+            {
+                "file": "windows.malfind.csv",
+                "size": 9013
+            },
+            {
+                "file": "windows.info.csv",
+                "size": 676
+            },
+            {
+                "file": "windows.netscan.csv",
+                "size": 9206
+            }
+        ]
+    },
+    "attack": {
+        "case_path": "/MFF/cases/case03_t1059_attack",
+        "generated": "2026-03-11 17:52:52 UTC",
+        "files": [
+            {
+                "file": "windows.pslist.csv",
+                "size": 15352
+            },
+            {
+                "file": "windows.cmdline.csv",
+                "size": 17286
+            },
+            {
+                "file": "windows.pstree.csv",
+                "size": 44746
+            },
+            {
+                "file": "windows.dlllist.csv",
+                "size": 1126172
+            },
+            {
+                "file": "windows.malfind.csv",
+                "size": 301960
+            },
+            {
+                "file": "windows.netscan.csv",
+                "size": 12613
+            }
+        ]
+    },
+    "generated": "2026-03-11 17:52:52 UTC"
+}

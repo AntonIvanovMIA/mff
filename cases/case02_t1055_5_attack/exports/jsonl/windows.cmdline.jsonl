@@ -1,0 +1,177 @@
+
+{"Args": null, "PID": 4, "Process": "System", "__children": []}
+{"Args": null, "PID": 92, "Process": "Registry", "__children": []}
+{"Args": "\\SystemRoot\\System32\\smss.exe", "PID": 328, "Process": "smss.exe", "__children": []}
+{"Args": "%SystemRoot%\\system32\\csrss.exe ObjectDirectory=\\Windows SharedSection=1024,20480,768 Windows=On SubSystemType=Windows ServerDll=basesrv,1 ServerDll=winsrv:UserServerDllInitialization,3 ServerDll=sxssrv,4 ProfileControl=Off MaxRequestThreads=16", "PID": 432, "Process": "csrss.exe", "__children": []}
+{"Args": "%SystemRoot%\\system32\\csrss.exe ObjectDirectory=\\Windows SharedSection=1024,20480,768 Windows=On SubSystemType=Windows ServerDll=basesrv,1 ServerDll=winsrv:UserServerDllInitialization,3 ServerDll=sxssrv,4 ProfileControl=Off MaxRequestThreads=16", "PID": 520, "Process": "csrss.exe", "__children": []}
+{"Args": null, "PID": 540, "Process": "wininit.exe", "__children": []}
+{"Args": "winlogon.exe", "PID": 588, "Process": "winlogon.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\services.exe", "PID": 660, "Process": "services.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\lsass.exe", "PID": 680, "Process": "lsass.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k DcomLaunch -p", "PID": 780, "Process": "svchost.exe", "__children": []}
+{"Args": null, "PID": 804, "Process": "fontdrvhost.ex", "__children": []}
+{"Args": "\"fontdrvhost.exe\"", "PID": 812, "Process": "fontdrvhost.ex", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k RPCSS -p", "PID": 900, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k DcomLaunch -p -s LSM", "PID": 944, "Process": "svchost.exe", "__children": []}
+{"Args": "\"dwm.exe\"", "PID": 372, "Process": "dwm.exe", "__children": []}
+{"Args": null, "PID": 436, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p -s NcbService", "PID": 756, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p -s TimeBrokerSvc", "PID": 1028, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s Schedule", "PID": 1080, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s ProfSvc", "PID": 1104, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k LocalServiceNetworkRestricted -p -s EventLog", "PID": 1136, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s UserManager", "PID": 1180, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalServiceNoNetwork -p", "PID": 1216, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalService -p -s nsi", "PID": 1320, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\VBoxService.exe", "PID": 1424, "Process": "VBoxService.ex", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p -s Dhcp", "PID": 1432, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p -s SysMain", "PID": 1476, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalService -p -s DispBrokerDesktopSvc", "PID": 1484, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k netsvcs -p -s Themes", "PID": 1504, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalService -p -s EventSystem", "PID": 1512, "Process": "svchost.exe", "__children": []}
+{"Args": null, "PID": 1676, "Process": "MemCompression", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s SENS", "PID": 1704, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k NetworkService -p -s NlaSvc", "PID": 1728, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p -s AudioEndpointBuilder", "PID": 1784, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalService -p -s FontCache", "PID": 1800, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k LocalServiceNetworkRestricted -p", "PID": 1880, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k LocalService -p -s netprofm", "PID": 1896, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k LocalServiceNetworkRestricted -p", "PID": 1988, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k NetworkService -p -s Dnscache", "PID": 2000, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p", "PID": 2008, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k appmodel -p -s StateRepository", "PID": 8, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k netsvcs -p -s ShellHWDetection", "PID": 1644, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\spoolsv.exe", "PID": 2128, "Process": "spoolsv.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalServiceNoNetworkFirewall -p", "PID": 2168, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k NetworkService -p -s LanmanWorkstation", "PID": 2204, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p -s WinHttpAutoProxySvc", "PID": 2268, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s LanmanServer", "PID": 2400, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k NetworkServiceNetworkRestricted -p -s PolicyAgent", "PID": 2428, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s IKEEXT", "PID": 2436, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k NetworkService -p -s CryptSvc", "PID": 2516, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k utcsvc -p", "PID": 2508, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k LocalServiceNoNetwork -p -s DPS", "PID": 2548, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s Winmgmt", "PID": 2616, "Process": "svchost.exe", "__children": []}
+{"Args": "\"C:\\ProgramData\\Microsoft\\Windows Defender\\Platform\\4.18.26010.5-0\\MpDefenderCoreService.exe\"", "PID": 2648, "Process": "MpDefenderCore", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k LocalServiceNetworkRestricted -s RmSvc", "PID": 2700, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalService -p -s SstpSvc", "PID": 2724, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k netsvcs -p -s Browser", "PID": 2756, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p -s TrkWks", "PID": 2768, "Process": "svchost.exe", "__children": []}
+{"Args": "\"C:\\ProgramData\\Microsoft\\Windows Defender\\Platform\\4.18.26010.5-0\\MsMpEng.exe\"", "PID": 2796, "Process": "MsMpEng.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s WpnService", "PID": 2812, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k NetSvcs -p -s iphlpsvc", "PID": 2916, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k LocalService -p -s WdiServiceHost", "PID": 2928, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p -s NgcSvc", "PID": 2304, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k netsvcs", "PID": 3144, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalServiceNetworkRestricted -p -s NgcCtnrSvc", "PID": 3316, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\DllHost.exe /Processid:{3EB3C877-1F16-487C-9050-104DBCD66683}", "PID": 3736, "Process": "dllhost.exe", "__children": []}
+{"Args": "AggregatorHost.exe", "PID": 772, "Process": "AggregatorHost", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k LocalService -p -s LicenseManager", "PID": 2740, "Process": "svchost.exe", "__children": []}
+{"Args": "sihost.exe", "PID": 4156, "Process": "sihost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k UnistackSvcGroup -s CDPUserSvc", "PID": 4192, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k UnistackSvcGroup -s WpnUserService", "PID": 4216, "Process": "svchost.exe", "__children": []}
+{"Args": "\"C:\\Program Files (x86)\\Microsoft\\EdgeUpdate\\MicrosoftEdgeUpdate.exe\" /c", "PID": 4320, "Process": "MicrosoftEdgeU", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s TokenBroker", "PID": 4328, "Process": "svchost.exe", "__children": []}
+{"Args": "taskhostw.exe {222A245B-E637-4AE9-A93F-A59CA119A75E}", "PID": 4348, "Process": "taskhostw.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p -s TabletInputService", "PID": 4464, "Process": "svchost.exe", "__children": []}
+{"Args": "\"ctfmon.exe\"", "PID": 4540, "Process": "ctfmon.exe", "__children": []}
+{"Args": null, "PID": 4668, "Process": "userinit.exe", "__children": []}
+{"Args": "C:\\Windows\\Explorer.EXE", "PID": 4708, "Process": "explorer.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalService -p -s CDPSvc", "PID": 4772, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k ClipboardSvcGroup -p -s cbdhsvc", "PID": 4692, "Process": "svchost.exe", "__children": []}
+{"Args": "\"C:\\Windows\\SystemApps\\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\\StartMenuExperienceHost.exe\" -ServerName:App.AppXywbrabmsek0gm3tkwpr5kwzbs55tkqay.mca", "PID": 5220, "Process": "StartMenuExper", "__children": []}
+{"Args": "C:\\Windows\\System32\\RuntimeBroker.exe -Embedding", "PID": 5332, "Process": "RuntimeBroker.", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k UnistackSvcGroup", "PID": 5596, "Process": "svchost.exe", "__children": []}
+{"Args": null, "PID": 5652, "Process": "SearchApp.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\RuntimeBroker.exe -Embedding", "PID": 5832, "Process": "RuntimeBroker.", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k appmodel -p -s camsvc", "PID": 5984, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s UsoSvc", "PID": 6152, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\RuntimeBroker.exe -Embedding", "PID": 6552, "Process": "RuntimeBroker.", "__children": []}
+{"Args": null, "PID": 5584, "Process": "SecurityHealth", "__children": []}
+{"Args": "C:\\Windows\\system32\\SecurityHealthService.exe", "PID": 5492, "Process": "SecurityHealth", "__children": []}
+{"Args": "\"C:\\Windows\\System32\\VBoxTray.exe\" ", "PID": 2764, "Process": "VBoxTray.exe", "__children": []}
+{"Args": "\"C:\\Windows\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\TextInputHost.exe\" -ServerName:InputApp.AppXk0k6mrh4r2q0ct33a9wgbez0x7v9cz5y.mca", "PID": 5452, "Process": "TextInputHost.", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s Appinfo", "PID": 3884, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p -s PcaSvc", "PID": 3020, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k netsvcs -p", "PID": 7020, "Process": "svchost.exe", "__children": []}
+{"Args": "\"C:\\Program Files\\WindowsApps\\Microsoft.MicrosoftOfficeHub_19.2602.43201.0_x64__8wekyb3d8bbwe\\M365Copilot.exe\" ms-getoffice: autostart reason=AutoStarter", "PID": 7484, "Process": "M365Copilot.ex", "__children": []}
+{"Args": "C:\\Windows\\System32\\RuntimeBroker.exe -Embedding", "PID": 7724, "Process": "RuntimeBroker.", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p -s WdiSystemHost", "PID": 7808, "Process": "svchost.exe", "__children": []}
+{"Args": "\"C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\144.0.3719.115\\msedgewebview2.exe\" --embedded-browser-webview=1 --webview-exe-name=M365Copilot.exe --webview-exe-version=19.2602.43201.0 --user-data-dir=\"C:\\Users\\lucif\\AppData\\Local\\Packages\\Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe\\LocalState\\EBWebView\" --noerrdialogs --embedded-browser-webview-dpi-awareness=2 --disable-features=msEnhancedTrackingPreventionEnabled --enable-features=msSingleSignOnOSForPrimaryAccountIsShared --mojo-named-platform-channel-pipe=7484.7792.13322981159174066970", "PID": 7956, "Process": "msedgewebview2", "__children": []}
+{"Args": "\"C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\144.0.3719.115\\msedgewebview2.exe\" --type=crashpad-handler --user-data-dir=C:\\Users\\lucif\\AppData\\Local\\Packages\\Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe\\LocalState\\EBWebView /prefetch:4 --monitor-self-annotation=ptype=crashpad-handler --database=C:\\Users\\lucif\\AppData\\Local\\Packages\\Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe\\LocalState\\EBWebView\\Crashpad --metrics-dir=C:\\Users\\lucif\\AppData\\Local\\Packages\\Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe\\LocalState\\EBWebView --annotation=IsOfficialBuild=1 --annotation=channel= --annotation=chromium-version=144.0.7559.133 \"--annotation=exe=C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\144.0.3719.115\\msedgewebview2.exe\" --annotation=plat=Win64 \"--annotation=prod=Edge WebView2\" --annotation=ver=144.0.3719.115 --initial-client-data=0x17c,0x180,0x184,0x158,0x18c,0x7ff9da552c98,0x7ff9da552ca4,0x7ff9da552cb0", "PID": 8000, "Process": "msedgewebview2", "__children": []}
+{"Args": null, "PID": 6168, "Process": "msedgewebview2", "__children": []}
+{"Args": "\"C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\144.0.3719.115\\msedgewebview2.exe\" --type=gpu-process --noerrdialogs --user-data-dir=\"C:\\Users\\lucif\\AppData\\Local\\Packages\\Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe\\LocalState\\EBWebView\" --webview-exe-name=M365Copilot.exe --webview-exe-version=19.2602.43201.0 --embedded-browser-webview=1 --embedded-browser-webview-dpi-awareness=2 --gpu-preferences=SAAAAAAAAADgAAAEAAAAAAAAAAAAAGAAAQAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAQAAAAAAAAABAAAAAAAAAACAAAAAAAAAAIAAAAAAAAAA== --startup-read-main-dll --metrics-shmem-handle=1668,i,6953623512535855107,1576577103703906599,262144 --field-trial-handle=2008,i,13740365058626062742,18351376053281142885,262144 --enable-features=msSingleSignOnOSForPrimaryAccountIsShared --disable-features=msEnhancedTrackingPreventionEnabled --variations-seed-version --trace-process-track-uuid=3190708988185955192 --mojo-platform-channel-handle=1996 /prefetch:2", "PID": 6444, "Process": "msedgewebview2", "__children": []}
+{"Args": null, "PID": 7344, "Process": "msedgewebview2", "__children": []}
+{"Args": "C:\\Windows\\system32\\ApplicationFrameHost.exe -Embedding", "PID": 7980, "Process": "ApplicationFra", "__children": []}
+{"Args": "C:\\Windows\\System32\\oobe\\UserOOBEBroker.exe -Embedding", "PID": 6064, "Process": "UserOOBEBroker", "__children": []}
+{"Args": "C:\\Windows\\system32\\DllHost.exe /Processid:{973D20D7-562D-44B9-B70B-5A0F49CCDF3F}", "PID": 1460, "Process": "dllhost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalSystemNetworkRestricted -p -s DevQueryBroker", "PID": 3692, "Process": "svchost.exe", "__children": []}
+{"Args": "\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" ", "PID": 992, "Process": "powershell.exe", "__children": []}
+{"Args": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4", "PID": 6660, "Process": "conhost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k NetworkService -p -s DoSvc", "PID": 7648, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k LocalSystemNetworkRestricted -p", "PID": 7032, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\SgrmBroker.exe", "PID": 2864, "Process": "SgrmBroker.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalService -s W32Time", "PID": 7280, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k LocalServiceNetworkRestricted -p -s wscsvc", "PID": 4164, "Process": "svchost.exe", "__children": []}
+{"Args": null, "PID": 7080, "Process": "svchost.exe", "__children": []}
+{"Args": null, "PID": 7860, "Process": "ShellExperienc", "__children": []}
+{"Args": "C:\\Windows\\System32\\RuntimeBroker.exe -Embedding", "PID": 7720, "Process": "RuntimeBroker.", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s lfsvc", "PID": 2712, "Process": "svchost.exe", "__children": []}
+{"Args": null, "PID": 7068, "Process": "msedgewebview2", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalServiceAndNoImpersonation -p -s SSDPSRV", "PID": 2284, "Process": "svchost.exe", "__children": []}
+{"Args": null, "PID": 2600, "Process": "SearchApp.exe", "__children": []}
+{"Args": null, "PID": 1620, "Process": "msedgewebview2", "__children": []}
+{"Args": null, "PID": 6904, "Process": "msedgewebview2", "__children": []}
+{"Args": null, "PID": 1888, "Process": "msedgewebview2", "__children": []}
+{"Args": null, "PID": 308, "Process": "msedgewebview2", "__children": []}
+{"Args": null, "PID": 4476, "Process": "msedgewebview2", "__children": []}
+{"Args": null, "PID": 256, "Process": "msedgewebview2", "__children": []}
+{"Args": null, "PID": 4556, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 5412, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 4152, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 552, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 916, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 8784, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 1692, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 4020, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 3708, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 2644, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 8508, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 5352, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 4028, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 6036, "Process": "msedge.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k LocalService -p -s BthAvctpSvc", "PID": 9512, "Process": "svchost.exe", "__children": []}
+{"Args": null, "PID": 9600, "Process": "msedge.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k WbioSvcGroup -s WbioSrvc", "PID": 9484, "Process": "svchost.exe", "__children": []}
+{"Args": "\"C:\\Program Files\\Common Files\\Microsoft Shared\\ClickToRun\\OfficeClickToRun.exe\" /service", "PID": 3016, "Process": "OfficeClickToR", "__children": []}
+{"Args": null, "PID": 5076, "Process": "SettingSyncHos", "__children": []}
+{"Args": null, "PID": 9704, "Process": "CredentialEnro", "__children": []}
+{"Args": null, "PID": 8140, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 8200, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 6520, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 10032, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 4444, "Process": "msedge.exe", "__children": []}
+{"Args": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --no-startup-window", "PID": 8368, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 3524, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 3560, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 10064, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 5576, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 9384, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 7556, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 9132, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 8912, "Process": "AppVShNotify.e", "__children": []}
+{"Args": "C:\\Windows\\system32\\SearchIndexer.exe /Embedding", "PID": 10228, "Process": "SearchIndexer.", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k LocalServiceNetworkRestricted -p -s lmhosts", "PID": 1600, "Process": "svchost.exe", "__children": []}
+{"Args": null, "PID": 10236, "Process": "SystemSettings", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k netsvcs -p -s BITS", "PID": 1640, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k wusvcs -p -s WaaSMedicSvc", "PID": 10072, "Process": "svchost.exe", "__children": []}
+{"Args": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --extension-process --renderer-sub-type=extension --init-isolate-as-foreground --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags=--ms-user-locale=en_GB --device-scale-factor=1 --num-raster-threads=1 --renderer-client-id=21 --time-ticks-at-unix-epoch=-1771345723977350 --launch-time-ticks=28042762482 --ram-no-pressure-read-main-dll --metrics-shmem-handle=4860,i,14968500006580444710,4149620330620693902,2097152 --field-trial-handle=2656,i,16563613216354169502,2776034545886777605,262144 --variations-seed-version --trace-process-track-uuid=3190709005989750323 --mojo-platform-channel-handle=7564 /prefetch:2", "PID": 8804, "Process": "msedge.exe", "__children": []}
+{"Args": null, "PID": 3136, "Process": "CalculatorApp.", "__children": []}
+{"Args": "C:\\Windows\\System32\\RuntimeBroker.exe -Embedding", "PID": 9256, "Process": "RuntimeBroker.", "__children": []}
+{"Args": "C:\\Windows\\system32\\svchost.exe -k netsvcs -p -s gpsvc", "PID": 8148, "Process": "svchost.exe", "__children": []}
+{"Args": "C:\\Windows\\System32\\svchost.exe -k wsappx -p -s ClipSVC", "PID": 4172, "Process": "svchost.exe", "__children": []}
+{"Args": null, "PID": 2184, "Process": "RWXinjectionLo", "__children": []}
+{"Args": "\\??\\C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -Command \"Add-Type -AssemblyName PresentationFramework; [System.Windows.MessageBox]::Show('Atomic Red Team', 'Warning', 'OK', 'Warning'); Start-Process 'notepad.exe'\"", "PID": 7764, "Process": "powershell.exe", "__children": []}
+{"Args": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4", "PID": 4964, "Process": "conhost.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\AUDIODG.EXE 0x4c8", "PID": 6372, "Process": "audiodg.exe", "__children": []}
+{"Args": "C:\\Windows\\system32\\wbem\\wmiprvse.exe", "PID": 4680, "Process": "WmiPrvSE.exe", "__children": []}

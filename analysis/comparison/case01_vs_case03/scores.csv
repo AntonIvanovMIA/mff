@@ -1,0 +1,17 @@
+PID,Process,RiskScore,RiskLevel,Indicators
+7888,powershell.exe,100,CRITICAL,Suspicious cmdline pattern; RWX executable memory region (malfind)
+3288,SOAPHound.exe,65,HIGH,Known-malicious name: SOAPHound.exe; Anomalous process name keyword
+6276,SOAPHound.exe,65,HIGH,Known-malicious name: SOAPHound.exe; Anomalous process name keyword
+9608,powershell.exe,40,MEDIUM,Suspicious cmdline pattern
+4200,powershell.exe,40,MEDIUM,Suspicious cmdline pattern
+9864,powershell.exe,40,MEDIUM,Suspicious cmdline pattern
+2628,OfficeClickToR,0,LOW,None
+664,WerFault.exe,0,LOW,None
+9912,CalculatorApp.,0,LOW,None
+6148,ApplicationFra,0,LOW,None
+6564,SystemSettings,0,LOW,None
+5008,SgrmBroker.exe,0,LOW,None
+1736,PhoneExperienc,0,LOW,None
+7684,notepad.exe,0,LOW,None
+9780,notepad.exe,0,LOW,None
+9744,SystemSettings,0,LOW,None

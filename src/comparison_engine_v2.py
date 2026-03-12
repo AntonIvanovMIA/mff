@@ -1,0 +1,1154 @@
+#!/usr/bin/env python3
+"""
+MFF v2 — Comparison Engine (Master)
+====================================
+Baseline vs Attack memory analysis with:
+  • MITRE ATT&CK auto-tagging
+  • Network diff + suspicious port flagging
+  • IOC extraction (IPs, domains, hashes, paths)
+  • Parent-child process tree + ATT&CK heatmap
+  • Interactive HTML report (filterable, sortable)
+  • PDF report
+  • JSON SIEM/SOAR threat summary
+  • Slack / webhook alerting
+
+Usage:
+  python comparison_engine_v2.py \\
+    --baseline /MFF/cases/case01_baseline \\
+    --attack   /MFF/cases/case03_t1059_attack \\
+    --out      /MFF/analysis/comparison/case01_vs_case03 \\
+    --make-html --make-pdf \\
+    --webhook  https://hooks.slack.com/services/XXX
+"""
+
+import os
+import sys
+import argparse
+import pandas as pd
+import numpy as np
+from datetime import datetime, UTC
+
+# Add modules directory to path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "modules"))
+
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+from matplotlib.gridspec import GridSpec
+
+import mitre_tagger
+import network_ioc
+import process_tree
+import export_alert
+import report_generator
+
+
+# ============================================================
+# Styling
+# ============================================================
+
+THEME = {
+    "bg":      "#0d1117", "panel":   "#161b22", "border":  "#30363d",
+    "accent":  "#f78166", "safe":    "#3fb950", "warn":    "#d29922",
+    "info":    "#58a6ff", "text":    "#e6edf3", "subtext": "#8b949e",
+    "grid":    "#21262d",
+}
+
+plt.rcParams.update({
+    "figure.facecolor": THEME["bg"],   "axes.facecolor":  THEME["panel"],
+    "axes.edgecolor":   THEME["border"],"axes.labelcolor": THEME["text"],
+    "xtick.color":      THEME["subtext"],"ytick.color":    THEME["subtext"],
+    "text.color":       THEME["text"],  "grid.color":      THEME["grid"],
+    "grid.linestyle":   "--",           "grid.linewidth":  0.5,
+    "font.family":      "monospace",    "font.size":       9,
+})
+
+
+# ============================================================
+# Utilities
+# ============================================================
+
+def now_utc():
+    return datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
+
+def safe_read_csv(path):
+    if not os.path.exists(path):
+        print(f"  [!] Missing: {path}")
+        return pd.DataFrame()
+    try:
+        return pd.read_csv(path)
+    except Exception as e:
+        print(f"  [!] Failed to read {path}: {e}")
+        return pd.DataFrame()
+
+def ensure_dir(path):
+    os.makedirs(path, exist_ok=True)
+
+def _save_fig(fig, path):
+    fig.savefig(path, dpi=150, bbox_inches="tight", facecolor=THEME["bg"])
+    plt.close(fig)
+    print(f"  [+] Chart: {path}")
+
+
+# ============================================================
+# Load Case
+# ============================================================
+
+def load_case(case_path: str) -> dict:
+    exports = os.path.join(case_path, "exports", "csv")
+    data = {
+        "pslist":  safe_read_csv(os.path.join(exports, "windows.pslist.csv")),
+        "cmdline": safe_read_csv(os.path.join(exports, "windows.cmdline.csv")),
+        "malfind": safe_read_csv(os.path.join(exports, "windows.malfind.csv")),
+        "netscan": safe_read_csv(os.path.join(exports, "windows.netscan.csv")),
+    }
+    return data
+
+
+# ============================================================
+# Process Diff
+# ============================================================
+
+def process_diff(base_df: pd.DataFrame, attack_df: pd.DataFrame):
+    """
+    Diff by ImageFileName (process name), NOT by PID.
+    PIDs are reassigned every reboot so PID-based diff produces massive
+    false-positive churn (143 new / 131 gone from a 145-process baseline).
+    Name-based diff finds processes genuinely added or removed by the attack.
+    Processes that exist in both captures but with different PIDs are STABLE.
+    """
+    if base_df.empty or attack_df.empty:
+        new  = attack_df.copy() if not attack_df.empty else pd.DataFrame()
+        gone = base_df.copy()   if not base_df.empty   else pd.DataFrame()
+        if not new.empty:  new["DiffStatus"]  = "NEW (Attack Only)"
+        if not gone.empty: gone["DiffStatus"] = "GONE (Baseline Only)"
+        return new, gone
+
+    name_col = "ImageFileName"
+    base_names   = set(base_df[name_col].astype(str).str.strip().str.lower())
+    attack_names = set(attack_df[name_col].astype(str).str.strip().str.lower())
+
+    # NEW  = appears in attack but NOT in baseline (genuinely new process)
+    new_mask  = ~attack_df[name_col].astype(str).str.strip().str.lower().isin(base_names)
+    # GONE = was in baseline but NOT in attack (process was stopped/killed)
+    gone_mask = ~base_df[name_col].astype(str).str.strip().str.lower().isin(attack_names)
+
+    new  = attack_df[new_mask].copy()
+    gone = base_df[gone_mask].copy()
+    new["DiffStatus"]  = "NEW (Attack Only)"
+    gone["DiffStatus"] = "GONE (Baseline Only)"
+    return new, gone
+
+
+# ============================================================
+# Cmdline Analysis
+# ============================================================
+
+SUSPICIOUS_PATTERNS = [
+    "AtomicRedTeam","RWXinjection","CreateRemoteThread","VirtualAllocEx",
+    "WriteProcessMemory","powershell","cmd.exe","wscript","cscript","mshta",
+    "rundll32","regsvr32","certutil","bitsadmin","net user","net localgroup",
+    "whoami","mimikatz","procdump","lsass","invoke-","iex ","base64",
+    "schtasks","reg add","psexec","meterpreter",
+]
+
+def cmdline_findings(df: pd.DataFrame) -> pd.DataFrame:
+    if df.empty:
+        return pd.DataFrame()
+    findings = []
+    for pat in SUSPICIOUS_PATTERNS:
+        mask    = df["Args"].astype(str).str.contains(pat, case=False, na=False)
+        matches = df[mask].copy()
+        if not matches.empty:
+            matches["MatchedPattern"] = pat
+            findings.append(matches)
+    if findings:
+        result = pd.concat(findings).drop_duplicates()
+        return result
+    return pd.DataFrame()
+
+
+# ============================================================
+# Malfind
+# ============================================================
+
+def malfind_analysis(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Filter malfind to EXECUTE protection regions, then exclude known-clean
+    Windows system processes. Raw malfind on a live Windows system returns
+    300+ RWX hits from JIT compilers (browsers, .NET, antivirus) — these are
+    false positives and inflate counts massively.
+    """
+    if df.empty:
+        return pd.DataFrame()
+
+    # Step 1: only EXECUTE protection regions (the real signal)
+    exec_df = df[df["Protection"].astype(str).str.contains("EXECUTE", na=False)].copy()
+
+    # Step 2: exclude well-known legitimate RWX users
+    # These processes use JIT compilation or self-modifying code legitimately
+    CLEAN_PROCESS_RWX = {
+        "msmpeng.exe",        # Windows Defender (AV scanner)
+        "antimalware service executable",
+        "searchapp.exe",      # Windows Search (Chromium JIT)
+        "searchindexer.exe",
+        "msedge.exe",         # Edge browser (V8 JIT)
+        "chrome.exe",         # Chrome (V8 JIT)
+        "firefox.exe",        # Firefox (SpiderMonkey JIT)
+        "iexplore.exe",
+        "runtimebroker.exe",  # Windows Runtime Broker
+        "phoneexperience",    # Phone Link app (various truncations)
+        "phoneexperiencehost.exe",
+        "phonexperienceh",
+        "phoneexperienc",     # Volatility truncates to 14 chars
+        "phoneexper",
+        "svchost.exe",        # Windows service host (legitimate JIT use)
+        "spoolsv.exe",
+        "csrss.exe",
+        "smss.exe",
+        "wininit.exe",
+        "winlogon.exe",
+        "lsaiso.exe",
+        "dwm.exe",
+        "fontdrvhost.exe",
+        "werfault.exe",
+        "taskhostw.exe",
+        "sihost.exe",
+        "ctfmon.exe",
+        "audiodg.exe",
+        "backgroundtaskhost.exe",
+        "conhost.exe",
+        "dllhost.exe",
+        "wlanext.exe",
+        "wmiprvse.exe",
+        "msdtc.exe",
+        "regsvr32.exe",       # only suspicious if in cmdline findings
+        "microsoftedgeupdate",
+        "msedgewebview2.exe",
+        "widget.exe",
+    }
+
+    if "Process" in exec_df.columns:
+        name_col = "Process"
+    elif "ImageFileName" in exec_df.columns:
+        name_col = "ImageFileName"
+    else:
+        return exec_df
+
+    mask_clean = exec_df[name_col].astype(str).str.lower().str.strip().apply(
+        lambda n: any(n.startswith(c) for c in CLEAN_PROCESS_RWX)
+    )
+    suspicious = exec_df[~mask_clean].copy()
+    return suspicious
+
+
+# ============================================================
+# Timeline
+# ============================================================
+
+def timeline_correlation(ps_df: pd.DataFrame) -> pd.DataFrame:
+    if ps_df.empty:
+        return pd.DataFrame()
+    df = ps_df.copy()
+    for col in ("CreateTime", "ExitTime"):
+        dt_col = f"{col}_dt"
+        if col in df.columns:
+            df[dt_col] = pd.to_datetime(df[col], errors="coerce", utc=True)
+            df[col]    = df[dt_col].apply(
+                lambda x: x.strftime("%Y-%m-%d %H:%M:%S UTC") if pd.notna(x) else "")
+    sort_col = "CreateTime_dt" if "CreateTime_dt" in df.columns else df.columns[0]
+    return df.sort_values(by=sort_col, na_position="last")
+
+
+# ============================================================
+# Risk Scoring
+# ============================================================
+
+def risk_label(score: int) -> str:
+    if score >= 80: return "CRITICAL"
+    if score >= 50: return "HIGH"
+    if score >= 20: return "MEDIUM"
+    return "LOW"
+
+def scoring_engine(process_df, cmd_df, mal_df) -> pd.DataFrame:
+    """
+    Score processes from the attack capture.
+    process_df = new processes (not in baseline) — primary targets.
+    Also detects suspicious activity in known processes via cmdline/malfind.
+
+    Evidence weights:
+      +60  RWX memory region (malfind, already filtered to suspicious)
+      +40  Suspicious cmdline pattern match
+      +50  Exact known-malicious executable name
+      +15  Anomalous name bonus (only if score already > 0)
+    """
+    KNOWN_MALICIOUS_EXACT = {
+        "mimikatz.exe", "mimikatz", "wce.exe", "pwdump.exe", "procdump.exe",
+        "meterpreter", "cobaltstrike", "beacon.exe", "rubeus.exe",
+        "sharpview.exe", "seatbelt.exe", "lazagne.exe", "lazeagne.exe",
+        "incognito.exe", "tokenimpersonation.exe", "soaphound.exe",
+        "sharphound.exe", "bloodhound.exe", "crackmapexec", "crackmapexec.exe",
+        "psexec.exe", "wmiexec.py", "secretsdump.py",
+    }
+    ANOMALY_KW = ("rwxinjection", "inject32", "inject64", "hollowing",
+                  "reflective", "shellcode", "soaphound", "sharphound")
+
+    # Build lookup sets for fast matching
+    cmd_pids  = set(cmd_df["PID"].values)  if not cmd_df.empty else set()
+    mal_pids  = set(mal_df["PID"].values)  if not mal_df.empty else set()
+    # Also match cmdline by process name (robust to PID changes)
+    cmd_names = set()
+    if not cmd_df.empty:
+        name_col = "ImageFileName" if "ImageFileName" in cmd_df.columns else "Process"
+        if name_col in cmd_df.columns:
+            cmd_names = set(cmd_df[name_col].astype(str).str.lower().str.strip())
+
+    scores = []
+    for _, row in process_df.iterrows():
+        pid   = row.get("PID")
+        name  = str(row.get("ImageFileName", "Unknown"))
+        name_l = name.lower().strip()
+        score = 0
+        reasons = []
+
+        # Evidence 1: suspicious cmdline — match by PID or by name
+        if pid in cmd_pids or name_l in cmd_names:
+            score += 40
+            reasons.append("Suspicious cmdline pattern")
+
+        # Evidence 2: RWX memory region (malfind already filtered — no FPs)
+        if pid in mal_pids:
+            score += 60
+            reasons.append("RWX executable memory region (malfind)")
+
+        # Evidence 3: known-malicious exact name
+        if name_l in KNOWN_MALICIOUS_EXACT:
+            score += 50
+            reasons.append(f"Known-malicious name: {name}")
+
+        # Evidence 4: anomaly name bonus (only stacks on top of other evidence)
+        if score > 0 and any(kw in name_l for kw in ANOMALY_KW):
+            score += 15
+            reasons.append("Anomalous process name keyword")
+
+        scores.append({
+            "PID":        pid,
+            "Process":    name,
+            "RiskScore":  score,
+            "RiskLevel":  risk_label(score),
+            "Indicators": "; ".join(reasons) or "None",
+        })
+
+    df = pd.DataFrame(scores)
+    if df.empty or "RiskScore" not in df.columns:
+        return df
+    return df.sort_values("RiskScore", ascending=False)
+
+
+# ============================================================
+# Artefact Console Printer  — colour-coded terminal output
+# ============================================================
+
+# ANSI colours — Linux/macOS and Windows 10+ terminals
+_R       = "\033[0m"
+_B       = "\033[1m"
+_DIM     = "\033[2m"
+_RED     = "\033[38;5;203m"   # CRITICAL / RWX / known-malicious
+_ORANGE  = "\033[38;5;214m"   # HIGH / suspicious cmdline
+_YELLOW  = "\033[38;5;178m"   # MEDIUM / new unknown
+_GREEN   = "\033[38;5;71m"    # clean / baseline / nothing found
+_CYAN    = "\033[38;5;80m"    # new unscored process
+_BLUE    = "\033[38;5;75m"    # ATT&CK / network info
+_GREY    = "\033[38;5;240m"   # gone / neutral
+
+_SEV_COLOR = {
+    "CRITICAL": _RED,
+    "HIGH":     _ORANGE,
+    "MEDIUM":   _YELLOW,
+    "LOW":      _GREEN,
+}
+
+def _tag(label: str, color: str) -> str:
+    """Coloured bold [LABEL] tag."""
+    return f"{color}{_B}[{label}]{_R}"
+
+def _divider(title: str = "", width: int = 65):
+    if title:
+        pad = width - len(title) - 4
+        print(f"\n{_CYAN}{'━'*2} {_B}{title}{_R}{_CYAN} {'━'*max(0,pad)}{_R}")
+    else:
+        print(f"{_GREY}{'─'*width}{_R}")
+
+
+def print_artefact_summary(
+    new_df, gone_df,
+    scores_df, cmd_df, malfind_df,
+    tagged_df, ioc_df,
+    net_new_df, net_flagged_df,
+):
+    """
+    Print a colour-coded artefact summary directly to the terminal.
+
+    Colour key:
+      RED    = CRITICAL  (RWX memory, known-malicious process name)
+      ORANGE = HIGH      (suspicious cmdline hit)
+      YELLOW = MEDIUM    (new unknown process, IOC hashes/paths)
+      CYAN   = NEW       (new process, not yet scored)
+      BLUE   = ATT&CK / network finding
+      GREY   = GONE      (process disappeared from baseline)
+      GREEN  = clean / nothing found in that section
+    """
+
+    print(f"\n{_CYAN}{'━'*65}{_R}")
+    print(f"  {_B}▶  ARTEFACT SUMMARY — Colour-Coded Findings{_R}")
+    print(f"{_CYAN}{'━'*65}{_R}")
+
+    # ── 1. New Processes ──────────────────────────────────────
+    _divider("NEW PROCESSES  (Attack Only — not in Baseline)")
+    if new_df.empty:
+        print(f"  {_GREEN}✓  No new processes detected{_R}")
+    else:
+        for _, row in new_df.iterrows():
+            pid   = row.get("PID", "?")
+            name  = str(row.get("ImageFileName", "?"))
+            ppid  = row.get("PPID", "?")
+            ctime = str(row.get("CreateTime", ""))[:19]
+
+            score = 0; risk = "LOW"; indicator = ""
+            if not scores_df.empty and pid in scores_df["PID"].values:
+                sr        = scores_df[scores_df["PID"] == pid].iloc[0]
+                score     = int(sr.get("RiskScore", 0))
+                risk      = str(sr.get("RiskLevel", "LOW"))
+                indicator = str(sr.get("Indicators", ""))
+
+            color = _SEV_COLOR.get(risk, _CYAN)
+            tag   = _tag(risk, color) if score > 0 else _tag("NEW", _CYAN)
+
+            print(f"  {tag}  {color}{_B}{name}{_R}  "
+                  f"{_DIM}PID={pid}  PPID={ppid}  {ctime}{_R}")
+            if indicator and indicator != "None":
+                print(f"         {_ORANGE}↳ {indicator}{_R}")
+
+    # ── 2. Gone Processes ─────────────────────────────────────
+    _divider("GONE PROCESSES  (Baseline Only — disappeared in Attack)")
+    if gone_df.empty:
+        print(f"  {_GREEN}✓  No processes disappeared{_R}")
+    else:
+        for _, row in gone_df.iterrows():
+            pid  = row.get("PID", "?")
+            name = str(row.get("ImageFileName", "?"))
+            print(f"  {_tag('GONE', _GREY)}  {_GREY}{name}  PID={pid}{_R}")
+
+    # ── 3. RWX Memory Regions (Malfind) ──────────────────────
+    _divider("RWX MEMORY REGIONS  (Malfind — EXECUTE protection)")
+    if malfind_df.empty:
+        print(f"  {_GREEN}✓  No RWX/EXECUTE regions found{_R}")
+    else:
+        for _, row in malfind_df.iterrows():
+            pid   = row.get("PID", "?")
+            name  = str(row.get("Process", row.get("ImageFileName", "?")))
+            prot  = str(row.get("Protection", "?"))
+            vaddr = str(row.get("VadTag", row.get("Address", "")))
+            print(f"  {_tag('RWX', _RED)}  {_RED}{_B}{name}{_R}  "
+                  f"{_DIM}PID={pid}  Protection={prot}  {vaddr}{_R}")
+
+    # ── 4. Suspicious Command Lines ───────────────────────────
+    _divider("SUSPICIOUS CMDLINE  (Pattern Matches)")
+    if cmd_df.empty:
+        print(f"  {_GREEN}✓  No suspicious command lines found{_R}")
+    else:
+        shown = set()
+        for _, row in cmd_df.iterrows():
+            pid  = row.get("PID", "?")
+            name = str(row.get("ImageFileName", row.get("Process", "?")))
+            args = str(row.get("Args", ""))[:110]
+            pat  = str(row.get("MatchedPattern", ""))
+            key  = (pid, pat)
+            if key in shown:
+                continue
+            shown.add(key)
+            print(f"  {_tag('CMDLINE', _ORANGE)}  {_ORANGE}{_B}{name}{_R}  "
+                  f"{_DIM}PID={pid}{_R}  {_YELLOW}pattern={pat}{_R}")
+            print(f"         {_DIM}↳ {args}{_R}")
+
+    # ── 5. ATT&CK Technique Hits ──────────────────────────────
+    _divider("MITRE ATT&CK  (Technique Hits)")
+    if tagged_df.empty:
+        print(f"  {_GREEN}✓  No ATT&CK techniques matched{_R}")
+    else:
+        seen_techs = set()
+        for _, row in tagged_df.iterrows():
+            tech = str(row.get("Technique", ""))
+            name = str(row.get("TechniqueName", ""))
+            tact = str(row.get("Tactic", ""))
+            kw   = str(row.get("MatchedKeyword", ""))
+            pid  = row.get("PID", "?")
+            key  = (tech, pid)
+            if key in seen_techs:
+                continue
+            seen_techs.add(key)
+            print(f"  {_tag(tech, _BLUE)}  {_BLUE}{_B}{name}{_R}  "
+                  f"{_DIM}Tactic={tact}  PID={pid}  keyword={kw}{_R}")
+
+    # ── 6. Network Artefacts ──────────────────────────────────
+    _divider("NETWORK  (New Connections + Flagged Ports)")
+    if net_new_df.empty and net_flagged_df.empty:
+        print(f"  {_GREEN}✓  No new network connections detected{_R}")
+    else:
+        if not net_flagged_df.empty:
+            for _, row in net_flagged_df.iterrows():
+                pid   = row.get("PID", "?")
+                owner = str(row.get("Owner", row.get("ImageFileName", "?")))
+                faddr = str(row.get("ForeignAddr", "?"))
+                fport = row.get("ForeignPort", row.get("SuspiciousPort", "?"))
+                mean  = str(row.get("PortMeaning", ""))
+                print(f"  {_tag('FLAGGED PORT', _RED)}  {_RED}{_B}{owner}{_R}  "
+                      f"{_DIM}PID={pid}{_R}  "
+                      f"{_ORANGE}{faddr}:{fport}{_R}  {_DIM}({mean}){_R}")
+        if not net_new_df.empty:
+            shown_net = 0
+            for _, row in net_new_df.iterrows():
+                if shown_net >= 8:
+                    print(f"         {_DIM}... and {len(net_new_df)-8} more new connections{_R}")
+                    break
+                pid   = row.get("PID", "?")
+                owner = str(row.get("Owner", "?"))
+                faddr = str(row.get("ForeignAddr", ""))
+                state = str(row.get("State", ""))
+                print(f"  {_tag('NEW CONN', _BLUE)}  {_BLUE}{owner}{_R}  "
+                      f"{_DIM}PID={pid}  {faddr}  {state}{_R}")
+                shown_net += 1
+
+    # ── 7. IOC Summary ────────────────────────────────────────
+    _divider("IOCs EXTRACTED  (IPs · Domains · Hashes · Paths)")
+    if ioc_df.empty:
+        print(f"  {_GREEN}✓  No IOCs extracted{_R}")
+    else:
+        type_order = ["IPv4", "Domain", "URL", "SHA256", "SHA1", "MD5", "FilePath"]
+        for ioc_type in type_order:
+            if "Type" not in ioc_df.columns:
+                continue
+            subset = ioc_df[ioc_df["Type"] == ioc_type]
+            if subset.empty:
+                continue
+            color  = _RED    if ioc_type in ("IPv4", "Domain", "URL") else _YELLOW
+            tag    = _tag(ioc_type, color)
+            values = subset["Value"].tolist()[:5]
+            for v in values:
+                count = 1
+                if "Count" in subset.columns:
+                    match = subset[subset["Value"] == v]["Count"]
+                    if not match.empty:
+                        count = int(match.iloc[0])
+                print(f"  {tag}  {color}{v}{_R}  {_DIM}(seen {count}x){_R}")
+            if len(subset) > 5:
+                print(f"         {_DIM}... and {len(subset)-5} more {ioc_type} IOCs{_R}")
+
+    # ── Colour legend ─────────────────────────────────────────
+    print(f"\n{_GREY}{'─'*65}{_R}")
+    print(f"  Colour key:  "
+          f"{_RED}{_B}RED{_R}=Critical  "
+          f"{_ORANGE}{_B}ORANGE{_R}=High/Suspicious  "
+          f"{_YELLOW}{_B}YELLOW{_R}=Medium  "
+          f"{_CYAN}{_B}CYAN{_R}=New  "
+          f"{_BLUE}{_B}BLUE{_R}=ATT&CK/Network  "
+          f"{_GREY}{_B}GREY{_R}=Gone")
+    print(f"{_GREY}{'─'*65}{_R}\n")
+
+
+# ============================================================
+# Charts (core set)
+# ============================================================
+
+def _watermark(ax, text="MFF v2 · Memory Forensics"):
+    ax.text(0.99, 0.01, text, transform=ax.transAxes,
+            fontsize=6.5, color=THEME["subtext"], alpha=0.4,
+            ha="right", va="bottom", style="italic")
+
+def _spine_clean(ax):
+    ax.spines[["top","right"]].set_visible(False)
+    ax.spines["left"].set_color(THEME["border"])
+    ax.spines["bottom"].set_color(THEME["border"])
+
+
+def chart_process_counts(base_df, attack_df, new_df, gone_df, out_dir):
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5.5),
+                             gridspec_kw={"width_ratios": [1.7, 1]})
+    fig.patch.set_facecolor(THEME["bg"])
+    fig.suptitle("PROCESS DELTA ANALYSIS", color=THEME["accent"],
+                 fontsize=12, fontweight="bold", x=0.5, y=1.02,
+                 fontfamily="monospace")
+
+    # Left — bar chart
+    ax = axes[0]
+    ax.set_facecolor(THEME["panel"])
+    labels = ["Baseline", "Attack\nCapture", "New\n(attack only)", "Gone\n(baseline only)"]
+    values = [len(base_df), len(attack_df), len(new_df), len(gone_df)]
+    colors = [THEME["safe"], THEME["accent"], THEME["warn"], THEME["info"]]
+    bars   = ax.bar(range(4), values, color=colors, width=0.52, zorder=3,
+                    edgecolor=THEME["bg"], linewidth=1.5)
+    for bar, v in zip(bars, values):
+        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.4,
+                str(v), ha="center", fontweight="bold",
+                color=THEME["text"], fontsize=12)
+    delta = len(attack_df) - len(base_df)
+    sign  = "+" if delta >= 0 else ""
+    dc    = THEME["warn"] if delta > 0 else THEME["info"]
+    ax.annotate(f"Net delta = {sign}{delta} processes",
+                xy=(0.5, 0.97), xycoords="axes fraction",
+                ha="center", va="top", fontsize=9, color=dc, style="italic")
+    ax.set_xticks(range(4)); ax.set_xticklabels(labels, fontsize=9)
+    ax.set_ylabel("Count", color=THEME["subtext"])
+    ax.set_title("Count Comparison", color=THEME["text"], fontsize=11, fontweight="bold")
+    ax.set_ylim(0, max(values) * 1.32 + 2)
+    ax.grid(axis="y", zorder=0, alpha=0.4, color=THEME["grid"])
+    _spine_clean(ax); _watermark(ax)
+
+    # Right — donut composition
+    ax2 = axes[1]
+    ax2.set_facecolor(THEME["panel"])
+    stable = max(0, len(attack_df) - len(new_df))
+    dv = [len(new_df), stable, len(gone_df)]
+    dl = ["New", "Stable", "Gone"]
+    dc2 = [THEME["warn"], THEME["safe"], THEME["info"]]
+    dv_f = [(v,l,c) for v,l,c in zip(dv,dl,dc2) if v > 0]
+    if dv_f:
+        vals_f, lbls_f, cols_f = zip(*dv_f)
+        wedges, texts, autos = ax2.pie(
+            vals_f, labels=lbls_f, colors=cols_f,
+            autopct="%1.0f%%", startangle=90, pctdistance=0.76,
+            wedgeprops={"width": 0.55, "edgecolor": THEME["bg"], "linewidth": 2},
+            textprops={"fontsize": 9, "color": THEME["text"]})
+        for t in autos:
+            t.set_color(THEME["bg"]); t.set_fontweight("bold"); t.set_fontsize(9)
+    ax2.set_title("Capture Composition", color=THEME["text"], fontsize=11, fontweight="bold")
+
+    plt.tight_layout()
+    _save_fig(fig, os.path.join(out_dir, "chart_process_counts.png"))
+
+
+def chart_risk_scores(scores_df, out_dir):
+    if scores_df.empty: return
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6.5),
+                                   gridspec_kw={"width_ratios": [2, 1]})
+    fig.patch.set_facecolor(THEME["bg"])
+    fig.suptitle("RISK SCORING OVERVIEW", color=THEME["accent"],
+                 fontsize=12, fontweight="bold", fontfamily="monospace")
+
+    # Left — horizontal bar by risk score
+    ax1.set_facecolor(THEME["panel"])
+    top = scores_df[scores_df["RiskScore"] > 0].head(12)
+    if top.empty: top = scores_df.head(12)
+    colors = []
+    for s in top["RiskScore"]:
+        if s >= 80:   colors.append(THEME["accent"])
+        elif s >= 50: colors.append(THEME["warn"])
+        elif s >= 20: colors.append(THEME["info"])
+        else:         colors.append(THEME["safe"])
+    labels = top["Process"].astype(str) + "  [PID " + top["PID"].astype(str) + "]"
+    bars   = ax1.barh(labels, top["RiskScore"], color=colors, zorder=3,
+                      edgecolor=THEME["bg"], linewidth=0.8, height=0.65)
+    for bar, s, row in zip(bars, top["RiskScore"], top.itertuples()):
+        if s > 0:
+            # Score label — outside the bar end, always readable
+            ax1.text(s + 1.5, bar.get_y() + bar.get_height()/2,
+                     f"{int(s)}", va="center", fontsize=9,
+                     color=THEME["text"], fontweight="bold")
+    ax1.axvline(80, color=THEME["accent"], ls="--", lw=1.2, alpha=0.7, label="Critical (80)")
+    ax1.axvline(50, color=THEME["warn"],   ls="--", lw=1.2, alpha=0.7, label="High (50)")
+    ax1.axvline(20, color=THEME["info"],   ls="--", lw=1.2, alpha=0.4, label="Medium (20)")
+    ax1.legend(fontsize=7.5, loc="lower right",
+               facecolor=THEME["grid"], edgecolor=THEME["border"],
+               labelcolor=THEME["text"])
+    ax1.set_xlim(0, 115)
+    ax1.invert_yaxis()
+    ax1.set_xlabel("Risk Score", color=THEME["subtext"])
+    ax1.set_title("Top Processes by Risk Score", color=THEME["text"],
+                  fontsize=11, fontweight="bold")
+    ax1.grid(axis="x", zorder=0, alpha=0.4, color=THEME["grid"])
+    _spine_clean(ax1); _watermark(ax1)
+
+    # Right — donut
+    ax2.set_facecolor(THEME["panel"])
+    lc  = {"CRITICAL": THEME["accent"], "HIGH": THEME["warn"],
+           "MEDIUM": THEME["info"], "LOW": THEME["safe"]}
+    order = ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
+    lcv   = scores_df["RiskLevel"].value_counts()
+    vals  = [lcv.get(k, 0) for k in order]
+    cols  = [lc[k] for k in order]
+    vf    = [(v,k,c) for v,k,c in zip(vals,order,cols) if v > 0]
+    if vf:
+        vv, kk, cc = zip(*vf)
+        wedges, texts, autos = ax2.pie(
+            vv, labels=kk, colors=cc,
+            autopct=lambda p: f"{p:.0f}%" if p > 2 else "",
+            startangle=140, pctdistance=0.78,
+            wedgeprops={"width": 0.55, "edgecolor": THEME["bg"], "linewidth": 2},
+            textprops={"fontsize": 9, "color": THEME["text"]})
+        for t in autos:
+            t.set_color(THEME["bg"]); t.set_fontweight("bold"); t.set_fontsize(8)
+        suspicious = sum(v for v,k,_ in zip(vv,kk,cc) if k != "LOW")
+        ax2.text(0, 0, f"{suspicious}\nsuspicious", ha="center", va="center",
+                 color=THEME["warn"], fontsize=9, fontweight="bold")
+    ax2.set_title("Risk Distribution", color=THEME["text"], fontsize=11, fontweight="bold")
+
+    fig.subplots_adjust(left=0.22, right=0.97, top=0.90, bottom=0.12, wspace=0.35)
+    _save_fig(fig, os.path.join(out_dir, "chart_risk_scores.png"))
+
+
+def chart_timeline(new_df, gone_df, out_dir):
+    frames = []
+    for df, label, color in [(new_df, "NEW", THEME["accent"]),
+                              (gone_df, "GONE", THEME["info"])]:
+        if df.empty: continue
+        tmp = df.copy(); tmp["_Label"] = label; tmp["_Color"] = color
+        frames.append(tmp)
+    if not frames: return
+    combined = pd.concat(frames, ignore_index=True)
+    if "CreateTime" not in combined.columns: return
+    combined["_Time"] = pd.to_datetime(combined["CreateTime"], errors="coerce", utc=True)
+    combined = combined.dropna(subset=["_Time"]).sort_values("_Time")
+    if combined.empty: return
+
+    fig, ax = plt.subplots(figsize=(15, max(5, len(combined["ImageFileName"].unique()) * 0.28 + 2)))
+    fig.patch.set_facecolor(THEME["bg"])
+    ax.set_facecolor(THEME["panel"])
+
+    # Draw vertical timeline spine
+    ax.axvline(combined["_Time"].min(), color=THEME["border"], lw=0.5, alpha=0.5)
+
+    for _, row in combined.iterrows():
+        is_new = row["_Label"] == "NEW"
+        ax.scatter(row["_Time"], row.get("ImageFileName", "?"),
+                   color=row["_Color"], s=90, zorder=5,
+                   marker="^" if is_new else "v",
+                   edgecolors=THEME["bg"], linewidths=0.8)
+        # Horizontal connector line
+        ax.plot([combined["_Time"].min(), row["_Time"]],
+                [row.get("ImageFileName","?"), row.get("ImageFileName","?")],
+                color=THEME["grid"], lw=0.4, zorder=2, alpha=0.5)
+
+    ax.legend(handles=[
+        mpatches.Patch(color=THEME["accent"], label="▲  NEW — first seen in attack capture"),
+        mpatches.Patch(color=THEME["info"],   label="▼  GONE — present in baseline, absent in attack"),
+    ], fontsize=9, facecolor=THEME["grid"], edgecolor=THEME["border"],
+       labelcolor=THEME["text"], loc="upper left")
+
+    ax.set_title("Process Timeline  —  Creation / Disappearance Events",
+                 color=THEME["text"], fontsize=12, fontweight="bold")
+    ax.set_xlabel("Timestamp (UTC)", color=THEME["subtext"])
+    ax.grid(axis="x", zorder=0, alpha=0.3, color=THEME["grid"])
+    _spine_clean(ax); _watermark(ax)
+    fig.autofmt_xdate(rotation=25)
+    plt.tight_layout()
+    _save_fig(fig, os.path.join(out_dir, "chart_timeline.png"))
+
+
+def chart_cmdline_patterns(cmd_df, out_dir):
+    if cmd_df.empty or "MatchedPattern" not in cmd_df.columns: return
+    counts = cmd_df["MatchedPattern"].value_counts()
+    height = max(4, len(counts) * 0.52 + 1.5)
+    fig, ax = plt.subplots(figsize=(11, height))
+    fig.patch.set_facecolor(THEME["bg"])
+    ax.set_facecolor(THEME["panel"])
+
+    # Colour bars by severity of pattern
+    HIGH_RISK = {"mimikatz","procdump","lsass","meterpreter","invoke-","iex ","base64",
+                 "CreateRemoteThread","VirtualAllocEx","WriteProcessMemory"}
+    bar_colors = [THEME["accent"] if p in HIGH_RISK else THEME["warn"] for p in counts.index]
+
+    bars = ax.barh(counts.index, counts.values, color=bar_colors,
+                   edgecolor=THEME["bg"], zorder=3, height=0.65)
+    for bar, v in zip(bars, counts.values):
+        ax.text(bar.get_width() + 0.05, bar.get_y() + bar.get_height()/2,
+                str(int(v)), va="center", ha="left",
+                color=THEME["text"], fontsize=9, fontweight="bold")
+
+    max_val = max(counts.values)
+    ax.set_xlim(0, max_val + max(1, max_val * 0.22))
+    ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+    ax.set_xlabel("Match Count  (deduplicated per PID)", color=THEME["subtext"])
+    ax.set_title("Suspicious Cmdline Pattern Hits",
+                 color=THEME["text"], fontweight="bold", fontsize=12)
+    # Legend
+    ax.legend(handles=[
+        mpatches.Patch(color=THEME["accent"], label="High-risk pattern"),
+        mpatches.Patch(color=THEME["warn"],   label="Suspicious pattern"),
+    ], fontsize=8, facecolor=THEME["grid"], edgecolor=THEME["border"],
+       labelcolor=THEME["text"])
+    ax.invert_yaxis()
+    ax.grid(axis="x", zorder=0, alpha=0.4, color=THEME["grid"])
+    _spine_clean(ax); _watermark(ax)
+    plt.tight_layout()
+    _save_fig(fig, os.path.join(out_dir, "chart_cmdline_patterns.png"))
+
+
+def chart_malfind(mal_df, out_dir):
+    if mal_df.empty or "Protection" not in mal_df.columns: return
+    counts = mal_df["Protection"].value_counts().head(10)
+
+    fig, axes = plt.subplots(1, 2, figsize=(13, 5),
+                             gridspec_kw={"width_ratios": [1.5, 1]})
+    fig.patch.set_facecolor(THEME["bg"])
+    fig.suptitle("MALFIND — SUSPICIOUS MEMORY REGIONS", color=THEME["accent"],
+                 fontsize=12, fontweight="bold", fontfamily="monospace")
+
+    # Left — protection type bars
+    ax = axes[0]
+    ax.set_facecolor(THEME["panel"])
+    colors = [THEME["accent"] if "EXECUTE" in str(p) else THEME["warn"] for p in counts.index]
+    bars = ax.bar(range(len(counts)), counts.values, color=colors, zorder=3,
+                  edgecolor=THEME["bg"], linewidth=1.2, width=0.6)
+    for bar, v in zip(bars, counts.values):
+        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.3,
+                str(v), ha="center", fontsize=9, fontweight="bold", color=THEME["text"])
+    ax.set_xticks(range(len(counts)))
+    ax.set_xticklabels(counts.index, rotation=28, ha="right", fontsize=8)
+    ax.set_ylabel("Region Count", color=THEME["subtext"])
+    ax.set_title("Memory Protection Types", color=THEME["text"],
+                 fontsize=11, fontweight="bold")
+    ax.grid(axis="y", zorder=0, alpha=0.4, color=THEME["grid"])
+    _spine_clean(ax); _watermark(ax)
+
+    # Right — process breakdown (which processes have RWX)
+    ax2 = axes[1]
+    ax2.set_facecolor(THEME["panel"])
+    name_col = "Process" if "Process" in mal_df.columns else "ImageFileName"
+    if name_col in mal_df.columns:
+        proc_counts = mal_df[name_col].value_counts().head(8)
+        ax2.barh(proc_counts.index, proc_counts.values,
+                 color=THEME["accent"], edgecolor=THEME["bg"], zorder=3, height=0.6)
+        for i, v in enumerate(proc_counts.values):
+            ax2.text(v + 0.05, i, str(v), va="center", fontsize=8.5,
+                     color=THEME["text"], fontweight="bold")
+        ax2.invert_yaxis()
+        ax2.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+        ax2.set_xlabel("RWX Region Count", color=THEME["subtext"])
+        ax2.set_title("Processes with RWX Regions", color=THEME["text"],
+                      fontsize=11, fontweight="bold")
+        ax2.grid(axis="x", zorder=0, alpha=0.4, color=THEME["grid"])
+        _spine_clean(ax2); _watermark(ax2)
+
+    plt.tight_layout()
+    _save_fig(fig, os.path.join(out_dir, "chart_malfind_protection.png"))
+
+
+def chart_dashboard(base_df, attack_df, new_df, gone_df,
+                    scores_df, cmd_df, mal_df, out_dir):
+    fig = plt.figure(figsize=(20, 12))
+    fig.patch.set_facecolor(THEME["bg"])
+    fig.suptitle("MFF v2 — MEMORY FORENSICS DASHBOARD",
+                 color=THEME["accent"], fontsize=16, fontweight="bold",
+                 fontfamily="monospace", y=0.99)
+    gs = GridSpec(3, 4, figure=fig, hspace=0.55, wspace=0.38,
+                  top=0.94, bottom=0.06, left=0.06, right=0.97)
+
+    # ── Row 0 col 0: Process counts bar
+    ax_a = fig.add_subplot(gs[0, 0])
+    ax_a.set_facecolor(THEME["panel"])
+    vals  = [len(base_df), len(attack_df), len(new_df), len(gone_df)]
+    cols  = [THEME["safe"], THEME["accent"], THEME["warn"], THEME["info"]]
+    bars  = ax_a.bar(["Base","Attack","New","Gone"], vals, color=cols, zorder=3,
+                     width=0.55, edgecolor=THEME["bg"])
+    for b, v in zip(bars, vals):
+        ax_a.text(b.get_x()+b.get_width()/2, b.get_height()+0.3,
+                  str(v), ha="center", fontsize=9, fontweight="bold",
+                  color=THEME["text"])
+    ax_a.set_title("Process Counts", fontsize=10, fontweight="bold", color=THEME["text"])
+    ax_a.set_ylim(0, max(vals)*1.35+1)
+    ax_a.grid(axis="y", zorder=0, alpha=0.4)
+    _spine_clean(ax_a)
+
+    # ── Row 0 col 1: Risk donut
+    ax_b = fig.add_subplot(gs[0, 1])
+    ax_b.set_facecolor(THEME["panel"])
+    if not scores_df.empty and "RiskLevel" in scores_df.columns:
+        lc  = {"CRITICAL":THEME["accent"],"HIGH":THEME["warn"],
+               "MEDIUM":THEME["info"],"LOW":THEME["safe"]}
+        order = ["CRITICAL","HIGH","MEDIUM","LOW"]
+        lcv   = scores_df["RiskLevel"].value_counts()
+        vf    = [(lcv.get(k,0),k,lc[k]) for k in order if lcv.get(k,0) > 0]
+        if vf:
+            vv, kk, cc = zip(*vf)
+            wedges, texts, autos = ax_b.pie(
+                vv, labels=kk, colors=cc,
+                autopct=lambda p: f"{p:.0f}%" if p > 3 else "",
+                startangle=140, pctdistance=0.76,
+                wedgeprops={"width":0.5,"edgecolor":THEME["bg"],"linewidth":1.5},
+                textprops={"fontsize":8,"color":THEME["text"]})
+            for t in autos: t.set_color(THEME["bg"]); t.set_fontweight("bold")
+    ax_b.set_title("Risk Distribution", fontsize=10, fontweight="bold", color=THEME["text"])
+
+    # ── Row 0 col 2-3: Cmdline hits
+    ax_c = fig.add_subplot(gs[0, 2:4])
+    ax_c.set_facecolor(THEME["panel"])
+    if not cmd_df.empty and "MatchedPattern" in cmd_df.columns:
+        top_p  = cmd_df["MatchedPattern"].value_counts().head(10)
+        HIGH_R = {"mimikatz","procdump","lsass","meterpreter","invoke-","iex ","base64",
+                  "CreateRemoteThread","VirtualAllocEx"}
+        pc     = [THEME["accent"] if p in HIGH_R else THEME["warn"] for p in top_p.index]
+        bars_c = ax_c.barh(top_p.index, top_p.values, color=pc, zorder=3,
+                           edgecolor=THEME["bg"], height=0.6)
+        for bar, v in zip(bars_c, top_p.values):
+            ax_c.text(bar.get_width()+0.03, bar.get_y()+bar.get_height()/2,
+                      str(int(v)), va="center", fontsize=8, color=THEME["text"])
+        ax_c.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+        ax_c.invert_yaxis()
+        ax_c.grid(axis="x", zorder=0, alpha=0.4)
+        _spine_clean(ax_c)
+    ax_c.set_title("Suspicious Cmdline Pattern Hits", fontsize=10, fontweight="bold",
+                   color=THEME["text"])
+
+    # ── Row 1 col 0-2: Top risk scores horizontal bar
+    ax_d = fig.add_subplot(gs[1, 0:3])
+    ax_d.set_facecolor(THEME["panel"])
+    if not scores_df.empty:
+        top   = scores_df[scores_df["RiskScore"] > 0].head(10)
+        if top.empty: top = scores_df.head(8)
+        c_map = [THEME["accent"] if s>=80 else THEME["warn"] if s>=50
+                 else THEME["info"] if s>=20 else THEME["safe"] for s in top["RiskScore"]]
+        lbls  = top["Process"].astype(str) + "  [PID " + top["PID"].astype(str) + "]"
+        bars_d = ax_d.barh(lbls, top["RiskScore"], color=c_map, zorder=3,
+                           edgecolor=THEME["bg"], height=0.65)
+        for bar, s in zip(bars_d, top["RiskScore"]):
+            if s > 0:
+                ax_d.text(s+0.4, bar.get_y()+bar.get_height()/2,
+                          str(int(s)), va="center", fontsize=8.5,
+                          color=THEME["text"], fontweight="bold")
+        ax_d.axvline(80, color=THEME["accent"], ls="--", lw=1, alpha=0.6, label="Critical")
+        ax_d.axvline(50, color=THEME["warn"],   ls="--", lw=1, alpha=0.6, label="High")
+        ax_d.axvline(20, color=THEME["info"],   ls="--", lw=1, alpha=0.4, label="Medium")
+        ax_d.legend(fontsize=7.5, facecolor=THEME["grid"],
+                    edgecolor=THEME["border"], labelcolor=THEME["text"])
+        ax_d.set_xlim(0, 115)
+        ax_d.invert_yaxis()
+        ax_d.grid(axis="x", zorder=0, alpha=0.4)
+        _spine_clean(ax_d)
+    ax_d.set_title("Top Risk Scores  (scored new processes)", fontsize=10,
+                   fontweight="bold", color=THEME["text"])
+
+    # ── Row 1 col 3: Malfind pie
+    ax_e = fig.add_subplot(gs[1, 3])
+    ax_e.set_facecolor(THEME["panel"])
+    if not mal_df.empty and "Protection" in mal_df.columns:
+        mp    = mal_df["Protection"].value_counts().head(5)
+        ecols = [THEME["accent"] if "EXECUTE" in str(p) else THEME["warn"] for p in mp.index]
+        wedges, texts, autos = ax_e.pie(
+            mp.values, labels=[p[:16] for p in mp.index], colors=ecols,
+            autopct="%1.0f%%", startangle=90, pctdistance=0.78,
+            wedgeprops={"edgecolor":THEME["bg"],"linewidth":1.5},
+            textprops={"fontsize":7,"color":THEME["text"]})
+        for t in autos: t.set_color(THEME["bg"]); t.set_fontweight("bold")
+        ax_e.text(0, 0, f"{len(mal_df)}\nRWX", ha="center", va="center",
+                  color=THEME["accent"], fontsize=9, fontweight="bold")
+    ax_e.set_title("RWX Memory Regions", fontsize=10, fontweight="bold",
+                   color=THEME["text"])
+
+    # ── Row 2 col 0-3: Timeline strip
+    ax_f = fig.add_subplot(gs[2, 0:4])
+    ax_f.set_facecolor(THEME["panel"])
+    frames = []
+    for df, label, color in [(new_df,"NEW",THEME["accent"]),
+                              (gone_df,"GONE",THEME["info"])]:
+        if df.empty: continue
+        tmp = df.copy(); tmp["_Label"] = label; tmp["_Color"] = color
+        frames.append(tmp)
+    if frames:
+        combined = pd.concat(frames, ignore_index=True)
+        if "CreateTime" in combined.columns:
+            combined["_Time"] = pd.to_datetime(combined["CreateTime"], errors="coerce", utc=True)
+            combined = combined.dropna(subset=["_Time"])
+            if not combined.empty:
+                for _, row in combined.iterrows():
+                    ax_f.scatter(row["_Time"], row.get("ImageFileName","?"),
+                                 color=row["_Color"], s=55, zorder=5,
+                                 marker="^" if row["_Label"]=="NEW" else "v",
+                                 edgecolors=THEME["bg"], linewidths=0.6)
+                ax_f.legend(handles=[
+                    mpatches.Patch(color=THEME["accent"], label="NEW (attack)"),
+                    mpatches.Patch(color=THEME["info"],   label="GONE (baseline)"),
+                ], fontsize=8, facecolor=THEME["grid"],
+                   edgecolor=THEME["border"], labelcolor=THEME["text"])
+                fig.autofmt_xdate(rotation=20)
+    ax_f.grid(axis="x", zorder=0, alpha=0.3)
+    ax_f.set_title("Process Creation / Disappearance Timeline",
+                   fontsize=10, fontweight="bold", color=THEME["text"])
+    _spine_clean(ax_f)
+
+    _save_fig(fig, os.path.join(out_dir, "dashboard.png"))
+
+
+# ============================================================
+# MAIN
+# ============================================================
+
+def main():
+    parser = argparse.ArgumentParser(description="MFF v2 — Memory Forensics Comparison Engine")
+    parser.add_argument("--baseline",    required=True, help="Path to baseline case folder")
+    parser.add_argument("--attack",      required=True, help="Path to attack case folder")
+    parser.add_argument("--out",         required=True, help="Output directory")
+    parser.add_argument("--make-html",   action="store_true", help="Generate interactive HTML report")
+    parser.add_argument("--make-pdf",    action="store_true", help="Generate PDF report")
+    parser.add_argument("--webhook",     default=None,   help="Slack or generic webhook URL")
+    parser.add_argument("--webhook-mode",default="slack",choices=["slack","generic"])
+    parser.add_argument("--case-id",     default=None,   help="Case identifier (default: auto)")
+    parser.add_argument("--no-csv",      action="store_true", help="Skip CSV output")
+    args = parser.parse_args()
+
+    ensure_dir(args.out)
+
+    case_id = args.case_id or (
+        f"{os.path.basename(args.baseline)}_vs_{os.path.basename(args.attack)}")
+
+    print(f"\n{'='*65}")
+    print(f"  MFF v2 — Memory Forensics Framework")
+    print(f"  Case    : {case_id}")
+    print(f"  Baseline: {args.baseline}")
+    print(f"  Attack  : {args.attack}")
+    print(f"  Output  : {args.out}")
+    print(f"  Time    : {now_utc()}")
+    print(f"{'='*65}\n")
+
+    # ── Load data
+    print("[1/7] Loading case data...")
+    base   = load_case(args.baseline)
+    attack = load_case(args.attack)
+
+    # ── Guard: if attack case has no data at all, exit cleanly
+    all_empty = all(df.empty for df in attack.values())
+    if all_empty:
+        print(f"\n[!] SKIPPED — No CSV exports found in attack case: {args.attack}")
+        print(f"    Expected: {args.attack}/exports/csv/windows.*.csv")
+        print(f"    Run vol3 runner first to generate exports.\n")
+        sys.exit(2)
+
+    # ── Core analysis
+    print("[2/7] Running core analysis...")
+    new_df,  gone_df  = process_diff(base["pslist"], attack["pslist"])
+    cmd_df            = cmdline_findings(attack["cmdline"])
+    malfind_df        = malfind_analysis(attack["malfind"])
+    timeline_df       = timeline_correlation(attack["pslist"])
+    scores_df         = scoring_engine(new_df, cmd_df, malfind_df)
+
+    # ── MITRE ATT&CK tagging
+    print("[3/7] MITRE ATT&CK tagging...")
+    tagged_df  = mitre_tagger.tag_all(
+        attack["pslist"], attack["cmdline"],
+        attack["malfind"], attack["netscan"])
+    tactic_sum = mitre_tagger.summary_by_tactic(tagged_df)
+
+    # ── Network diff + IOC extraction
+    print("[4/7] Network diff + IOC extraction...")
+    net_new_df, net_gone_df, net_flagged_df = network_ioc.network_diff(
+        base["netscan"], attack["netscan"])
+    ioc_df = network_ioc.extract_iocs(
+        attack["pslist"], attack["cmdline"],
+        attack["malfind"], attack["netscan"])
+
+    # ── Colour-coded artefact summary printed to terminal
+    print_artefact_summary(
+        new_df        = new_df,
+        gone_df       = gone_df,
+        scores_df     = scores_df,
+        cmd_df        = cmd_df,
+        malfind_df    = malfind_df,
+        tagged_df     = tagged_df,
+        ioc_df        = ioc_df,
+        net_new_df    = net_new_df,
+        net_flagged_df= net_flagged_df,
+    )
+
+    # ── JSON summary (needed for reports)
+    json_summary = export_alert.build_json_summary(
+        case_id       = case_id,
+        baseline_path = args.baseline,
+        attack_path   = args.attack,
+        new_df        = new_df,
+        gone_df       = gone_df,
+        scores_df     = scores_df,
+        tagged_df     = tagged_df,
+        ioc_df        = ioc_df,
+        net_new_df    = net_new_df,
+        net_flagged_df= net_flagged_df,
+    )
+
+    # ── Charts
+    print("[5/7] Generating charts...")
+    chart_process_counts(base["pslist"], attack["pslist"], new_df, gone_df, args.out)
+    chart_risk_scores(scores_df, args.out)
+    chart_timeline(new_df, gone_df, args.out)
+    chart_cmdline_patterns(cmd_df, args.out)
+    chart_malfind(malfind_df, args.out)
+    chart_dashboard(base["pslist"], attack["pslist"], new_df, gone_df,
+                    scores_df, cmd_df, malfind_df, args.out)
+    process_tree.render_process_tree(attack["pslist"], new_df, args.out)
+    process_tree.render_attack_heatmap(tagged_df, args.out)
+
+    # ── CSV export
+    if not args.no_csv:
+        print("[6/7] Writing CSV exports...")
+        new_df.to_csv(os.path.join(args.out, "process_new.csv"),    index=False)
+        gone_df.to_csv(os.path.join(args.out, "process_gone.csv"),  index=False)
+        cmd_df.to_csv(os.path.join(args.out, "cmdline_findings.csv"),index=False)
+        malfind_df.to_csv(os.path.join(args.out, "malfind.csv"),    index=False)
+        timeline_df.to_csv(os.path.join(args.out, "timeline.csv"),  index=False)
+        scores_df.to_csv(os.path.join(args.out, "scores.csv"),      index=False)
+        tagged_df.to_csv(os.path.join(args.out, "attack_tags.csv"), index=False)
+        tactic_sum.to_csv(os.path.join(args.out, "tactic_summary.csv"), index=False)
+        ioc_df.to_csv(os.path.join(args.out, "iocs.csv"),           index=False)
+        net_new_df.to_csv(os.path.join(args.out, "net_new.csv"),    index=False)
+        net_flagged_df.to_csv(os.path.join(args.out, "net_flagged.csv"), index=False)
+        export_alert.write_json_summary(json_summary, args.out)
+
+    # ── Reports
+    print("[7/7] Generating reports...")
+    if args.make_html:
+        report_generator.generate_html_report(
+            out_dir    = args.out,
+            case_id    = case_id,
+            new_df     = new_df,
+            gone_df    = gone_df,
+            scores_df  = scores_df,
+            cmd_df     = cmd_df,
+            malfind_df = malfind_df,
+            tagged_df  = tagged_df,
+            ioc_df     = ioc_df,
+            net_new_df = net_new_df,
+            net_flagged_df = net_flagged_df,
+            summary    = json_summary,
+        )
+
+    if args.make_pdf:
+        report_generator.generate_pdf_report(
+            out_dir        = args.out,
+            case_id        = case_id,
+            summary        = json_summary,
+            scores_df      = scores_df,
+            new_df         = new_df,
+            gone_df        = gone_df,
+            cmd_df         = cmd_df,
+            malfind_df     = malfind_df,
+            tagged_df      = tagged_df,
+            ioc_df         = ioc_df,
+            net_flagged_df = net_flagged_df,
+        )
+
+    # ── Webhook alert
+    if args.webhook:
+        export_alert.send_webhook(args.webhook, json_summary, mode=args.webhook_mode)
+
+    # ── Final summary
+    sev = json_summary["severity"]["overall"]
+    print(f"\n{'='*65}")
+    print(f"  ✓  Analysis complete — Severity: {sev}")
+    print(f"  New processes  : {len(new_df)}")
+    print(f"  Gone processes : {len(gone_df)}")
+    print(f"  ATT&CK techniques: {json_summary['statistics']['attack_techniques']}")
+    print(f"  IOCs extracted : {len(ioc_df)}")
+    print(f"  Output dir     : {args.out}")
+    print(f"{'='*65}\n")
+
+
+if __name__ == "__main__":
+    main()

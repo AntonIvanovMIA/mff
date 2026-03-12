@@ -1,0 +1,22 @@
+
+{"Value": "0xf80032c00000", "Variable": "Kernel Base", "__children": []}
+{"Value": "0x1aa000", "Variable": "DTB", "__children": []}
+{"Value": "file:///home/anton/volatility3/volatility3/symbols/windows/ntkrnlmp.pdb/0CB76B942C9D3749D72AEE4731E11EC3-1.json.xz", "Variable": "Symbols", "__children": []}
+{"Value": "True", "Variable": "Is64Bit", "__children": []}
+{"Value": "False", "Variable": "IsPAE", "__children": []}
+{"Value": "0 WindowsIntel32e", "Variable": "layer_name", "__children": []}
+{"Value": "1 Elf64Layer", "Variable": "memory_layer", "__children": []}
+{"Value": "2 FileLayer", "Variable": "base_layer", "__children": []}
+{"Value": "0xf8003380f428", "Variable": "KdVersionBlock", "__children": []}
+{"Value": "15.19041", "Variable": "Major/Minor", "__children": []}
+{"Value": "34404", "Variable": "MachineType", "__children": []}
+{"Value": "2", "Variable": "KeNumberProcessors", "__children": []}
+{"Value": "2026-02-09 22:06:37+00:00", "Variable": "SystemTime", "__children": []}
+{"Value": "C:\\Windows", "Variable": "NtSystemRoot", "__children": []}
+{"Value": "NtProductWinNt", "Variable": "NtProductType", "__children": []}
+{"Value": "10", "Variable": "NtMajorVersion", "__children": []}
+{"Value": "0", "Variable": "NtMinorVersion", "__children": []}
+{"Value": "10", "Variable": "PE MajorOperatingSystemVersion", "__children": []}
+{"Value": "0", "Variable": "PE MinorOperatingSystemVersion", "__children": []}
+{"Value": "34404", "Variable": "PE Machine", "__children": []}
+{"Value": "Fri Jan  2 10:42:24 2043", "Variable": "PE TimeDateStamp", "__children": []}

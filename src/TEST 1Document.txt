@@ -1,0 +1,22 @@
+Your script was good — clean, well-structured, solid foundation. Here's what the upgraded version adds and fixes:
+
+Process Diff — now bidirectional
+The old script only found new processes. Now it returns both:
+
+process_new.csv — PIDs present in attack but NOT in baseline ← the attacker's footprint
+process_gone.csv — PIDs that vanished vs baseline ← killed defenders, cleared traces
+
+
+6 Automatic Charts (matplotlib, dark forensics theme)
+ChartWhat it showschart_process_counts.pngBaseline vs Attack vs New vs Gone countschart_risk_scores.pngTop processes by score + risk-level piechart_timeline.pngNew/Gone processes plotted on a time axischart_cmdline_patterns.pngWhich suspicious patterns hit mostchart_malfind_protection.pngMemory protection type breakdowndashboard.pngAll 5 panels in one summary image
+
+Expanded suspicious pattern list — added mimikatz, lsass, mshta, certutil, bitsadmin, whoami, and more LOLBIN patterns, plus each hit is now tagged with MatchedPattern column so you see which rule triggered.
+Risk labels — scores now map to LOW / MEDIUM / HIGH / CRITICAL as a column.
+HTML report — embeds all charts inline, summary stat cards at the top, dark theme matching the charts.
+
+Run it exactly the same way, just add --make-html:
+bashpython /MFF/src/comparison_engine.py \
+  --baseline /MFF/cases/case01_baseline \
+  --attack   /MFF/cases/case03_t1059_attack \
+  --out      /MFF/analysis/comparison/case01_vs_case03 \
+  --make-html

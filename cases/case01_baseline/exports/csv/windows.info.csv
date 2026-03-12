@@ -1,0 +1,23 @@
+TreeDepth,Variable,Value
+0,Kernel Base,0xf80032c00000
+0,DTB,0x1aa000
+0,Symbols,file:///home/anton/volatility3/volatility3/symbols/windows/ntkrnlmp.pdb/0CB76B942C9D3749D72AEE4731E11EC3-1.json.xz
+0,Is64Bit,True
+0,IsPAE,False
+0,layer_name,0 WindowsIntel32e
+0,memory_layer,1 Elf64Layer
+0,base_layer,2 FileLayer
+0,KdVersionBlock,0xf8003380f428
+0,Major/Minor,15.19041
+0,MachineType,34404
+0,KeNumberProcessors,2
+0,SystemTime,2026-02-09 22:06:37+00:00
+0,NtSystemRoot,C:\\Windows
+0,NtProductType,NtProductWinNt
+0,NtMajorVersion,10
+0,NtMinorVersion,0
+0,PE MajorOperatingSystemVersion,10
+0,PE MinorOperatingSystemVersion,0
+0,PE Machine,34404
+0,PE TimeDateStamp,Fri Jan  2 10:42:24 2043
+

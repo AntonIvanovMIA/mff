@@ -1,0 +1,235 @@
+#!/usr/bin/env python3
+
+import os
+import argparse
+import pandas as pd
+import numpy as np
+from datetime import datetime, UTC
+
+# ------------------------------------------------------------
+# Utility Functions
+# ------------------------------------------------------------
+
+def now_utc():
+    return datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
+
+def safe_read_csv(path):
+    if not os.path.exists(path):
+        print(f"[!] Missing file: {path}")
+        return pd.DataFrame()
+    return pd.read_csv(path)
+
+def ensure_dir(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+# ------------------------------------------------------------
+# Load Case Data
+# ------------------------------------------------------------
+
+def load_case(case_path):
+    exports = os.path.join(case_path, "exports", "csv")
+
+    data = {
+        "pslist": safe_read_csv(os.path.join(exports, "windows.pslist.csv")),
+        "cmdline": safe_read_csv(os.path.join(exports, "windows.cmdline.csv")),
+        "malfind": safe_read_csv(os.path.join(exports, "windows.malfind.csv")),
+        "netscan": safe_read_csv(os.path.join(exports, "windows.netscan.csv"))
+    }
+
+    return data
+
+# ------------------------------------------------------------
+# Process Differences
+# ------------------------------------------------------------
+
+def process_diff(base_df, attack_df):
+
+    if base_df.empty or attack_df.empty:
+        return pd.DataFrame()
+
+    new_processes = attack_df[~attack_df["PID"].isin(base_df["PID"])]
+
+    return new_processes
+
+# ------------------------------------------------------------
+# Command Line Suspicious Detection
+# ------------------------------------------------------------
+
+def cmdline_findings(df):
+
+    if df.empty:
+        return pd.DataFrame()
+
+    suspicious_patterns = [
+        "AtomicRedTeam",
+        "RWXinjection",
+        "CreateRemoteThread",
+        "VirtualAllocEx",
+        "WriteProcessMemory",
+        "powershell"
+    ]
+
+    findings = []
+
+    for pat in suspicious_patterns:
+        mask = df["Args"].astype(str).str.contains(pat, case=False, na=False)
+        matches = df[mask]
+        if not matches.empty:
+            findings.append(matches)
+
+    if findings:
+        return pd.concat(findings).drop_duplicates()
+    else:
+        return pd.DataFrame()
+
+# ------------------------------------------------------------
+# Malfind Analysis
+# ------------------------------------------------------------
+
+def malfind_analysis(df):
+
+    if df.empty:
+        return pd.DataFrame()
+
+    suspicious = df[df["Protection"].astype(str).str.contains("EXECUTE", na=False)]
+
+    return suspicious
+
+# ------------------------------------------------------------
+# Timeline Correlation
+# ------------------------------------------------------------
+
+def timeline_correlation(ps_df):
+
+    if ps_df.empty:
+        return pd.DataFrame()
+
+    df = ps_df.copy()
+
+    if "CreateTime" in df.columns:
+        df["CreateTime_dt"] = pd.to_datetime(df["CreateTime"], errors="coerce", utc=True)
+
+    if "ExitTime" in df.columns:
+        df["ExitTime_dt"] = pd.to_datetime(df["ExitTime"], errors="coerce", utc=True)
+
+    if "CreateTime_dt" in df.columns:
+        df["CreateTime"] = df["CreateTime_dt"].apply(
+            lambda x: x.strftime("%Y-%m-%d %H:%M:%S UTC") if pd.notna(x) else ""
+        )
+
+    if "ExitTime_dt" in df.columns:
+        df["ExitTime"] = df["ExitTime_dt"].apply(
+            lambda x: x.strftime("%Y-%m-%d %H:%M:%S UTC") if pd.notna(x) else ""
+        )
+
+    df = df.sort_values(by="CreateTime_dt", na_position="last")
+
+    return df
+
+# ------------------------------------------------------------
+# Risk Scoring Engine
+# ------------------------------------------------------------
+
+def scoring_engine(process_df, cmd_df, mal_df):
+
+    scores = []
+
+    for _, row in process_df.iterrows():
+
+        pid = row.get("PID")
+        name = row.get("ImageFileName", "Unknown")
+
+        score = 0
+        reasons = []
+
+        if not cmd_df.empty and pid in cmd_df["PID"].values:
+            score += 40
+            reasons.append("Suspicious command line")
+
+        if not mal_df.empty and pid in mal_df["PID"].values:
+            score += 60
+            reasons.append("RWX memory region detected")
+
+        if "RWX" in name or "injection" in name.lower():
+            score += 50
+            reasons.append("Injection-related process name")
+
+        scores.append({
+            "PID": pid,
+            "Process": name,
+            "RiskScore": score,
+            "Indicators": "; ".join(reasons)
+        })
+
+    return pd.DataFrame(scores).sort_values(by="RiskScore", ascending=False)
+
+# ------------------------------------------------------------
+# HTML Report
+# ------------------------------------------------------------
+
+def generate_html(out_path, process_diff, cmd_findings, malfind, scores):
+
+    html_path = os.path.join(out_path, "comparison_report.html")
+
+    with open(html_path, "w") as f:
+
+        f.write("<html><head><title>Comparison Report</title></head><body>")
+        f.write(f"<h1>Memory Comparison Report</h1>")
+        f.write(f"<p>Generated: {now_utc()}</p>")
+
+        f.write("<h2>New Processes (Attack vs Baseline)</h2>")
+        f.write(process_diff.to_html(index=False))
+
+        f.write("<h2>Suspicious Command Lines</h2>")
+        f.write(cmd_findings.to_html(index=False))
+
+        f.write("<h2>RWX Memory Findings</h2>")
+        f.write(malfind.to_html(index=False))
+
+        f.write("<h2>Risk Scores</h2>")
+        f.write(scores.to_html(index=False))
+
+        f.write("</body></html>")
+
+    print(f"[+] HTML report generated: {html_path}")
+
+# ------------------------------------------------------------
+# MAIN
+# ------------------------------------------------------------
+
+def main():
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--baseline", required=True)
+    parser.add_argument("--attack", required=True)
+    parser.add_argument("--out", required=True)
+    parser.add_argument("--make-html", action="store_true")
+
+    args = parser.parse_args()
+
+    ensure_dir(args.out)
+
+    base = load_case(args.baseline)
+    attack = load_case(args.attack)
+
+    process_diff_df = process_diff(base["pslist"], attack["pslist"])
+    cmd_findings_df = cmdline_findings(attack["cmdline"])
+    malfind_df = malfind_analysis(attack["malfind"])
+    timeline_df = timeline_correlation(attack["pslist"])
+    scores_df = scoring_engine(process_diff_df, cmd_findings_df, malfind_df)
+
+    process_diff_df.to_csv(os.path.join(args.out, "process_diff.csv"), index=False)
+    cmd_findings_df.to_csv(os.path.join(args.out, "cmdline_diff.csv"), index=False)
+    malfind_df.to_csv(os.path.join(args.out, "malfind_diff.csv"), index=False)
+    timeline_df.to_csv(os.path.join(args.out, "timeline.csv"), index=False)
+    scores_df.to_csv(os.path.join(args.out, "scores.csv"), index=False)
+
+    if args.make_html:
+        generate_html(args.out, process_diff_df, cmd_findings_df, malfind_df, scores_df)
+
+    print("[+] Comparison completed successfully")
+
+
+if __name__ == "__main__":
+    main()

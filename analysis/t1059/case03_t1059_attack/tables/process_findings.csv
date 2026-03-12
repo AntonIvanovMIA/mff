@@ -1,0 +1,5 @@
+PID,PPID,ImageFileName,ArtifactType,WhySuspicious
+4200,7888,powershell.exe,Process Creation,powershell.exe is associated with command/script execution (T1059)
+7888,6016,powershell.exe,Process Creation,powershell.exe is associated with command/script execution (T1059)
+9608,7888,powershell.exe,Process Creation,powershell.exe is associated with command/script execution (T1059)
+9864,7888,powershell.exe,Process Creation,powershell.exe is associated with command/script execution (T1059)
