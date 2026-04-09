@@ -1,6 +1,6 @@
 {
   "schema_version": "mff-v2.0",
-  "generated_at": "2026-04-09 14:59:33 UTC",
+  "generated_at": "2026-04-09 15:57:08 UTC",
   "case_id": "case01_baseline_vs_case04_t1574_attack",
   "baseline_path": "/MFF/cases/case01_baseline",
   "attack_path": "/MFF/cases/case04_t1574_attack",

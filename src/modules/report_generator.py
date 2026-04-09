@@ -397,7 +397,7 @@ const TAC_COLORS  = {{"Execution":"#f78166","Defense Evasion":"#d29922","Defence
         img = charts.get(key,"")
         if not img: return f'<div class="chart-placeholder">📊 {esc(lbl)}</div>'
         cls = "chart-card full" if sz=="full" else "chart-card"
-        return f'<div class="{cls}"><p class="chart-lbl">{esc(lbl)}</p><img src="data:image/png;base64,{img}" style="max-width:100%;border-radius:4px" loading="lazy"></div>'
+        return f'<div class="{cls}"><p class="chart-lbl">{esc(lbl)}</p><img src="{img}" style="max-width:100%;border-radius:4px" loading="lazy"></div>'
 
     n_new  = stats.get("new_processes",0)
     n_gone = stats.get("gone_processes",0)
