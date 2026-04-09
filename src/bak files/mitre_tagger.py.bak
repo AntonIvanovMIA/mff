@@ -38,12 +38,27 @@ ATTACK_MAP = [
     {"tactic": "Defense Evasion",   "technique": "T1140",     "name": "Deobfuscate/Decode Files",
      "keywords": ["certutil", "-decode", "-urlcache", "base64"], "source": ["cmdline"]},
     {"tactic": "Defense Evasion",   "technique": "T1036",     "name": "Masquerading",
-     "keywords": ["svchost", "lsass", "csrss", "winlogon"],  "source": ["pslist"]},
+     "keywords": ["svchost32", "svch0st", "lsass64", "csrss32", "scvhost", "svhost", "lsasss"],  "source": ["pslist", "cmdline"]},
+
+    # ── DLL Hijacking (T1574) — detected from cmdline patterns ──
+    {"tactic": "Defense Evasion",   "technique": "T1574.001", "name": "DLL Search Order Hijacking",
+     "keywords": ["copy-item", "amsi.dll", "version.dll", "cryptbase.dll",
+                  "dll sideload", "invoke-atomictest t1574", "T1574"],
+     "source": ["cmdline"]},
+    {"tactic": "Defense Evasion",   "technique": "T1574.006", "name": "Dynamic Linker Hijacking",
+     "keywords": ["ld_preload", "dyld_insert"], "source": ["cmdline"]},
+
+    # ── Process Injection (T1055 sub-techniques) ─────────────
+    {"tactic": "Defense Evasion",   "technique": "T1055.005", "name": "Thread Local Storage Injection",
+     "keywords": ["TlsCallback", "TlsIndex", "tls inject"], "source": ["cmdline", "malfind"]},
+    {"tactic": "Defense Evasion",   "technique": "T1562.001", "name": "Disable/Modify Tools",
+     "keywords": ["set-mppreference", "disablerealtimemonitoring", "disable-windowsdefender",
+                  "disableantispyware", "add-mppreference"], "source": ["cmdline"]},
 
     # ── Credential Access ─────────────────────────────────────
     {"tactic": "Credential Access", "technique": "T1003.001", "name": "LSASS Memory Dump",
-     "keywords": ["lsass", "mimikatz", "procdump", "sekurlsa", "wce.exe"],
-     "source": ["cmdline", "pslist", "malfind"]},
+     "keywords": ["mimikatz", "procdump", "sekurlsa", "wce.exe", "lsass.dmp", "out lsass"],
+     "source": ["cmdline", "malfind"]},
     {"tactic": "Credential Access", "technique": "T1003.002", "name": "Security Account Manager",
      "keywords": ["sam", "reg save", "hklm\\sam"], "source": ["cmdline"]},
 
@@ -59,7 +74,7 @@ ATTACK_MAP = [
 
     # ── Lateral Movement ─────────────────────────────────────
     {"tactic": "Lateral Movement",  "technique": "T1021.002", "name": "SMB/Windows Admin Shares",
-     "keywords": ["net use", "\\\\", "psexec"], "source": ["cmdline", "netscan"]},
+     "keywords": ["net use", "psexec", "\\\\admin$", "\\\\c$", "\\\\ipc$"], "source": ["cmdline", "netscan"]},
 
     # ── Persistence ──────────────────────────────────────────
     {"tactic": "Persistence",       "technique": "T1053.005", "name": "Scheduled Task",

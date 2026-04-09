@@ -1,3 +1,0 @@
-Artefact Name,Full Path,Type,Size,SHA256 (verified),Key Contents Found
-baseline.raw,/cases/case01_baseline/baseline.raw,Clean baseline memory image,~4.56 GB,4fbc8ddf2cdcdd187e5d74f66ab4c1c2d5fffe2753b34c870015d4ea055aa432,"Standard Windows processes, no RWX, no injection"
-t1055_5_attack.raw,/cases/case02_t1055_5_attack/t1055_5_attack.raw,Attack memory image (T1055-5 RWX injection),~4.5 GB,85e4b855c6b625f79a18982bf5aa98df62801517e65c4887cc5e218675e47db8,"RWX regions in powershell.exe, injection chain, suspicious cmdline"

@@ -1,0 +1,14 @@
+PID,Process,MatchedText,MatchedKeyword,Tactic,Technique,TechniqueName,ATT&CK_URL
+5844,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+1316,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+7804,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+6764,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+5136,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+5136,powershell.exe,C:\\Temp\\pshijack\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Bypass,https://attack.mitre.org/techniques/T1562/001
+1316,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,https://attack.mitre.org/techniques/T1562/001
+5844,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,https://attack.mitre.org/techniques/T1562/001
+6764,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,https://attack.mitre.org/techniques/T1562/001
+7804,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,https://attack.mitre.org/techniques/T1562/001
+5136,powershell.exe,C:\\Temp\\pshijack\\amsi.dll,amsi.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+8060,mspaint.exe,C:\\temp\\hijack\\VERSION.dll,version.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+8060,mspaint.exe,C:\\temp\\hijack\\mspaint.exe,mspaint.exe,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001

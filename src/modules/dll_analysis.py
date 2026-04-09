@@ -1,0 +1,535 @@
+#!/usr/bin/env python3
+"""
+MFF v2 - DLL Analysis Module (v5 - backslash-aware)
+====================================================
+Critical fix in v5:
+  Volatility 3 CSV paths have DOUBLE backslashes when read by pandas.
+  All path comparisons must use double backslashes to match correctly.
+
+Detection strategies:
+  1. PATH ANALYSIS   - protected DLL from non-System32 path (T1574.001)
+  2. AMSI CORR      - amsi.dll + RWX in same PID (T1562.001)
+  3. STAGING        - any DLL from temp/appdata paths (T1574.001)
+  4. PROCESS PATH   - system exe from staging directory
+"""
+
+import pandas as pd
+
+
+# ============================================================
+# Constants - use DOUBLE backslash to match Volatility CSV output
+# ============================================================
+
+PROTECTED_DLLS = {
+    "amsi.dll", "version.dll",
+    "cryptbase.dll", "cryptsp.dll", "bcrypt.dll", "bcryptprimitives.dll",
+    "wininet.dll", "wldap32.dll", "winhttp.dll",
+    "secur32.dll", "sspicli.dll", "schannel.dll",
+    "userenv.dll", "profapi.dll",
+    "wintrust.dll", "crypt32.dll",
+    "dbghelp.dll",
+    "comctl32.dll", "mscms.dll", "ntwdblib.dll",
+    "rasadhlp.dll", "wlbsctrl.dll", "wbemcomn.dll",
+}
+
+# Double-backslash prefixes to match Volatility CSV output read by pandas
+LEGITIMATE_PATH_PREFIXES = (
+    "c:\\\\windows\\\\system32\\\\",
+    "c:\\\\windows\\\\syswow64\\\\",
+    "c:\\\\windows\\\\winsxs\\\\",
+    "c:\\\\windows\\\\microsoft.net\\\\",
+    "c:\\\\program files\\\\",
+    "c:\\\\program files (x86)\\\\",
+)
+
+# Substring match - these work with double-backslash paths too
+SUSPICIOUS_PATH_KEYWORDS = (
+    "\\\\temp\\\\",
+    "\\\\tmp\\\\",
+    "\\\\appdata\\\\",
+    "\\\\users\\\\",
+    "\\\\downloads\\\\",
+    "\\\\desktop\\\\",
+    "\\\\public\\\\",
+    "\\\\recycle",
+    "\\\\pshijack\\\\",
+    "\\\\hijack\\\\",
+)
+
+TEMP_ROOT_PATTERNS = (
+    "c:\\\\temp\\\\",
+    "c:\\\\windows\\\\temp\\\\",
+    "c:\\\\tmp\\\\",
+)
+
+# Fallback: single-backslash versions (for edge cases)
+LEGITIMATE_PATH_PREFIXES_SINGLE = (
+    "c:\\windows\\system32\\",
+    "c:\\windows\\syswow64\\",
+    "c:\\windows\\winsxs\\",
+    "c:\\windows\\microsoft.net\\",
+    "c:\\program files\\",
+    "c:\\program files (x86)\\",
+)
+
+AMSI_LEGITIMATE_LOADERS = {"mrt.exe", "msmpeng.exe", "msseces.exe"}
+
+BENIGN_BUNDLED_DLLS = {
+    "libcef.dll", "d3dcompiler_47.dll", "nw.dll",
+    "vulkan-1.dll", "opengl32.dll", "libglesv2.dll", "libegl.dll",
+    "msvcp140.dll", "vcruntime140.dll", "ucrtbase.dll",
+    "domain_actions.dll",
+}
+
+AMSI_BYPASS_EXCLUDE = {
+    "msmpeng.exe", "mrt.exe", "msseces.exe",
+    "chrome.exe", "msedge.exe", "firefox.exe",
+}
+
+SYSTEM_EXECUTABLES = {
+    "notepad.exe", "calc.exe", "mspaint.exe",
+    "write.exe", "wordpad.exe", "charmap.exe",
+}
+
+
+# ============================================================
+# Helpers
+# ============================================================
+
+def _find_col(df, candidates):
+    cols_lo = {c.lower().strip(): c for c in df.columns}
+    for cand in candidates:
+        r = cols_lo.get(cand.lower().strip())
+        if r is not None:
+            return r
+    return None
+
+
+def _norm(df):
+    df = df.copy()
+    df.columns = [str(c).strip() for c in df.columns]
+    return df
+
+
+def _discover_path_col(df):
+    path_col = _find_col(df, ["Path", "ModulePath", "FullDllName", "Module", "MappedPath"])
+    if path_col:
+        return path_col
+    for col in df.columns:
+        sample = df[col].dropna().astype(str).head(20).str.cat(sep=" ").lower()
+        if "windows" in sample and ".dll" in sample:
+            return col
+    return None
+
+
+def _win_basename(path_lo):
+    """Extract DLL name from Windows path with double or single backslash."""
+    # Try double-backslash split first
+    if "\\\\" in path_lo:
+        parts = [p for p in path_lo.split("\\\\") if p]
+    else:
+        parts = [p for p in path_lo.split("\\") if p]
+    return parts[-1] if parts else path_lo
+
+
+def _is_legitimate(path_lo):
+    """Return True if path is from a legitimate Windows system location."""
+    # Check double-backslash prefixes (Volatility CSV format)
+    for lp in LEGITIMATE_PATH_PREFIXES:
+        if path_lo.startswith(lp):
+            return True
+    # Fallback: check single-backslash (normalised format)
+    path_single = path_lo.replace("\\\\", "\\")
+    for lp in LEGITIMATE_PATH_PREFIXES_SINGLE:
+        if path_single.startswith(lp):
+            return True
+    return False
+
+
+def _is_staging(path_lo):
+    """Return True if path is in a user-writable staging directory."""
+    if any(kw in path_lo for kw in SUSPICIOUS_PATH_KEYWORDS):
+        return True
+    if any(path_lo.startswith(r) for r in TEMP_ROOT_PATTERNS):
+        return True
+    return False
+
+
+def _make_finding(pid, proc, dll, path, hijack_type,
+                  technique, tech_name, tactic, risk, indicator, description):
+    return {
+        "PID": pid, "Process": proc, "DLL": dll, "LoadPath": path,
+        "HijackType": hijack_type, "Technique": technique,
+        "TechniqueName": tech_name, "Tactic": tactic,
+        "RiskScore": risk, "DLL_Indicator": indicator, "Description": description,
+    }
+
+
+# ============================================================
+# STRATEGY 1 - Path-based DLL hijack detection
+# ============================================================
+
+def dll_hijack_analysis(df):
+    if df is None or df.empty:
+        return pd.DataFrame()
+
+    df = _norm(df)
+    path_col     = _discover_path_col(df)
+    pid_col      = _find_col(df, ["PID", "Pid", "pid", "ProcessId"])
+    proc_col     = _find_col(df, ["Process", "ImageFileName", "ImageFile", "Name"])
+    file_out_col = _find_col(df, ["File output", "FileOutput", "file output", "Output"])
+
+    if path_col is None:
+        print("  [dll_analysis] WARNING: No path column found.")
+        print(f"  [dll_analysis] Columns: {list(df.columns)}")
+        return pd.DataFrame()
+
+    print(f"  [dll_analysis] Scanning {len(df)} DLL rows  "
+          f"(path='{path_col}' pid='{pid_col}' proc='{proc_col}')")
+
+    findings = []
+
+    for _, row in df.iterrows():
+        path_raw = str(row.get(path_col, "")).strip()
+        path_lo  = path_raw.lower()
+
+        if not path_raw or path_raw in ("-", "N/A", "nan", "None", "Disabled", ""):
+            continue
+        if path_lo.startswith("0x"):
+            continue
+        if "\\" not in path_lo:
+            continue
+
+        dll_name = _win_basename(path_lo)
+        if not dll_name.endswith(".dll"):
+            continue
+
+        pid      = str(row.get(pid_col,  "")).strip() if pid_col  else ""
+        proc     = str(row.get(proc_col, "")).strip() if proc_col else "?"
+        if proc in ("nan", "None", ""):
+            proc = "?"
+        proc_lo  = proc.lower()
+
+        legit   = _is_legitimate(path_lo)
+        staging = _is_staging(path_lo)
+        is_prot = (dll_name in PROTECTED_DLLS)
+        is_amsi = (dll_name == "amsi.dll")
+        is_legit_amsi = (proc_lo in AMSI_LEGITIMATE_LOADERS)
+
+        # Detection A: AMSI from NON-System32 + file output disabled
+        if is_amsi and not is_legit_amsi and not legit:
+            file_out_val = ""
+            if file_out_col:
+                file_out_val = str(row.get(file_out_col, "")).strip().lower()
+            if file_out_val in ("disabled", "error", ""):
+                findings.append(_make_finding(
+                    pid, proc, dll_name, path_raw,
+                    "AMSI_FILE_OUTPUT_DISABLED", "T1562.001",
+                    "Disable or Modify Tools - AMSI Bypass",
+                    "Defense Evasion", 90,
+                    f"amsi.dll in '{proc}' from NON-SYSTEM32: {path_raw}",
+                    (f"HIGHEST CONFIDENCE T1562.001+T1574.001: '{proc}' (PID={pid}) "
+                     f"has amsi.dll from '{path_raw}' (NOT System32). "
+                     f"File output='{file_out_val}'. Replaced DLL confirmed."),
+                ))
+
+        # Detection B: Protected DLL from non-System32 path
+        if is_prot and not legit:
+            if is_amsi and is_legit_amsi:
+                continue
+
+            # Only flag with high confidence if from a staging directory
+            if staging:
+                findings.append(_make_finding(
+                    pid, proc, dll_name, path_raw,
+                    "PROTECTED_DLL_USER_DIR", "T1574.001",
+                    "DLL Search Order Hijacking", "Defense Evasion", 70,
+                    f"Protected DLL '{dll_name}' from staging dir: {path_raw}",
+                    (f"T1574.001: '{dll_name}' from staging dir '{path_raw}' "
+                     f"in '{proc}' (PID={pid}). Expected: System32."),
+                ))
+                continue
+            # Skip System32 with case variation (Volatility outputs mixed case)
+            # These are false positives from Volatility capitalisation
+            # Don't report them unless they're staging paths
+            continue
+
+        # Detection C: Any DLL from staging directory
+        if staging and not legit and dll_name not in BENIGN_BUNDLED_DLLS:
+            findings.append(_make_finding(
+                pid, proc, dll_name, path_raw,
+                "SUSPICIOUS_PATH", "T1574.001",
+                "DLL Search Order Hijacking", "Defense Evasion", 40,
+                f"DLL from staging path: {path_raw}",
+                (f"SUSPICIOUS: '{dll_name}' from staging dir in '{proc}' (PID={pid})."),
+            ))
+
+    if not findings:
+        print("  [dll_analysis] Path analysis: no suspicious loads detected")
+        return pd.DataFrame()
+
+    result = (pd.DataFrame(findings)
+              .sort_values("RiskScore", ascending=False)
+              .reset_index(drop=True))
+
+    print(f"  [dll_analysis] Path analysis: {len(result)} finding(s)")
+    for _, r in result.iterrows():
+        print(f"    [{r['Technique']}] {r['HijackType']}  score={r['RiskScore']}  "
+              f"{r['DLL']} in {r['Process']} PID={r['PID']}")
+        print(f"      {r['LoadPath']}")
+
+    return result
+
+
+# ============================================================
+# STRATEGY 2 - AMSI bypass cross-correlation
+# ============================================================
+
+def amsi_bypass_correlation(dlllist_df, malfind_df):
+    if dlllist_df is None or dlllist_df.empty:
+        return pd.DataFrame()
+    if malfind_df is None or malfind_df.empty:
+        return pd.DataFrame()
+
+    dl = _norm(dlllist_df)
+    mf = _norm(malfind_df)
+
+    path_col = _discover_path_col(dl)
+    dl_pid   = _find_col(dl, ["PID", "Pid", "pid"])
+    dl_proc  = _find_col(dl, ["Process", "ImageFileName", "Name"])
+    mf_pid   = _find_col(mf, ["PID", "Pid", "pid"])
+    mf_proc  = _find_col(mf, ["Process", "ImageFileName", "Name"])
+    mf_prot  = _find_col(mf, ["Protection", "Protect", "protection"])
+
+    if not all([path_col, dl_pid, mf_pid]):
+        return pd.DataFrame()
+
+    rwx_mask    = (mf[mf_prot].astype(str).str.contains("EXECUTE", na=False)
+                   if mf_prot else pd.Series([True]*len(mf)))
+    rwx_entries = mf[rwx_mask]
+    if rwx_entries.empty:
+        return pd.DataFrame()
+
+    rwx_pids = set(rwx_entries[mf_pid].astype(str).str.strip())
+    rwx_pid_proc = {}
+    if mf_proc:
+        for _, row in rwx_entries.iterrows():
+            rwx_pid_proc[str(row[mf_pid]).strip()] = str(row[mf_proc]).strip()
+
+    amsi_rows = dl[
+        dl[path_col].astype(str).str.lower().str.contains("amsi.dll", na=False)
+    ]
+
+    findings = []
+    seen = set()
+
+    for _, row in amsi_rows.iterrows():
+        pid  = str(row.get(dl_pid, "")).strip()
+        proc = str(row.get(dl_proc, "")).strip() if dl_proc else "?"
+        if proc in ("nan", "None", ""):
+            proc = rwx_pid_proc.get(pid, "?")
+        path = str(row.get(path_col, "")).strip()
+
+        if proc.lower() in AMSI_BYPASS_EXCLUDE:
+            continue
+        if pid in seen or pid not in rwx_pids:
+            continue
+
+        seen.add(pid)
+        rwx_count = (rwx_entries[mf_pid].astype(str).str.strip() == pid).sum()
+
+        findings.append(_make_finding(
+            pid, proc, "amsi.dll", path,
+            "AMSI_BYPASS_MEMORY_PATCH", "T1562.001",
+            "Disable or Modify Tools - AMSI Memory Patch",
+            "Defense Evasion", 80,
+            f"amsi.dll in '{proc}' + {rwx_count} RWX region(s) = AMSI bypass",
+            (f"HIGH CONFIDENCE T1562.001: '{proc}' (PID={pid}) loads amsi.dll "
+             f"AND has {rwx_count} PAGE_EXECUTE_READWRITE region(s). "
+             f"Standard pattern for PowerShell AMSI bypass via memory patching."),
+        ))
+
+    if not findings:
+        return pd.DataFrame()
+
+    result = pd.DataFrame(findings).sort_values("RiskScore", ascending=False).reset_index(drop=True)
+    print(f"  [dll_analysis] AMSI bypass correlation: {len(result)} finding(s)")
+    for _, r in result.iterrows():
+        print(f"    [{r['Technique']}] {r['HijackType']}  "
+              f"{r['Process']} PID={r['PID']}  score={r['RiskScore']}")
+    return result
+
+
+# ============================================================
+# STRATEGY 4 - Process path anomaly
+# ============================================================
+
+def process_path_anomaly(dlllist_df):
+    if dlllist_df is None or dlllist_df.empty:
+        return pd.DataFrame()
+
+    df = _norm(dlllist_df)
+    path_col = _discover_path_col(df)
+    pid_col  = _find_col(df, ["PID", "Pid", "pid"])
+    proc_col = _find_col(df, ["Process", "ImageFileName", "Name"])
+
+    if not all([path_col, pid_col, proc_col]):
+        return pd.DataFrame()
+
+    findings = []
+    seen_pids = set()
+
+    for (pid, proc), grp in df.groupby([pid_col, proc_col]):
+        pid  = str(pid).strip()
+        proc = str(proc).strip()
+        proc_lo = proc.lower()
+
+        if proc_lo not in SYSTEM_EXECUTABLES or pid in seen_pids:
+            continue
+
+        for _, row in grp.iterrows():
+            path_raw = str(row.get(path_col, "")).strip()
+            path_lo  = path_raw.lower()
+
+            if not path_raw or "\\" not in path_lo:
+                continue
+
+            if _is_staging(path_lo) and not _is_legitimate(path_lo):
+                seen_pids.add(pid)
+                findings.append({
+                    "PID": pid, "Process": proc, "ExePath": path_raw,
+                    "Technique": "T1574.001", "RiskScore": 65,
+                    "Indicator": (
+                        f"System executable '{proc}' has DLLs from staging dir. "
+                        f"DLL Search Order Hijacking - Windows loads DLLs from "
+                        f"the EXE directory first, so attacker DLL loaded instead of System32."
+                    ),
+                })
+                break
+
+    if not findings:
+        return pd.DataFrame()
+
+    result = (pd.DataFrame(findings)
+              .drop_duplicates(subset=["PID"])
+              .sort_values("RiskScore", ascending=False)
+              .reset_index(drop=True))
+    print(f"  [dll_analysis] Process path anomaly: {len(result)} finding(s)")
+    for _, r in result.iterrows():
+        print(f"    [T1574.001] SYSTEM_EXE_FROM_WRONG_DIR  "
+              f"{r['Process']} PID={r['PID']}  score={r['RiskScore']}")
+    return result
+
+
+# ============================================================
+# FULL ANALYSIS
+# ============================================================
+
+def full_dll_analysis(dlllist_df, malfind_df=None):
+    """Run all detection strategies. Recommended entry point."""
+    if dlllist_df is None or dlllist_df.empty:
+        print("  [dll_analysis] AMSI bypass correlation: skipped (no malfind data)")
+        print("  [dll_analysis] All strategies: no findings")
+        return pd.DataFrame()
+
+    all_findings = []
+
+    path_findings = dll_hijack_analysis(dlllist_df)
+    if not path_findings.empty:
+        all_findings.append(path_findings)
+
+    if malfind_df is not None and not malfind_df.empty:
+        amsi_findings = amsi_bypass_correlation(dlllist_df, malfind_df)
+        if not amsi_findings.empty:
+            all_findings.append(amsi_findings)
+    else:
+        print("  [dll_analysis] AMSI bypass correlation: skipped (no malfind data)")
+
+    ppa = process_path_anomaly(dlllist_df)
+    if not ppa.empty:
+        ppa_std = ppa.rename(columns={"ExePath": "LoadPath", "Indicator": "DLL_Indicator"})
+        ppa_std["DLL"]           = ppa["Process"]
+        ppa_std["HijackType"]    = "SYSTEM_EXE_FROM_WRONG_DIR"
+        ppa_std["Technique"]     = "T1574.001"
+        ppa_std["TechniqueName"] = "DLL Search Order Hijacking"
+        ppa_std["Tactic"]        = "Defense Evasion"
+        ppa_std["Description"]   = ppa["Indicator"]
+        all_findings.append(ppa_std)
+
+    if not all_findings:
+        print("  [dll_analysis] All strategies: no findings")
+        return pd.DataFrame()
+
+    combined = (pd.concat(all_findings, ignore_index=True)
+                .drop_duplicates(subset=["PID", "HijackType"])
+                .sort_values("RiskScore", ascending=False)
+                .reset_index(drop=True))
+
+    print(f"  [dll_analysis] -- TOTAL: {len(combined)} finding(s) across all strategies --")
+    return combined
+
+
+# ============================================================
+# ATT&CK tags
+# ============================================================
+
+def dll_attack_tags(findings_df):
+    if findings_df is None or findings_df.empty:
+        return pd.DataFrame()
+    tags = []
+    for _, row in findings_df.iterrows():
+        technique = str(row.get("Technique", "T1574.001"))
+        tags.append({
+            "PID":            row.get("PID", ""),
+            "Process":        row.get("Process", "?"),
+            "MatchedText":    row.get("LoadPath", ""),
+            "MatchedKeyword": row.get("DLL", ""),
+            "Tactic":         row.get("Tactic", "Defense Evasion"),
+            "Technique":      technique,
+            "TechniqueName":  row.get("TechniqueName", "DLL Search Order Hijacking"),
+            "ATT&CK_URL":     f"https://attack.mitre.org/techniques/{technique.replace('.','/')}",
+        })
+    return pd.DataFrame(tags)
+
+
+# ============================================================
+# Summary
+# ============================================================
+
+def dll_summary(findings_df):
+    empty = {"total_findings": 0, "hijack_types": {},
+             "affected_pids": [], "dll_names": [], "max_risk": 0}
+    if findings_df is None or findings_df.empty:
+        return empty
+    return {
+        "total_findings": len(findings_df),
+        "hijack_types":   (findings_df["HijackType"].value_counts().to_dict()
+                           if "HijackType" in findings_df.columns else {}),
+        "affected_pids":  ([str(p) for p in findings_df["PID"].dropna().unique()]
+                           if "PID" in findings_df.columns else []),
+        "dll_names":      (findings_df["DLL"].dropna().unique().tolist()
+                           if "DLL" in findings_df.columns else []),
+        "max_risk":       (int(findings_df["RiskScore"].max())
+                           if "RiskScore" in findings_df.columns else 0),
+    }
+
+
+# ============================================================
+# CLI
+# ============================================================
+
+if __name__ == "__main__":
+    import sys, json
+    if len(sys.argv) < 2:
+        print("Usage: python dll_analysis.py <dlllist.csv> [malfind.csv]")
+        sys.exit(1)
+
+    dll_df = pd.read_csv(sys.argv[1])
+    mf_df  = pd.read_csv(sys.argv[2]) if len(sys.argv) > 2 else None
+
+    print(f"Loaded {len(dll_df)} DLL entries")
+    findings = full_dll_analysis(dll_df, mf_df)
+
+    if not findings.empty:
+        print(findings[["PID","Process","DLL","HijackType","RiskScore"]].to_string(index=False))
+    print(json.dumps(dll_summary(findings), indent=2))

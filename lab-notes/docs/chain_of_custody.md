@@ -267,7 +267,7 @@ transfer, analysis, and documentation phases.
 
 ## 2.  chain_of_custody.md
 
-```md
+
 ## Evidence Handling — Case02 (T1055-5)
 
 | Date (UTC) | Evidence | Action | SHA256 | Analyst |
@@ -281,7 +281,7 @@ transfer, analysis, and documentation phases.
 - Subsequent analysis performed on the copy stored under `/cases/case02_t1055_5_attack/`.
 
 
-# Chain of Custody
+## Case03 chain_of_custody
 
 Case ID: case03_t1059_attack
 
@@ -293,11 +293,11 @@ Memory dump captured from Windows 10 virtual machine after execution of MITRE AT
 
 Evidence File
 
-```
-case03_t1059_attack.raw
-```
 
----
+## case03_t1059_attack.raw
+
+
+
 
 Acquisition Details
 
@@ -307,13 +307,11 @@ VirtualBox Debug Interface
 
 Command Used
 
-```
 VBoxManage debugvm "Windows 10" dumpvmcore --filename "case03_t1059_attack.raw"
-```
 
 ---
 
-Evidence Handling
+## Evidence Handling
 
 1. Memory dump created immediately after attack execution
 2. Dump stored in secure host directory
@@ -323,7 +321,7 @@ Evidence Handling
 
 ---
 
-Storage Location
+## Storage Location
 
 ```
 /MFF/cases/case03_t1059_attack/
@@ -331,7 +329,7 @@ Storage Location
 
 ---
 
-Analyst
+## Analyst
 
 Anton Ivanov
 

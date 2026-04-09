@@ -1,0 +1,163 @@
+PID,Process,MatchedText,MatchedKeyword,Tactic,Technique,TechniqueName,ATT&CK_URL
+5844,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+1316,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+7804,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+6764,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+5136,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+6764,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools — AMSI Bypass,https://attack.mitre.org/techniques/T1562/001
+5792,svchost.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools — AMSI Bypass,https://attack.mitre.org/techniques/T1562/001
+5844,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools — AMSI Bypass,https://attack.mitre.org/techniques/T1562/001
+1316,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools — AMSI Bypass,https://attack.mitre.org/techniques/T1562/001
+5672,SecurityHealth,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools — AMSI Bypass,https://attack.mitre.org/techniques/T1562/001
+2728,svchost.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools — AMSI Bypass,https://attack.mitre.org/techniques/T1562/001
+7804,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools — AMSI Bypass,https://attack.mitre.org/techniques/T1562/001
+5136,powershell.exe,C:\\Temp\\pshijack\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools — AMSI Bypass,https://attack.mitre.org/techniques/T1562/001
+6828,svchost.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools — AMSI Bypass,https://attack.mitre.org/techniques/T1562/001
+8060,mspaint.exe,C:\\temp\\hijack\\VERSION.dll,version.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+5136,powershell.exe,C:\\Temp\\pshijack\\amsi.dll,amsi.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+8060,mspaint.exe,DLL from: C:\\temp\\hijack\\VERSION.dll,mspaint.exe,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+5520,OneDrive.exe,C:\\Windows\\SYSTEM32\\SSPICLI.DLL,sspicli.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+5672,SecurityHealth,C:\\Windows\\system32\\USERENV.dll,userenv.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+5300,VBoxTray.exe,C:\\Windows\\System32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+7620,dllhost.exe,C:\\Windows\\System32\\USERENV.dll,userenv.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+6188,SearchApp.exe,C:\\Windows\\SYSTEM32\\profapi.dll,profapi.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+3680,TextInputHost.,C:\\Windows\\System32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+5172,dllhost.exe,C:\\Windows\\System32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+392,SecurityHealth,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+3552,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+6408,UserOOBEBroker,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4260,RuntimeBroker.,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+6892,SystemSettings,C:\\Windows\\System32\\USERENV.dll,userenv.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+552,SecHealthUI.ex,C:\\Windows\\System32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4168,ApplicationFra,C:\\Windows\\System32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+7036,RuntimeBroker.,C:\\Windows\\SYSTEM32\\cryptsp.dll,cryptsp.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+6940,svchost.exe,C:\\Windows\\System32\\CRYPT32.dll,crypt32.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+5584,SecurityHealth,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+7252,svchost.exe,c:\\windows\\system32\\USERENV.dll,userenv.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4524,RuntimeBroker.,C:\\Windows\\System32\\CRYPT32.dll,crypt32.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+5792,svchost.exe,C:\\Windows\\SYSTEM32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+5752,svchost.exe,C:\\Windows\\system32\\sspicli.dll,sspicli.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+6904,svchost.exe,C:\\Windows\\System32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+6036,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+6160,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+5692,svchost.exe,c:\\windows\\system32\\profapi.dll,profapi.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+6744,svchost.exe,c:\\windows\\system32\\SspiCli.dll,sspicli.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+7156,ShellExperienc,C:\\Windows\\SYSTEM32\\CRYPTBASE.dll,cryptbase.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+6516,SgrmBroker.exe,C:\\Windows\\SYSTEM32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+6620,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+5476,RuntimeBroker.,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2916,svchost.exe,C:\\Windows\\System32\\USERENV.dll,userenv.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4060,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+7460,svchost.exe,C:\\Windows\\SYSTEM32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4836,msedgewebview2,C:\\Windows\\System32\\bcryptprimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4812,M365Copilot.ex,C:\\Windows\\SYSTEM32\\SspiCli.dll,sspicli.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4708,msedgewebview2,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4196,msedgewebview2,C:\\Windows\\System32\\bcryptprimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1528,msedgewebview2,C:\\Windows\\System32\\bcryptprimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4472,msedgewebview2,C:\\Windows\\System32\\bcryptprimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+6764,powershell.exe,C:\\Windows\\System32\\wintrust.dll,wintrust.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+6544,conhost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+8844,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+9124,WmiPrvSE.exe,C:\\Windows\\SYSTEM32\\wbemcomn.dll,wbemcomn.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+6828,svchost.exe,C:\\Windows\\SYSTEM32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+3376,svchost.exe,C:\\Windows\\System32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1316,powershell.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4024,conhost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+9048,CalculatorApp.,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+600,msedgewebview2,C:\\Windows\\SYSTEM32\\CRYPTBASE.dll,cryptbase.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2068,conhost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2748,RuntimeBroker.,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+5352,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+6908,svchost.exe,C:\\Windows\\System32\\SspiCli.dll,sspicli.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+7660,msedgewebview2,C:\\Windows\\System32\\bcryptprimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4540,RuntimeBroker.,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+7748,svchost.exe,C:\\Windows\\System32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+8048,msedgewebview2,C:\\Windows\\System32\\bcryptprimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4176,msedgewebview2,C:\\Windows\\System32\\bcryptprimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+5392,msedgewebview2,C:\\Windows\\System32\\bcryptprimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+7776,msedgewebview2,C:\\Windows\\System32\\bcryptprimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1868,svchost.exe,C:\\Windows\\System32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1976,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1820,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2040,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2060,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1696,explorer.exe,C:\\Windows\\System32\\mscms.dll,mscms.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1648,svchost.exe,C:\\Windows\\System32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2072,svchost.exe,C:\\Windows\\System32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2152,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2264,spoolsv.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1504,svchost.exe,c:\\windows\\system32\\USERENV.dll,userenv.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1548,VBoxService.ex,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1132,svchost.exe,c:\\windows\\system32\\USERENV.dll,userenv.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1680,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1700,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+5136,powershell.exe,C:\\Windows\\SYSTEM32\\wbemcomn.dll,wbemcomn.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+8060,mspaint.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+7804,powershell.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+6116,SearchApp.exe,C:\\Windows\\SYSTEM32\\USERENV.dll,userenv.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+5844,powershell.exe,C:\\Windows\\System32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+7520,msedgewebview2,C:\\Windows\\System32\\bcryptprimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2664,svchost.exe,C:\\Windows\\System32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1288,svchost.exe,C:\\Windows\\SYSTEM32\\CRYPTBASE.dll,cryptbase.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1836,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1824,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1792,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1732,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2680,OfficeClickToR,C:\\Windows\\System32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2336,svchost.exe,c:\\windows\\system32\\SspiCli.dll,sspicli.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+668,lsass.exe,C:\\Windows\\system32\\profapi.dll,profapi.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+788,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2688,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2696,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2388,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2492,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2524,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2532,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+436,csrss.exe,C:\\Windows\\system32\\Bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+524,csrss.exe,C:\\Windows\\SYSTEM32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+536,wininit.exe,C:\\Windows\\SYSTEM32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+592,winlogon.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1180,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1228,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1236,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+684,svchost.exe,C:\\Windows\\System32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1456,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+8,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+812,fontdrvhost.ex,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+904,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+960,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+656,services.exe,C:\\Windows\\system32\\sspicli.dll,sspicli.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+376,dwm.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+820,fontdrvhost.ex,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+5000,MicrosoftEdgeU,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4960,taskhostw.exe,C:\\Windows\\System32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4804,svchost.exe,C:\\Windows\\system32\\Secur32.dll,secur32.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1112,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+1100,svchost.exe,C:\\Windows\\System32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+520,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+5012,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+3800,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4676,StartMenuExper,C:\\Windows\\System32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2772,MpDefenderCore,C:\\Windows\\SYSTEM32\\profapi.dll,profapi.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4772,svchost.exe,C:\\Windows\\System32\\CRYPT32.dll,crypt32.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4728,sihost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+3572,dllhost.exe,C:\\Windows\\SYSTEM32\\CRYPTBASE.DLL,cryptbase.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+3796,svchost.exe,C:\\Windows\\SYSTEM32\\cryptsp.dll,cryptsp.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4056,svchost.exe,C:\\Windows\\SYSTEM32\\cryptsp.dll,cryptsp.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4360,ctfmon.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2860,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2728,svchost.exe,C:\\Windows\\SYSTEM32\\profapi.dll,profapi.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2844,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+4148,svchost.exe,C:\\Windows\\System32\\CRYPT32.dll,crypt32.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2832,MsMpEng.exe,C:\\Windows\\SYSTEM32\\CRYPT32.dll,crypt32.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2824,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2976,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+2708,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+3308,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+3128,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+3008,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+3200,svchost.exe,C:\\Windows\\System32\\bcryptPrimitives.dll,bcryptprimitives.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+3916,AggregatorHost,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+3856,SearchIndexer.,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+3540,svchost.exe,C:\\Windows\\System32\\bcrypt.dll,bcrypt.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+600,msedgewebview2,C:\\Users\\lucif\\AppData\\Local\\Packages\\Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe\\LocalState\\EBWebView\\Domain Actions\\3.0.0.16\\domain_actions.dll,domain_actions.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001

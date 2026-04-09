@@ -1,0 +1,363 @@
+#!/usr/bin/env python3
+"""
+MFF v2 — DLL Analysis Module
+==============================
+Detects T1574 DLL Search Order Hijacking and T1562 AMSI tampering
+by analysing windows.dlllist.csv output from Volatility 3.
+"""
+
+import os
+import pandas as pd
+
+
+# ============================================================
+# Constants
+# ============================================================
+
+PROTECTED_DLLS = {
+    "amsi.dll", "version.dll",
+    "cryptbase.dll", "cryptsp.dll", "bcrypt.dll", "bcryptprimitives.dll",
+    "wininet.dll", "wldap32.dll", "winhttp.dll",
+    "secur32.dll", "sspicli.dll", "schannel.dll",
+    "userenv.dll", "profapi.dll",
+    "wintrust.dll", "crypt32.dll",
+    "dbghelp.dll",
+    "comctl32.dll", "mscms.dll", "ntwdblib.dll",
+    "rasadhlp.dll", "wlbsctrl.dll", "wbemcomn.dll",
+}
+
+LEGITIMATE_PATH_PREFIXES = (
+    "c:\\windows\\system32\\",
+    "c:\\windows\\syswow64\\",
+    "c:\\windows\\winsxs\\",
+    "c:\\windows\\microsoft.net\\",
+)
+
+SUSPICIOUS_PATH_KEYWORDS = (
+    "\\appdata\\", "\\temp\\", "\\tmp\\",
+    "\\users\\", "\\downloads\\", "\\desktop\\", "\\public\\",
+    "\\programdata\\microsoft\\windows\\",
+)
+
+AMSI_LEGITIMATE_LOADERS = {"mrt.exe", "msmpeng.exe", "msseces.exe"}
+
+BENIGN_BUNDLED_DLLS = {
+    "libcef.dll", "d3dcompiler_47.dll", "nw.dll",
+    "vulkan-1.dll", "opengl32.dll", "libglesv2.dll", "libegl.dll",
+}
+
+
+# ============================================================
+# Helpers
+# ============================================================
+
+def _find_col(df, candidates):
+    cols_lo = {c.lower().strip(): c for c in df.columns}
+    for cand in candidates:
+        result = cols_lo.get(cand.lower().strip())
+        if result is not None:
+            return result
+    return None
+
+
+def _norm(df):
+    df = df.copy()
+    df.columns = [str(c).strip() for c in df.columns]
+    return df
+
+
+def _discover_path_col(df):
+    path_col = _find_col(df, [
+        "Path", "ModulePath", "FullDllName", "Module",
+        "MappedPath", "DllBase", "Base",
+    ])
+    if path_col is not None:
+        return path_col
+    for col in df.columns:
+        sample = df[col].dropna().astype(str).head(20).str.cat(sep=" ").lower()
+        if (":\\windows\\" in sample or ":\\program" in sample
+                or ":\\users\\" in sample or ".dll" in sample):
+            return col
+    return None
+
+
+# ============================================================
+# Core analysis
+# ============================================================
+
+def dll_hijack_analysis(df):
+    """
+    Scan windows.dlllist CSV for:
+      1. AMSI tampering      (T1562.001) — risk 90
+      2. Protected DLL from wrong path (T1574.001) — risk 50-70
+      3. Any DLL from suspicious user dirs (T1574.001) — risk 30
+
+    Returns DataFrame of findings. Empty if nothing found.
+    """
+    if df is None or df.empty:
+        return pd.DataFrame()
+
+    df = _norm(df)
+
+    path_col = _discover_path_col(df)
+    pid_col  = _find_col(df, ["PID", "Pid", "pid", "ProcessId"])
+    proc_col = _find_col(df, ["Process", "ImageFileName", "ImageFile",
+                               "ProcessName", "Name"])
+    file_out_col = _find_col(df, ["File output", "FileOutput", "file output",
+                                   "Output", "file_output"])
+
+    if path_col is None:
+        print("  [dll_analysis] WARNING: No path column found in dlllist.csv")
+        print(f"  [dll_analysis] Columns available: {list(df.columns)}")
+        return pd.DataFrame()
+
+    print(f"  [dll_analysis] path='{path_col}'  pid='{pid_col}'  "
+          f"proc='{proc_col}'  Scanning {len(df)} rows...")
+
+    findings = []
+
+    for _, row in df.iterrows():
+        # ── Get and clean path ──────────────────────────────────────────
+        path_raw = str(row.get(path_col, "")).strip()
+        path_lo  = path_raw.lower()
+
+        if not path_raw or path_raw in ("-", "N/A", "nan", "None", "Disabled", ""):
+            continue
+        if path_lo.startswith("0x"):
+            continue
+        if "\\" not in path_lo:
+            continue
+
+        dll_name = os.path.basename(path_lo)
+        if not dll_name.endswith(".dll"):
+            continue
+
+        # ── Get PID and process ─────────────────────────────────────────
+        pid  = str(row.get(pid_col,  "")).strip() if pid_col  else ""
+        proc = str(row.get(proc_col, "")).strip() if proc_col else "?"
+        if proc in ("nan", "None", ""):
+            proc = "?"
+
+        proc_lo = proc.lower()
+
+        # ── Compute flags ───────────────────────────────────────────────
+        from_legit   = any(path_lo.startswith(lp) for lp in LEGITIMATE_PATH_PREFIXES)
+        in_user_dir  = any(kw in path_lo for kw in SUSPICIOUS_PATH_KEYWORDS)
+        is_protected = dll_name in PROTECTED_DLLS
+        is_amsi      = (dll_name == "amsi.dll")
+        is_legit_amsi = (proc_lo in AMSI_LEGITIMATE_LOADERS)
+
+        # ── DETECTION 1: AMSI tampering ─────────────────────────────────
+        # amsi.dll with "Disabled" File output = AMSI bypass in progress
+        if is_amsi and not is_legit_amsi:
+            file_out_val = ""
+            if file_out_col:
+                file_out_val = str(row.get(file_out_col, "")).strip().lower()
+
+            if file_out_val in ("disabled", "error", ""):
+                findings.append({
+                    "PID":           pid,
+                    "Process":       proc,
+                    "DLL":           dll_name,
+                    "LoadPath":      path_raw,
+                    "HijackType":    "AMSI_TAMPERING",
+                    "Technique":     "T1562.001",
+                    "TechniqueName": "Disable or Modify Tools — AMSI Bypass",
+                    "Tactic":        "Defense Evasion",
+                    "RiskScore":     90,
+                    "DLL_Indicator": (
+                        f"amsi.dll in '{proc}' — "
+                        f"File output='{file_out_val}' (AMSI bypass indicator)"
+                    ),
+                    "Description": (
+                        f"HIGH CONFIDENCE: AMSI bypassed/tampered in "
+                        f"'{proc}' (PID={pid}). amsi.dll file output='{file_out_val}'. "
+                        f"Indicates PowerShell or script-based AMSI bypass."
+                    ),
+                })
+
+        # ── DETECTION 2: Protected DLL from wrong path (T1574.001) ──────
+        if is_protected and not from_legit:
+            if is_amsi and is_legit_amsi:
+                continue
+
+            hijack_type = (
+                "PROTECTED_DLL_USER_DIR" if in_user_dir
+                else "PROTECTED_DLL_WRONG_PATH"
+            )
+            risk = 70 if in_user_dir else 50
+
+            findings.append({
+                "PID":           pid,
+                "Process":       proc,
+                "DLL":           dll_name,
+                "LoadPath":      path_raw,
+                "HijackType":    hijack_type,
+                "Technique":     "T1574.001",
+                "TechniqueName": "DLL Search Order Hijacking",
+                "Tactic":        "Defense Evasion",
+                "RiskScore":     risk,
+                "DLL_Indicator": (
+                    f"Protected DLL '{dll_name}' loaded from non-System32 path"
+                ),
+                "Description": (
+                    f"HIJACKING EVIDENCE: '{dll_name}' loaded from "
+                    f"'{path_raw}' — expected C:\\Windows\\System32. "
+                    f"Possible T1574.001 DLL Search Order Hijacking."
+                ),
+            })
+            continue
+
+        # ── DETECTION 3: Any DLL from staging / user-writable dir ───────
+        if in_user_dir and dll_name not in BENIGN_BUNDLED_DLLS:
+            findings.append({
+                "PID":           pid,
+                "Process":       proc,
+                "DLL":           dll_name,
+                "LoadPath":      path_raw,
+                "HijackType":    "SUSPICIOUS_PATH",
+                "Technique":     "T1574.001",
+                "TechniqueName": "DLL Search Order Hijacking",
+                "Tactic":        "Defense Evasion",
+                "RiskScore":     30,
+                "DLL_Indicator": f"DLL loaded from user-writable path",
+                "Description": (
+                    f"SUSPICIOUS: '{dll_name}' from user-writable dir "
+                    f"'{path_raw}'. May indicate DLL staging (T1574.001)."
+                ),
+            })
+
+    # ── Build result ─────────────────────────────────────────────────────────
+    if not findings:
+        print("  [dll_analysis] No suspicious DLL loads detected")
+        return pd.DataFrame()
+
+    result = (pd.DataFrame(findings)
+              .sort_values("RiskScore", ascending=False)
+              .reset_index(drop=True))
+
+    print(f"  [dll_analysis] {len(result)} finding(s) total:")
+    for htype, grp in result.groupby("HijackType"):
+        print(f"    {htype}: {len(grp)}")
+        for _, r in grp.iterrows():
+            print(f"      [{r['Technique']}] RiskScore={r['RiskScore']}  "
+                  f"{r['DLL']} in {r['Process']} (PID={r['PID']})")
+            print(f"        Path: {r['LoadPath']}")
+
+    return result
+
+
+# ============================================================
+# ATT&CK tag generator
+# ============================================================
+
+def dll_attack_tags(findings_df):
+    """
+    Convert findings into the tagged_df format expected by comparison_engine_v2.py.
+    Columns: PID, Process, MatchedText, MatchedKeyword,
+             Tactic, Technique, TechniqueName, ATT&CK_URL
+    """
+    if findings_df is None or findings_df.empty:
+        return pd.DataFrame()
+
+    tags = []
+    for _, row in findings_df.iterrows():
+        technique = str(row.get("Technique", "T1574.001"))
+        url_path  = technique.replace(".", "/")
+        tags.append({
+            "PID":            row.get("PID", ""),
+            "Process":        row.get("Process", "?"),
+            "MatchedText":    row.get("LoadPath", ""),
+            "MatchedKeyword": row.get("DLL", ""),
+            "Tactic":         row.get("Tactic", "Defense Evasion"),
+            "Technique":      technique,
+            "TechniqueName":  row.get("TechniqueName", "DLL Search Order Hijacking"),
+            "ATT&CK_URL":     f"https://attack.mitre.org/techniques/{url_path}",
+        })
+
+    return pd.DataFrame(tags)
+
+
+# ============================================================
+# Summary helper
+# ============================================================
+
+def dll_summary(findings_df):
+    """Return a summary dict for JSON / threat_summary.json reporting."""
+    empty = {
+        "total_findings": 0,
+        "hijack_types":   {},
+        "affected_pids":  [],
+        "dll_names":      [],
+        "max_risk":       0,
+    }
+
+    if findings_df is None or findings_df.empty:
+        return empty
+
+    hijack_types = {}
+    if "HijackType" in findings_df.columns:
+        hijack_types = findings_df["HijackType"].value_counts().to_dict()
+
+    affected_pids = []
+    if "PID" in findings_df.columns:
+        affected_pids = [str(p) for p in findings_df["PID"].dropna().unique()]
+
+    dll_names = []
+    if "DLL" in findings_df.columns:
+        dll_names = findings_df["DLL"].dropna().unique().tolist()
+
+    max_risk = 0
+    if "RiskScore" in findings_df.columns:
+        max_risk = int(findings_df["RiskScore"].max())
+
+    return {
+        "total_findings": len(findings_df),
+        "hijack_types":   hijack_types,
+        "affected_pids":  affected_pids,
+        "dll_names":      dll_names,
+        "max_risk":       max_risk,
+    }
+
+
+# ============================================================
+# Standalone CLI — test the module directly on a dlllist CSV
+# ============================================================
+
+if __name__ == "__main__":
+    import sys
+    import json
+
+    if len(sys.argv) < 2:
+        print("Usage: python dll_analysis.py <windows.dlllist.csv>")
+        print()
+        print("Example:")
+        print("  python dll_analysis.py "
+              "/MFF/cases/case04_t1574_attack/exports/csv/windows.dlllist.csv")
+        sys.exit(1)
+
+    csv_path = sys.argv[1]
+
+    if not os.path.exists(csv_path):
+        print(f"ERROR: File not found: {csv_path}")
+        sys.exit(1)
+
+    print(f"\n[dll_analysis] Loading: {csv_path}")
+    try:
+        df = pd.read_csv(csv_path)
+        print(f"[dll_analysis] Rows: {len(df)}  Columns: {list(df.columns)}\n")
+    except Exception as e:
+        print(f"[dll_analysis] ERROR reading CSV: {e}")
+        sys.exit(1)
+
+    findings = dll_hijack_analysis(df)
+
+    if findings.empty:
+        print("\n[RESULT] No suspicious DLL findings.")
+    else:
+        print(f"\n[RESULT] {len(findings)} suspicious finding(s):\n")
+        cols = ["PID", "Process", "DLL", "HijackType", "RiskScore", "LoadPath"]
+        print(findings[cols].to_string(index=False))
+
+    print("\n[SUMMARY]")
+    print(json.dumps(dll_summary(findings), indent=2))

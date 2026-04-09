@@ -152,78 +152,20 @@ def process_diff(base_df: pd.DataFrame, attack_df: pd.DataFrame):
 # ============================================================
 
 SUSPICIOUS_PATTERNS = [
-    # ── T1059 Execution (PowerShell / Cmdline) ────────────────────────────
-    "powershell", "pwsh", "cmd.exe", "wscript", "cscript", "mshta",
-    "rundll32", "regsvr32", "certutil", "bitsadmin", "psexec",
-    "invoke-", "iex ", "base64", "encodedcommand",
-    "-ExecutionPolicy bypass", "-enc ", "-nop ", "-noprofile",
-    "start-sleep",          # keepalive for dump
-
-    # ── T1082 System Information Discovery ────────────────────────────────
-    "systeminfo",           # classic sysinfo
-    "get-computerinfo",     # PowerShell modern
-    "wmic os", "wmic bios", "wmic cpu", "wmic computersystem",
-    "get-wmiobject win32_operatingsystem",
-    "gwmi win32_bios",
-    "[environment]::machinename",
-    "[system.environment]::osversion",
-    "hostname",
-
-    # ── T1016 Network Configuration Discovery ────────────────────────────
-    "ipconfig",             # classic
-    "get-netipaddress",     # PowerShell
-    "get-netadapter",
-    "get-dnsclientserveraddress",
-    "get-netroute",
-    "get-netneighbor",
-    "netsh interface",
-    "arp -a",
-    "route print",
-
-    # ── T1049 Network Connections Discovery ──────────────────────────────
-    "netstat",
-    "get-nettcpconnection",
-    "get-netudpendpoint",
-
-    # ── T1033 System Owner/User Discovery ────────────────────────────────
-    "whoami",
-    "get-localuser",
-    "net user",
-    "$env:username",
-    "[system.environment]::username",
-
-    # ── T1057 Process Discovery ──────────────────────────────────────────
-    "get-process",
-    "tasklist",
-    "gwmi win32_process",
-    "get-wmiobject win32_process",
-    "ps aux",
-
-    # ── T1083 File and Directory Discovery ──────────────────────────────
-    "get-childitem",
-    "dir /s",
-    "tree /f",
-
-    # ── T1007 Service Discovery ──────────────────────────────────────────
-    "get-service",
-    "sc query",
-    "net start",
-
-    # ── T1055 Process Injection ──────────────────────────────────────────
-    "AtomicRedTeam", "RWXinjection", "CreateRemoteThread", "VirtualAllocEx",
-    "WriteProcessMemory", "invoke-atomictest",
-
-    # ── T1574 DLL Hijacking ──────────────────────────────────────────────
-    "copy-item", "amsi.dll", "version.dll",
-    "\\temp\\", "\\tmp\\",
-    "pshijack", "\\hijack\\",
-
-    # ── T1562 Defense Evasion ────────────────────────────────────────────
-    "set-mppreference", "disablerealtimemonitoring",
-    "disable-windowsdefender",
-
-    # ── Credential Access ────────────────────────────────────────────────
-    "mimikatz", "sekurlsa", "logonpasswords", "hashdump",
+    # Execution (T1059)
+    "AtomicRedTeam","RWXinjection","CreateRemoteThread","VirtualAllocEx",
+    "WriteProcessMemory","powershell","cmd.exe","wscript","cscript","mshta",
+    "rundll32","regsvr32","certutil","bitsadmin","net user","net localgroup",
+    "whoami","mimikatz","procdump","lsass","invoke-","iex ","base64",
+    "schtasks","reg add","psexec","meterpreter",
+    # DLL Hijacking patterns (T1574)
+    "copy-item","copy-dllsearc","amsi.dll","version.dll",
+    "dll hijack","appdata\\local\\temp","-ExecutionPolicy bypass",
+    "invoke-atomictest","T1574","dll sideload",
+    # Credential access (T1003)
+    "sekurlsa","logonpasswords","hashdump","ntds.dit","sam.hive",
+    # Defense evasion (T1562)
+    "disableantispyware","disable-windowsdefender","set-mppreference",
 ]
 
 def cmdline_findings(df: pd.DataFrame) -> pd.DataFrame:
@@ -505,533 +447,119 @@ def pstree_anomaly(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(findings)
 
 
-
-# ============================================================
-# Process Executable Path Anomaly  (T1574 — process from wrong dir)
-# ============================================================
-
-# Executables that should ONLY run from Windows/System32
-LEGIT_EXE_PATHS = {
-    "notepad.exe":    ["c:\\windows\\system32\\", "c:\\windows\\"],
-    "calc.exe":       ["c:\\windows\\system32\\"],
-    "mspaint.exe":    ["c:\\windows\\system32\\"],
-    "powershell.exe": ["c:\\windows\\system32\\windowspowershell\\"],
-    "cmd.exe":        ["c:\\windows\\system32\\"],
-    "regedit.exe":    ["c:\\windows\\"],
-    "taskmgr.exe":    ["c:\\windows\\system32\\"],
-    "mshta.exe":      ["c:\\windows\\system32\\"],
-    "wscript.exe":    ["c:\\windows\\system32\\"],
-    "cscript.exe":    ["c:\\windows\\system32\\"],
-    "regsvr32.exe":   ["c:\\windows\\system32\\"],
-    "rundll32.exe":   ["c:\\windows\\system32\\"],
-}
-
-STAGING_PATHS = (
-    "c:\\temp\\", "c:\\tmp\\", "c:\\windows\\temp\\",
-    "\\appdata\\", "\\downloads\\", "\\desktop\\",
-    "\\public\\", "\\recycle",
-)
-
-
-def process_exe_path_anomaly(pslist_df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Detect system executables running from non-standard directories.
-    This is the PRIMARY T1574 detection for your attack:
-      notepad.exe from C:\\Temp\\hijack\\  -- DLL hijack staging
-      powershell.exe from C:\\Temp\\pshijack\\ -- DLL hijack staging
-
-    Volatility 3 pslist includes a 'File output' column that sometimes
-    contains the full process path, and the cmdline column may show
-    the full executable path.
-
-    We also flag ANY process running from C:\\Temp\\ as anomalous
-    regardless of the executable name.
-    """
-    if pslist_df is None or pslist_df.empty:
-        return pd.DataFrame()
-
-    df = pslist_df.copy()
-    df.columns = [str(c).strip() for c in df.columns]
-
-    pid_col  = next((c for c in df.columns
-                     if c.lower() in ("pid","pid_","processid")), None)
-    name_col = next((c for c in df.columns
-                     if c.lower() in ("imagefilename","imagefile","name","process")), None)
-
-    if not pid_col or not name_col:
-        return pd.DataFrame()
-
-    findings = []
-
-    for _, row in df.iterrows():
-        pid  = str(row.get(pid_col,  "?")).strip()
-        name = str(row.get(name_col, "?")).strip()
-        name_lo = name.lower()
-
-        # Collect all text fields that might contain the EXE path
-        all_text = " ".join(str(v) for v in row.values).lower()
-
-        # Check 1: known system EXE running from wrong path
-        if name_lo in LEGIT_EXE_PATHS:
-            legit_paths = LEGIT_EXE_PATHS[name_lo]
-            # If we can find the exe path in any text column
-            for staging in STAGING_PATHS:
-                if staging in all_text and name_lo in all_text:
-                    # Confirm it's not coincidentally in a DLL path
-                    # by checking if the staging path comes before the exe name
-                    idx_staging = all_text.find(staging)
-                    idx_exe     = all_text.find(name_lo, idx_staging)
-                    if idx_exe != -1 and (idx_exe - idx_staging) < 50:
-                        findings.append({
-                            "PID":         pid,
-                            "Process":     name,
-                            "ExePath":     staging + name_lo,
-                            "Technique":   "T1574.001",
-                            "RiskScore":   75,
-                            "Indicator":   (
-                                f"System executable '{name}' found in staging "
-                                f"directory '{staging}' — DLL Search Order Hijacking. "
-                                f"Windows loads DLLs from the EXE directory first, "
-                                f"making any DLL placed there get loaded instead of System32."
-                            ),
-                        })
-                        break
-
-        # Check 2: ANY process whose row mentions C:\Temp\ paths
-        for staging in ("c:\\temp\\", "\\temp\\pshijack", "\\hijack\\"):
-            if staging in all_text:
-                if not any(f["PID"] == pid for f in findings):
-                    findings.append({
-                        "PID":         pid,
-                        "Process":     name,
-                        "ExePath":     staging,
-                        "Technique":   "T1574.001",
-                        "RiskScore":   60,
-                        "Indicator":   (
-                            f"Process '{name}' (PID={pid}) associated with "
-                            f"staging directory '{staging}'. "
-                            f"Execution from non-standard path is a T1574.001 indicator."
-                        ),
-                    })
-                break
-
-    if not findings:
-        return pd.DataFrame()
-
-    return (pd.DataFrame(findings)
-            .drop_duplicates(subset=["PID"])
-            .sort_values("RiskScore", ascending=False)
-            .reset_index(drop=True))
-
 # ============================================================
 # Risk Scoring
 # ============================================================
 
-
 def risk_label(score: int) -> str:
-    if   score >= 80: return "CRITICAL"
-    elif score >= 55: return "HIGH"
-    elif score >= 25: return "MEDIUM"
-    elif score >  0:  return "LOW"
-    return "CLEAN"
+    if score >= 80: return "CRITICAL"
+    if score >= 50: return "HIGH"
+    if score >= 20: return "MEDIUM"
+    return "LOW"
 
-def risk_colour_ansi(level: str) -> str:
-    return {
-        "CRITICAL": "\033[38;5;203m",
-        "HIGH":     "\033[38;5;214m",
-        "MEDIUM":   "\033[38;5;178m",
-        "LOW":      "\033[38;5;71m",
-        "CLEAN":    "\033[38;5;240m",
-    }.get(level, "\033[0m")
-
-
-# ─────────────────────────────────────────────────────────────────
-#  Evidence weight catalogue
-#  Each weight is accompanied by its forensic justification.
-#  Weights follow proportionality:
-#   - High weight = high specificity + low false-positive rate
-#   - Combined evidence must come from independent sources (ACPO P2)
-# ─────────────────────────────────────────────────────────────────
-
-_EW = {
-    # Category A — DEFINITIVE (single source sufficient, very high specificity)
-    "KNOWN_MALICIOUS_NAME":   90,   # Exact match: mimikatz.exe, beacon.exe etc.
-    "AMSI_FILE_REPLACED":     85,   # amsi.dll from staging path + Volatility undumpable = irrefutable
-
-    # Category B — HIGH CONFIDENCE (two-source corroboration present)
-    "STAGING_DIR_EXECUTION":  70,   # Process running from C:\Temp\ or AppData — direct T1574 evidence
-    "AMSI_MEMORY_PATCH":      65,   # amsi.dll loaded + RWX in same PID — T1562.001 two-source
-    "RWX_HIGH":               55,   # 5+ PAGE_EXECUTE_READWRITE regions — substantial injection evidence
-    "PROTECTED_DLL_STAGED":   50,   # Protected DLL (amsi.dll, version.dll) from user-writable dir
-
-    # Category C — MODERATE (one source, specific indicator)
-    "STAGING_CMDLINE":        40,   # Cmdline shows staging path (C:\Temp\pshijack\powershell.exe)
-    "RWX_MEDIUM":             35,   # 3-4 RWX regions — possible injection
-    "CHAINED_RECON":          30,   # 3+ discovery commands in single session (T1082/T1016/T1033/T1057)
-    "PARENT_HIGH_RISK":       25,   # Spawned by process with score >= 70
-
-    # Category D — SUPPORTING (corroborative, not standalone)
-    "RWX_LOW":                20,   # 1-2 RWX regions — JIT is excluded but insufficient alone
-    "SUSPICIOUS_CMDLINE":     20,   # Pattern match in cmdline (powershell, encoded, bypass)
-    "WRONG_DIR_EXE":          20,   # System exe (mspaint, notepad) from non-System32 path
-    "DISCOVERY_PARTIAL":      10,   # 1-2 discovery commands — insufficient for MITRE tag alone
-    "PARENT_MEDIUM_RISK":     10,   # Spawned by process with score 25-69
-}
-
-
-# ─────────────────────────────────────────────────────────────────
-#  Known-malicious exact names (case-insensitive)
-# ─────────────────────────────────────────────────────────────────
-_KNOWN_MALICIOUS = {
-    "mimikatz.exe","mimikatz","wce.exe","pwdump.exe","fgdump.exe",
-    "procdump.exe","meterpreter","cobaltstrike","beacon.exe",
-    "rubeus.exe","sharpview.exe","seatbelt.exe","lazagne.exe",
-    "incognito.exe","soaphound.exe","sharphound.exe","bloodhound.exe",
-    "crackmapexec","crackmapexec.exe","wmiexec.py","secretsdump.py",
-    "psexec.exe","impacket","invoke-mimikatz","invoke-bloodhound",
-    "empire","powersploit","poshc2","covenant","brute-ratel",
-}
-
-_STAGING_PATHS = (
-    "\\temp\\", "\\tmp\\", "\\windows\\temp\\",
-    "\\appdata\\local\\temp\\", "\\downloads\\", "\\desktop\\",
-    "\\public\\", "\\recycle", "pshijack", "\\hijack\\",
-    "\\users\\public\\", "\\programdata\\",
-)
-
-_SYSTEM_EXES = {
-    "notepad.exe","calc.exe","mspaint.exe","write.exe",
-    "charmap.exe","taskmgr.exe","mshta.exe","wscript.exe",
-    "cscript.exe","regsvr32.exe","rundll32.exe","cmd.exe",
-}
-
-_DISCOVERY_KW = (
-    "systeminfo","get-computerinfo","wmic os","wmic bios","wmic cpu",
-    "ipconfig","get-netipaddress","get-netadapter","get-dnsclien",
-    "get-netroute","get-netneighbor","netstat","get-nettcpconnection",
-    "get-netudpendpoint","whoami","get-localuser","net user",
-    "env:username","get-process","tasklist","win32_process",
-    "get-service","sc query","net start","get-childitem","dir /s",
-)
-
-_DLL_TYPE_WEIGHTS = {
-    "AMSI_FILE_OUTPUT_DISABLED": (_EW["AMSI_FILE_REPLACED"],
-        "HIGHEST CONFIDENCE T1562.001+T1574.001: amsi.dll from staging path, "
-        "Volatility cannot dump file — replaced DLL confirmed. "
-        "ACPO P2: two independent sources corroborate (dlllist path + file undumpable)."),
-    "AMSI_BYPASS_MEMORY_PATCH":  (_EW["AMSI_MEMORY_PATCH"],
-        "HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions "
-        "in same PID — AMSI bypass via AmsiScanBuffer() memory patching. "
-        "Two-source corroboration (dlllist + malfind)."),
-    "PROTECTED_DLL_USER_DIR":    (_EW["PROTECTED_DLL_STAGED"],
-        "T1574.001: Protected DLL (amsi.dll/version.dll) loaded from "
-        "user-writable staging directory instead of System32."),
-    "SYSTEM_EXE_FROM_WRONG_DIR": (_EW["WRONG_DIR_EXE"],
-        "T1574.001: System executable has DLLs loading from staging directory. "
-        "Windows DLL search order exploited — attacker DLL loaded before System32 copy."),
-}
-
-
-def scoring_engine(
-    process_df:  pd.DataFrame,
-    cmd_df:      pd.DataFrame,
-    mal_df:      pd.DataFrame,
-    dll_df:      pd.DataFrame = None,
-    proc_df:     pd.DataFrame = None,
-) -> pd.DataFrame:
+def scoring_engine(process_df, cmd_df, mal_df, dll_df=None) -> pd.DataFrame:
     """
-    Realistic UK-forensics-aligned scoring engine.
+    Score processes from the attack capture.
+    process_df = new processes (not in baseline) — primary targets.
+    Also detects suspicious activity in known processes via cmdline/malfind.
 
-    Design principles (ACPO / NIST SP 800-86 / ISO 27037):
-    1. Every evidence contribution is traceable to a specific Volatility output.
-    2. Single-source weak indicators do not alone achieve HIGH or CRITICAL.
-    3. Evidence from independent sources (malfind + dlllist) is weighted higher
-       than single-source evidence (cmdline alone).
-    4. Score is clamped to [0, 100]. Over-saturation is prevented by de-duplication:
-       each evidence CATEGORY contributes at most once per process.
-    5. Confidence labels (CRITICAL/HIGH/MEDIUM/LOW/CLEAN) map to CPS thresholds.
-
-    Parameters
-    ----------
-    process_df : new processes (attack-only from process differential)
-    cmd_df     : suspicious cmdline findings
-    mal_df     : malfind RWX regions
-    dll_df     : DLL analysis findings (optional)
-    proc_df    : full attack pslist (for parent chain analysis)
+    Evidence weights:
+      +60  RWX memory region (malfind, already filtered to suspicious)
+      +40  Suspicious cmdline pattern match
+      +50  Exact known-malicious executable name
+      +30  Suspicious DLL load (dll_analysis — T1574)
+      +15  Anomalous name bonus (only if score already > 0)
     """
-    if process_df is None or process_df.empty:
-        return pd.DataFrame(columns=["PID","Process","RiskScore","RiskLevel",
-                                      "Confidence","Indicators","EvidenceCount",
-                                      "PrimaryTechnique"])
+    KNOWN_MALICIOUS_EXACT = {
+        "mimikatz.exe", "mimikatz", "wce.exe", "pwdump.exe", "procdump.exe",
+        "meterpreter", "cobaltstrike", "beacon.exe", "rubeus.exe",
+        "sharpview.exe", "seatbelt.exe", "lazagne.exe", "lazeagne.exe",
+        "incognito.exe", "tokenimpersonation.exe", "soaphound.exe",
+        "sharphound.exe", "bloodhound.exe", "crackmapexec", "crackmapexec.exe",
+        "psexec.exe", "wmiexec.py", "secretsdump.py",
+    }
+    ANOMALY_KW = ("rwxinjection", "inject32", "inject64", "hollowing",
+                  "reflective", "shellcode", "soaphound", "sharphound")
 
-    # ── Build lookup indices ────────────────────────────────────────────────
-    cmd_pid_set  = set(cmd_df["PID"].astype(str).values)  if (cmd_df  is not None and not cmd_df.empty)  else set()
-    mal_pid_set  = set(mal_df["PID"].astype(str).values)  if (mal_df  is not None and not mal_df.empty)  else set()
-    dll_pid_set  = set(dll_df["PID"].astype(str).values)  if (dll_df  is not None and not dll_df.empty and "PID" in dll_df.columns) else set()
+    # Build lookup sets for fast matching
+    cmd_pids  = set(cmd_df["PID"].values)  if not cmd_df.empty else set()
+    mal_pids  = set(mal_df["PID"].values)  if not mal_df.empty else set()
+    dll_pids  = set(dll_df["PID"].values)  if (dll_df is not None and not dll_df.empty and "PID" in dll_df.columns) else set()
+    # Also match cmdline by process name (robust to PID changes)
+    cmd_names = set()
+    if not cmd_df.empty:
+        name_col = "ImageFileName" if "ImageFileName" in cmd_df.columns else "Process"
+        if name_col in cmd_df.columns:
+            cmd_names = set(cmd_df[name_col].astype(str).str.lower().str.strip())
 
-    # RWX count per PID
-    rwx_map = {}
-    if mal_df is not None and not mal_df.empty and "PID" in mal_df.columns:
-        for _, r in mal_df.iterrows():
-            p = str(r.get("PID",""))
-            rwx_map[p] = rwx_map.get(p, 0) + 1
+    scores = []
+    for _, row in process_df.iterrows():
+        pid   = row.get("PID")
+        name  = str(row.get("ImageFileName", "Unknown"))
+        name_l = name.lower().strip()
+        score = 0
+        reasons = []
 
-    # Cmdline text per PID
-    cmd_text_map = {}
-    if cmd_df is not None and not cmd_df.empty and "PID" in cmd_df.columns:
-        args_col = "Args" if "Args" in cmd_df.columns else (
-                   "MatchedText" if "MatchedText" in cmd_df.columns else None)
-        if args_col:
-            for _, r in cmd_df.iterrows():
-                p = str(r.get("PID",""))
-                cmd_text_map[p] = (cmd_text_map.get(p,"") + " " +
-                                   str(r.get(args_col,"")).lower())
+        # Evidence 1: suspicious cmdline — match by PID or by name
+        if pid in cmd_pids or name_l in cmd_names:
+            score += 40
+            reasons.append("Suspicious cmdline pattern")
 
-    # Cmdline matched patterns per PID
-    cmd_patterns_map = {}
-    if cmd_df is not None and not cmd_df.empty:
-        pat_col = "MatchedPattern" if "MatchedPattern" in cmd_df.columns else None
-        if pat_col:
-            for _, r in cmd_df.iterrows():
-                p = str(r.get("PID",""))
-                if p not in cmd_patterns_map:
-                    cmd_patterns_map[p] = []
-                pv = str(r.get(pat_col,""))
-                if pv and pv not in cmd_patterns_map[p]:
-                    cmd_patterns_map[p].append(pv)
+        # Evidence 2: RWX memory region (malfind already filtered — no FPs)
+        if pid in mal_pids:
+            score += 60
+            reasons.append("RWX executable memory region (malfind)")
 
-    # PPID map from full pslist
-    ppid_map = {}
-    if proc_df is not None and not proc_df.empty and "PID" in proc_df.columns and "PPID" in proc_df.columns:
-        for _, r in proc_df.iterrows():
-            ppid_map[str(r.get("PID",""))] = str(r.get("PPID",""))
+        # Evidence 3: known-malicious exact name
+        if name_l in KNOWN_MALICIOUS_EXACT:
+            score += 50
+            reasons.append(f"Known-malicious name: {name}")
 
-    # DLL findings per PID — only best (highest weight) type per PID
-    dll_best_map = {}  # pid -> (weight, message, technique)
-    if dll_df is not None and not dll_df.empty and "PID" in dll_df.columns:
-        for _, r in dll_df.iterrows():
-            p  = str(r.get("PID",""))
-            ht = str(r.get("HijackType",""))
-            w, msg = _DLL_TYPE_WEIGHTS.get(ht, (15, f"DLL anomaly: {ht}"))
-            tech = str(r.get("Technique", "T1574.001"))
-            if p not in dll_best_map or w > dll_best_map[p][0]:
-                dll_best_map[p] = (w, msg, tech)
+        # Evidence 4: anomaly name bonus (only stacks on top of other evidence)
+        if score > 0 and any(kw in name_l for kw in ANOMALY_KW):
+            score += 15
+            reasons.append("Anomalous process name keyword")
 
-    # ── Score each process ─────────────────────────────────────────────────
-    scored_pids = {}   # pid -> score (for parent chain)
-    rows = []
+        # Evidence 5: suspicious DLL load (dll_analysis module — T1574)
+        if pid in dll_pids:
+            score += 30
+            reasons.append("Suspicious DLL load detected (possible T1574 hijack)")
 
-    for _, proc_row in process_df.iterrows():
-        pid     = proc_row.get("PID", "")
-        pid_s   = str(pid)
-        name    = str(proc_row.get("ImageFileName", proc_row.get("Process","Unknown")))
-        name_l  = name.lower().strip()
-        score   = 0
-        evidence = []         # list of (weight, short_label, detail) tuples
-        categories_added = set()  # prevent double-counting within same category
-
-        def add_ev(cat, label, detail="", override_w=None):
-            """Add evidence contribution — each category can only contribute once."""
-            if cat in categories_added:
-                return
-            w = override_w if override_w is not None else _EW.get(cat, 5)
-            evidence.append((w, label, detail))
-            categories_added.add(cat)
-
-        # ── A. Known-malicious executable name ────────────────────────────
-        if name_l in _KNOWN_MALICIOUS:
-            add_ev("KNOWN_MALICIOUS_NAME",
-                   f"Known offensive tool: {name}",
-                   "Exact name match against curated malicious toolset database. "
-                   "High specificity — this executable should never exist on a healthy system.")
-
-        # ── B. AMSI DLL replacement (staging path) ────────────────────────
-        if pid_s in dll_best_map:
-            w, msg, tech = dll_best_map[pid_s]
-            # Map DLL weight to category
-            if w >= _EW["AMSI_FILE_REPLACED"]:
-                add_ev("AMSI_FILE_REPLACED", "AMSI DLL replaced from staging path", msg)
-            elif w >= _EW["AMSI_MEMORY_PATCH"]:
-                add_ev("AMSI_MEMORY_PATCH", "AMSI bypass via memory patching", msg)
-            elif w >= _EW["PROTECTED_DLL_STAGED"]:
-                add_ev("PROTECTED_DLL_STAGED", "Protected DLL from staging directory", msg)
-            else:
-                add_ev("WRONG_DIR_EXE", "DLL loading anomaly", msg)
-
-        # ── C. Staging directory execution ────────────────────────────────
-        pid_args = cmd_text_map.get(pid_s, "")
-        is_staging = any(k in pid_args for k in _STAGING_PATHS)
-        if is_staging:
-            # Extract the staging path for evidence detail
-            snippet = ""
-            for k in _STAGING_PATHS:
-                idx = pid_args.find(k)
-                if idx != -1:
-                    snippet = pid_args[max(0,idx-5):idx+40].strip().replace('"','')
-                    break
-            add_ev("STAGING_DIR_EXECUTION",
-                   f"Execution from staging/non-standard path",
-                   f"Process cmdline references staging directory: ...{snippet}... "
-                   f"T1574.001 — Windows loads DLLs from executable directory first, "
-                   f"enabling attacker DLL substitution.")
-
-        # ── D. RWX memory regions (malfind) — proportional ───────────────
-        if pid_s in mal_pid_set:
-            n = rwx_map.get(pid_s, 1)
-            if n >= 5:
-                add_ev("RWX_HIGH",
-                       f"{n}× PAGE_EXECUTE_READWRITE memory regions",
-                       f"Volatility malfind: {n} executable+writable memory regions in {name}. "
-                       f"Substantial allocation of RWX memory indicates code injection (T1055) "
-                       f"or AMSI bypass via memory patching (T1562.001).")
-            elif n >= 3:
-                add_ev("RWX_MEDIUM",
-                       f"{n}× PAGE_EXECUTE_READWRITE regions",
-                       f"{n} RWX regions — possible code injection. "
-                       f"JIT compilers (Node.js, .NET) are excluded; "
-                       f"this process does not appear to be a known JIT runtime.")
-            else:
-                add_ev("RWX_LOW",
-                       f"{n}× PAGE_EXECUTE_READWRITE region(s)",
-                       f"{n} RWX region(s) — weak indicator alone; "
-                       f"notable in conjunction with other evidence.")
-
-        # ── E. Suspicious cmdline patterns ────────────────────────────────
-        if pid_s in cmd_pid_set:
-            patterns = cmd_patterns_map.get(pid_s, [])
-            pats_str = ", ".join(patterns[:4])
-            is_staging_pattern = any(k in (pid_args or "") for k in _STAGING_PATHS)
-            if is_staging_pattern:
-                add_ev("STAGING_CMDLINE",
-                       f"Cmdline staging path pattern(s): {pats_str}",
-                       f"Command line arguments contain staging directory reference. "
-                       f"Matched patterns: {pats_str}")
-            else:
-                add_ev("SUSPICIOUS_CMDLINE",
-                       f"Suspicious cmdline pattern(s): {pats_str}",
-                       f"Command line matched detection signatures: {pats_str}")
-
-        # ── F. Discovery technique chain ──────────────────────────────────
-        disc_count = sum(1 for kw in _DISCOVERY_KW if kw in pid_args)
-        if disc_count >= 3:
-            matching = [kw for kw in _DISCOVERY_KW if kw in pid_args][:5]
-            add_ev("CHAINED_RECON",
-                   f"Chained reconnaissance: {disc_count} discovery techniques",
-                   f"Multiple discovery techniques in single session indicates adversarial "
-                   f"post-compromise reconnaissance. Matched: {', '.join(matching)}. "
-                   f"Maps to T1082/T1016/T1033/T1057.")
-        elif disc_count in (1, 2):
-            add_ev("DISCOVERY_PARTIAL",
-                   f"Discovery command(s): {disc_count} match(es)",
-                   f"Partial discovery evidence — {disc_count} discovery command(s) detected.")
-
-        # ── G. System executable from wrong directory ─────────────────────
-        if name_l in _SYSTEM_EXES and is_staging and "STAGING_DIR_EXECUTION" in categories_added:
-            add_ev("WRONG_DIR_EXE",
-                   f"System executable {name} from non-System32 path",
-                   f"{name} should only run from System32. "
-                   f"Execution from staging directory confirms T1574.001 exploitation.")
-
-        # ── H. Parent chain propagation ───────────────────────────────────
-        ppid_s = ppid_map.get(pid_s, "")
-        if ppid_s and ppid_s in scored_pids:
-            parent_score = scored_pids[ppid_s]
-            if parent_score >= 70:
-                add_ev("PARENT_HIGH_RISK",
-                       f"Spawned by high-risk parent (PID {ppid_s}, score {parent_score})",
-                       f"Process chain: this process was created by PID {ppid_s} which "
-                       f"has risk score {parent_score}/100. Adversary process chains "
-                       f"are a strong indicator of lateral process injection or staged execution.")
-            elif parent_score >= 25:
-                add_ev("PARENT_MEDIUM_RISK",
-                       f"Spawned by medium-risk parent (PID {ppid_s}, score {parent_score})",
-                       f"Parent PID {ppid_s} has risk score {parent_score}/100.")
-
-        # ── Calculate final score ─────────────────────────────────────────
-        # Sum all evidence, clamp to 100
-        # Note: each category contributes ONCE regardless of how many DLLs/RWX etc.
-        raw_score = sum(w for w, _, _ in evidence)
-        final_score = min(100, raw_score)
-
-        # Determine primary technique from highest-weight evidence
-        primary_tech = "—"
-        if evidence:
-            best_ev = max(evidence, key=lambda x: x[0])
-            best_label = best_ev[1]
-            if "AMSI" in best_label or "amsi" in best_label:
-                primary_tech = "T1562.001"
-            elif "staging" in best_label.lower() or "DLL" in best_label or "hijack" in best_label.lower():
-                primary_tech = "T1574.001"
-            elif "RWX" in best_label or "injection" in best_label.lower():
-                primary_tech = "T1055"
-            elif "PowerShell" in best_label or "cmdline" in best_label.lower():
-                primary_tech = "T1059.001"
-            elif "malicious" in best_label.lower():
-                primary_tech = "T1036"
-
-        level      = risk_label(final_score)
-        ev_count   = len(evidence)
-
-        # Confidence narrative
-        if ev_count >= 4:
-            confidence = "Very High — Multiple independent evidence sources corroborate"
-        elif ev_count == 3:
-            confidence = "High — Three independent evidence sources"
-        elif ev_count == 2:
-            confidence = "Medium-High — Two independent evidence sources"
-        elif ev_count == 1:
-            confidence = "Medium — Single evidence source"
-        else:
-            confidence = "Low — No adverse indicators"
-
-        # Build indicators string (concise labels only for CSV; full details in HTML)
-        indicators_short = "; ".join(lbl for _, lbl, _ in evidence) if evidence else "None"
-        indicators_full  = "\n".join(
-            f"[{w:3d}pts] {lbl}: {det}" for w, lbl, det in sorted(evidence, reverse=True)
-        ) if evidence else "No adverse indicators detected at this evidential threshold."
-
-        scored_pids[pid_s] = final_score
-
-        rows.append({
-            "PID":             pid,
-            "Process":         name,
-            "RiskScore":       final_score,
-            "RiskLevel":       level,
-            "Confidence":      confidence,
-            "EvidenceCount":   ev_count,
-            "PrimaryTechnique":primary_tech,
-            "Indicators":      indicators_short,
-            "IndicatorsFull":  indicators_full,
+        scores.append({
+            "PID":        pid,
+            "Process":    name,
+            "RiskScore":  score,
+            "RiskLevel":  risk_label(score),
+            "Indicators": "; ".join(reasons) or "None",
         })
 
-    df = pd.DataFrame(rows)
+    df = pd.DataFrame(scores)
     if df.empty or "RiskScore" not in df.columns:
         return df
-    return df.sort_values("RiskScore", ascending=False).reset_index(drop=True)
-
+    return df.sort_values("RiskScore", ascending=False)
 
 
 # ============================================================
-# ANSI Console Colours  (Linux/macOS, Windows 10+ terminals)
+# Artefact Console Printer  — colour-coded terminal output
 # ============================================================
+
+# ANSI colours — Linux/macOS and Windows 10+ terminals
 _R       = "\033[0m"
 _B       = "\033[1m"
 _DIM     = "\033[2m"
 _RED     = "\033[38;5;203m"   # CRITICAL / RWX / known-malicious
 _ORANGE  = "\033[38;5;214m"   # HIGH / suspicious cmdline
 _YELLOW  = "\033[38;5;178m"   # MEDIUM / new unknown
-_GREEN   = "\033[38;5;71m"    # clean / baseline
-_CYAN    = "\033[38;5;80m"    # new unscored / info
-_BLUE    = "\033[38;5;75m"    # ATT&CK / network
+_GREEN   = "\033[38;5;71m"    # clean / baseline / nothing found
+_CYAN    = "\033[38;5;80m"    # new unscored process
+_BLUE    = "\033[38;5;75m"    # ATT&CK / network info
 _GREY    = "\033[38;5;240m"   # gone / neutral
-_PURPLE  = "\033[38;5;141m"   # DLL findings
 
 _SEV_COLOR = {
     "CRITICAL": _RED,
     "HIGH":     _ORANGE,
     "MEDIUM":   _YELLOW,
     "LOW":      _GREEN,
-    "CLEAN":    _GREY,
 }
 
 def _tag(label: str, color: str) -> str:
@@ -1052,7 +580,6 @@ def print_artefact_summary(
     tagged_df, ioc_df,
     net_new_df, net_flagged_df,
     dll_findings_df=None,
-    exe_path_findings=None,
 ):
     """
     Print a colour-coded artefact summary directly to the terminal.
@@ -1236,22 +763,6 @@ def print_artefact_summary(
             print(f"         Path   : {_ORANGE}{path}{_R}")
             print(f"         Type   : {_DIM}{htype}{_R}")
             print(f"         Reason : {_YELLOW}{reason}{_R}")
-
-    # ── 8b. Process Path Anomaly ──────────────────────────────
-    _divider("PROCESS PATH ANOMALY  (T1574 — Exe from staging dir)")
-    if exe_path_findings is None or (hasattr(exe_path_findings, 'empty') and exe_path_findings.empty):
-        print(f"  {_GREEN}✓  No process path anomalies detected{_R}")
-    else:
-        for _, row in exe_path_findings.iterrows():
-            pid     = row.get("PID", "?")
-            proc    = str(row.get("Process", "?"))
-            exe_p   = str(row.get("ExePath", "?"))
-            ind     = str(row.get("Indicator", ""))
-            risk    = int(row.get("RiskScore", 0))
-            color   = _RED if risk >= 70 else _ORANGE
-            print(f"  {_tag('T1574', color)}  {color}{_B}{proc}{_R}  {_DIM}PID={pid}{_R}")
-            print(f"         Path   : {_ORANGE}{exe_p}{_R}")
-            print(f"         Reason : {_YELLOW}{ind[:120]}{_R}")
 
     # ── Colour legend ─────────────────────────────────────────
     print(f"\n{_GREY}{'─'*65}{_R}")
@@ -1739,40 +1250,27 @@ def main():
     timeline_df       = timeline_correlation(attack["pslist"])
 
     # DLL Hijacking analysis via dll_analysis module
-    # full_dll_analysis runs ALL strategies:
-    # Strategy 1: path-based (protected DLL from wrong location)
-    # Strategy 2: AMSI bypass correlation (amsi.dll + RWX in same PID)
-    # Strategy 3: staging detection (DLL from AppData/Temp)
-    dllhijack_df = dll_analysis.full_dll_analysis(
-        attack["dlllist"], malfind_df)
+    dllhijack_df = dll_analysis.dll_hijack_analysis(attack["dlllist"])
 
     # Print DLL findings early (important for terminal summary)
     if not dllhijack_df.empty:
-        techniques_found = dllhijack_df["Technique"].unique().tolist()
-        print(f"  [!] DLL/AMSI FINDINGS: {len(dllhijack_df)} finding(s)  "
-              f"Techniques={techniques_found}")
+        print(f"  [!] T1574 DLL HIJACKING — {len(dllhijack_df)} suspicious DLL load(s) detected")
         for _, row in dllhijack_df.iterrows():
-            color_tag = "[T1562.001]" if "T1562" in str(row.get("Technique","")) else "[T1574.001]"
-            print(f"      {color_tag}  {row.get('HijackType','?')}  "
-                  f"{row.get('DLL','')} in {row.get('Process','?')}  "
-                  f"PID={row.get('PID','?')}  score={row.get('RiskScore',0)}")
+            print(f"      [{row.get('Technique','T1574.001')}]  "
+                  f"{row.get('DLL','')}  "
+                  f"loaded from: {row.get('LoadPath','')}  "
+                  f"PID={row.get('PID','?')}  "
+                  f"Process={row.get('Process','?')}  "
+                  f"RiskScore={row.get('RiskScore',0)}")
     else:
         dll_missing = attack["dlllist"].empty
         if dll_missing:
-            print("  [i] DLL: dlllist.csv not found — "
-                  "run: python vol.py -r csv windows.dlllist > windows.dlllist.csv")
+            print("  [i] DLL hijacking: dlllist.csv not found — "
+                  "run windows.dlllist export to enable T1574 detection")
         else:
-            print("  [i] DLL: dlllist.csv loaded — "
-                  "no suspicious DLL patterns detected via any strategy")
+            print("  [i] DLL hijacking: dlllist.csv loaded — "
+                  "no protected DLLs found from non-System32 paths")
 
-    # Process executable path anomaly (T1574 — exe from wrong dir)
-    # This catches: notepad.exe from C:\Temp\hijack\, powershell.exe from C:\Temp\pshijack\
-    exe_path_df   = process_exe_path_anomaly(attack["pslist"])
-    if not exe_path_df.empty:
-        print(f"  [!] PROCESS PATH ANOMALY — {len(exe_path_df)} process(es) running from staging dirs")
-        for _, row in exe_path_df.iterrows():
-            print(f"      [T1574.001]  {row.get('Process','?')} PID={row.get('PID','?')}  "
-                  f"{row.get('Indicator','')}")
     # Thread injection analysis
     threads_df    = threads_analysis(attack["threads"])
     if not threads_df.empty:
@@ -1788,22 +1286,7 @@ def main():
             print(f"      [{row.get('Technique','T1134')}]  {row.get('Indicator','')}")
 
     # Scoring — pass dllhijack_df so DLL evidence contributes to risk score
-    # Merge exe_path findings into dllhijack_df for scoring
-    if not exe_path_df.empty:
-        import pandas as _pd
-        exe_as_dll = exe_path_df.rename(columns={
-            'ExePath':'LoadPath','Indicator':'DLL_Indicator'})
-        exe_as_dll['DLL']          = exe_path_df['Process']
-        exe_as_dll['HijackType']   = 'SYSTEM_EXE_FROM_STAGING_DIR'
-        exe_as_dll['Technique']    = 'T1574.001'
-        exe_as_dll['TechniqueName']= 'DLL Search Order Hijacking'
-        exe_as_dll['Tactic']       = 'Defense Evasion'
-        exe_as_dll['Description']  = exe_path_df['Indicator']
-        if not dllhijack_df.empty:
-            dllhijack_df = _pd.concat([dllhijack_df, exe_as_dll], ignore_index=True)
-        else:
-            dllhijack_df = exe_as_dll
-    scores_df = scoring_engine(new_df, cmd_df, malfind_df, dllhijack_df, attack['pslist'])
+    scores_df = scoring_engine(new_df, cmd_df, malfind_df, dllhijack_df)
 
     # ── MITRE ATT&CK tagging
     print("[3/7] MITRE ATT&CK tagging...")
@@ -1811,14 +1294,11 @@ def main():
         attack["pslist"], attack["cmdline"],
         attack["malfind"], attack["netscan"])
 
-    # Merge DLL/AMSI findings into ATT&CK tags (via dll_analysis module)
+    # Merge DLL hijack findings into ATT&CK tags (via dll_analysis module)
     if not dllhijack_df.empty:
         dll_tags  = dll_analysis.dll_attack_tags(dllhijack_df)
         tagged_df = pd.concat([tagged_df, dll_tags], ignore_index=True).drop_duplicates(
             subset=["PID","Technique","MatchedKeyword"])
-        # Log unique techniques now detected
-        all_techs = tagged_df["Technique"].unique().tolist()
-        print(f"  [+] ATT&CK techniques after DLL merge: {all_techs}")
 
     tactic_sum = mitre_tagger.summary_by_tactic(tagged_df)
 
@@ -1832,17 +1312,16 @@ def main():
 
     # ── Colour-coded artefact summary printed to terminal
     print_artefact_summary(
-        new_df          = new_df,
-        gone_df         = gone_df,
-        scores_df       = scores_df,
-        cmd_df          = cmd_df,
-        malfind_df      = malfind_df,
-        tagged_df       = tagged_df,
-        ioc_df          = ioc_df,
-        net_new_df      = net_new_df,
-        net_flagged_df  = net_flagged_df,
-        dll_findings_df = dllhijack_df,
-        exe_path_findings = exe_path_df,
+        new_df         = new_df,
+        gone_df        = gone_df,
+        scores_df      = scores_df,
+        cmd_df         = cmd_df,
+        malfind_df     = malfind_df,
+        tagged_df      = tagged_df,
+        ioc_df         = ioc_df,
+        net_new_df     = net_new_df,
+        net_flagged_df = net_flagged_df,
+        dll_findings_df= dllhijack_df,
     )
 
     # ── JSON summary (needed for reports)
@@ -1889,8 +1368,6 @@ def main():
         net_flagged_df.to_csv(os.path.join(args.out, "net_flagged.csv"), index=False)
         if not threads_df.empty:
             threads_df.to_csv(os.path.join(args.out, "thread_findings.csv"), index=False)
-        if not exe_path_df.empty:
-            exe_path_df.to_csv(os.path.join(args.out, "process_path_anomaly.csv"), index=False)
         if not pstree_df.empty:
             pstree_df.to_csv(os.path.join(args.out, "pstree_anomaly.csv"), index=False)
         export_alert.write_json_summary(json_summary, args.out)
