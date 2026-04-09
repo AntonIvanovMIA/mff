@@ -22,6 +22,7 @@ Integrity verification of memory image used for forensic analysis
 
 
 --------------------------------------
+case04
 T1574.raw
 SHA256: 374b66923a6d00ba945951e0a1abce1c6c62fbdfc30df6e11189e00fdae2e1fc
 MD5:    17877102d656683d24ca099592be4c50
