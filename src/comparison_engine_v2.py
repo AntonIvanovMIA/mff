@@ -2,23 +2,86 @@
 """
 MFF v2 — Comparison Engine (Master)
 ====================================
-Baseline vs Attack memory analysis with:
-  • MITRE ATT&CK auto-tagging
+Post-Volatility memory forensics framework.
+Compares a baseline memory capture against any attack capture.
+Works with ALL cases: case01–case05 (and any future cases).
+Loads exports automatically — CSV first, JSONL fallback.
+ 
+Features:
+  • Process diff (baseline vs attack, name-based — not PID)
+  • Risk scoring engine (ACPO-aligned, transparent rule-based)
+  • DLL hijacking detection (T1574.001, T1562.001)
+  • MITRE ATT&CK auto-tagging (42 rules, 8 tactics)
   • Network diff + suspicious port flagging
-  • IOC extraction (IPs, domains, hashes, paths)
+  • IOC extraction (IPs, domains, hashes, file paths)
   • Parent-child process tree + ATT&CK heatmap
-  • Interactive HTML report (filterable, sortable)
-  • PDF report
-  • JSON SIEM/SOAR threat summary
-  • Slack / webhook alerting
-
-Usage:
-  python comparison_engine_v2.py \\
-    --baseline /MFF/cases/case01_baseline \\
-    --attack   /MFF/cases/case03_t1059_attack \\
-    --out      /MFF/analysis/comparison/case01_vs_case03 \\
-    --make-html --make-pdf \\
-    --webhook  https://hooks.slack.com/services/XXX
+  • Interactive HTML report (filterable, sortable, CSV export)
+  • PDF forensics report (UK standards: ACPO, NIST SP 800-86, ISO 27037)
+  • JSON threat summary (SIEM/SOAR compatible)
+  • Slack / generic webhook alerting
+ 
+Data loading (automatic — no config needed):
+  Tries exports/csv/windows.*.csv  →  falls back to exports/jsonl/windows.*.jsonl
+  Plugins: pslist, pstree, cmdline, malfind, netscan, dlllist, threads
+ 
+─────────────────────────────────────────────────────
+SINGLE CASE — compare baseline vs one attack capture:
+─────────────────────────────────────────────────────
+ 
+  # Case 02 — T1055.5 Process Injection
+  python /MFF/src/comparison_engine_v2.py \
+    --baseline /MFF/cases/case01_baseline \
+    --attack   /MFF/cases/case02_t1055_5_attack \
+    --out      /MFF/analysis/comparison/case01_vs_case02 \
+    --make-html --make-pdf
+ 
+  # Case 03 — T1059 PowerShell
+  python /MFF/src/comparison_engine_v2.py \
+    --baseline /MFF/cases/case01_baseline \
+    --attack   /MFF/cases/case03_t1059_attack \
+    --out      /MFF/analysis/comparison/case01_vs_case03 \
+    --make-html --make-pdf
+ 
+  # Case 04 — T1574 DLL Hijacking
+  python /MFF/src/comparison_engine_v2.py \
+    --baseline /MFF/cases/case01_baseline \
+    --attack   /MFF/cases/case04_t1574_attack \
+    --out      /MFF/analysis/comparison/case01_vs_case04 \
+    --make-html --make-pdf
+ 
+  # Case 05 — Multi-technique
+  python /MFF/src/comparison_engine_v2.py \
+    --baseline /MFF/cases/case01_baseline \
+    --attack   /MFF/cases/case05_multi_attack \
+    --out      /MFF/analysis/comparison/case01_vs_case05 \
+    --make-html --make-pdf
+ 
+─────────────────────────────────────────────────────
+BATCH — all cases at once (via automation.py):
+─────────────────────────────────────────────────────
+ 
+  python /MFF/src/modules/automation.py batch \
+    --baseline /MFF/cases/case01_baseline \
+    --attacks  /MFF/cases/case02_t1055_5_attack \
+               /MFF/cases/case03_t1059_attack \
+               /MFF/cases/case04_t1574_attack \
+               /MFF/cases/case05_multi_attack \
+    --out-root /MFF/analysis/batch_run_final \
+    --make-html --make-pdf
+ 
+─────────────────────────────────────────────────────
+ALL FLAGS:
+─────────────────────────────────────────────────────
+ 
+  --baseline   PATH   Baseline case folder (case01)
+  --attack     PATH   Attack case folder (case02–case05)
+  --out        PATH   Output directory for all results
+  --make-html         Generate interactive HTML report
+  --make-pdf          Generate PDF forensics report
+  --no-csv            Skip CSV output files
+  --webhook    URL    Send Slack/webhook alert on critical findings
+  --webhook-mode      slack (default) or generic
+  --case-id    STR    Custom case label (default: auto from folder names)
 """
 
 import os
