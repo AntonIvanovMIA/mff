@@ -1,4 +1,0 @@
-TreeDepth,Offset,Proto,LocalAddr,LocalPort,ForeignAddr,ForeignPort,State,PID,Owner,Created,SuspiciousPort,PortMeaning
-0,0xba8ee7f531b0,TCPv4,0.0.0.0,135,0.0.0.0,0,LISTENING,904,svchost.exe,2026-04-08 18:51:57.000000 UTC,135,DCOM/RPC
-0,0xba8ee7f531b0,TCPv6,::,135,::,0,LISTENING,904,svchost.exe,2026-04-08 18:51:57.000000 UTC,135,DCOM/RPC
-0,0xba8ee7f54390,TCPv4,0.0.0.0,135,0.0.0.0,0,LISTENING,904,svchost.exe,2026-04-08 18:51:57.000000 UTC,135,DCOM/RPC

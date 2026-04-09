@@ -1,0 +1,30 @@
+{
+  "generated_at": "2026-04-09 17:10:35 UTC",
+  "baseline": "/MFF/cases/case01_baseline",
+  "results": [
+    {
+      "baseline": "baseline",
+      "attack_case": "case02_t1055_5_attack",
+      "out_dir": "/MFF/analysis/batch_run_week4/baseline_vs_case02_t1055_5_attack",
+      "success": true,
+      "elapsed_sec": 4.8,
+      "status": "OK"
+    },
+    {
+      "baseline": "baseline",
+      "attack_case": "case03_t1059_attack",
+      "out_dir": "/MFF/analysis/batch_run_week4/baseline_vs_case03_t1059_attack",
+      "success": true,
+      "elapsed_sec": 5.2,
+      "status": "OK"
+    },
+    {
+      "baseline": "baseline",
+      "attack_case": "case04_t1574_attack",
+      "out_dir": "/MFF/analysis/batch_run_week4/baseline_vs_case04_t1574_attack",
+      "success": true,
+      "elapsed_sec": 4.7,
+      "status": "OK"
+    }
+  ]
+}

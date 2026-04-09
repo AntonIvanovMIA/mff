@@ -1,0 +1,9 @@
+PID,Process,MatchedText,MatchedKeyword,Tactic,Technique,TechniqueName,ATT&CK_URL
+7764,powershell.exe,"\\??\\C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -Command ""Add-Type -AssemblyName PresentationFramew",type ,Collection,T1005,Data from Local System,https://attack.mitre.org/techniques/T1005
+992,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+7764,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+7764,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,https://attack.mitre.org/techniques/T1562/001
+992,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,https://attack.mitre.org/techniques/T1562/001
+4708,explorer.exe,C:\\Users\\lucif\\AppData\\Local\\Microsoft\\OneDrive\\26.012.0119.0002_1\\FileSyncShell64.dll,filesyncshell64.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+8368,msedge.exe,C:\\Users\\lucif\\AppData\\Local\\Microsoft\\Edge\\User Data\\Well Known Domains\\1.2.0.0\\well_known_domains.dll,well_known_domains.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+6064,UserOOBEBroker,C:\\Users\\lucif\\AppData\\Local\\Microsoft\\OneDrive\\26.012.0119.0002_1\\FileCoAuthLib64.dll,filecoauthlib64.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001

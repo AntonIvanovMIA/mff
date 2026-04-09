@@ -1,0 +1,4 @@
+Tactic,Technique,TechniqueName,HitCount
+Execution,T1059.001,PowerShell,4
+Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,1
+Defense Evasion,T1574.001,DLL Search Order Hijacking,1

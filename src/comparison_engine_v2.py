@@ -75,13 +75,150 @@ def now_utc():
 
 def safe_read_csv(path):
     if not os.path.exists(path):
-        print(f"  [!] Missing: {path}")
         return pd.DataFrame()
     try:
         return pd.read_csv(path)
     except Exception as e:
-        print(f"  [!] Failed to read {path}: {e}")
+        print(f"  [!] Failed to read CSV {path}: {e}")
         return pd.DataFrame()
+
+
+def safe_read_jsonl(path):
+    """
+    Read a flat Volatility 3 JSONL file into a DataFrame.
+    Skips blank lines, drops __children key (always [] in flat plugins).
+    """
+    if not os.path.exists(path):
+        return pd.DataFrame()
+    import json as _json
+    rows = []
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                try:
+                    obj = _json.loads(line)
+                    if not isinstance(obj, dict):
+                        continue
+                    obj.pop("__children", None)
+                    rows.append(obj)
+                except _json.JSONDecodeError:
+                    continue
+        if not rows:
+            return pd.DataFrame()
+        return pd.DataFrame(rows)
+    except Exception as e:
+        print(f"  [!] Failed to read JSONL {path}: {e}")
+        return pd.DataFrame()
+
+
+def _flatten_pstree_node(node, rows):
+    """Recursively flatten nested pstree JSONL into flat list of process rows."""
+    import json as _json
+    children = node.pop("__children", [])
+    rows.append(node)
+    for child in children:
+        if isinstance(child, dict):
+            _flatten_pstree_node(child, rows)
+
+
+def safe_read_pstree_jsonl(path):
+    """
+    Read Volatility 3 pstree JSONL (nested __children structure).
+    Flattens all levels into a flat DataFrame matching pslist shape.
+    """
+    if not os.path.exists(path):
+        return pd.DataFrame()
+    import json as _json
+    all_rows = []
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                try:
+                    obj = _json.loads(line)
+                    if isinstance(obj, dict):
+                        _flatten_pstree_node(obj, all_rows)
+                except _json.JSONDecodeError:
+                    continue
+        if not all_rows:
+            return pd.DataFrame()
+        return pd.DataFrame(all_rows)
+    except Exception as e:
+        print(f"  [!] Failed to read pstree JSONL {path}: {e}")
+        return pd.DataFrame()
+
+
+def _normalise_columns(df, plugin):
+    """
+    Ensure consistent column names across CSV and JSONL sources.
+
+    Volatility 3 JSONL column differences vs CSV:
+      cmdline  JSONL: 'Process' (not 'ImageFileName')
+      malfind  JSONL: 'Process' (not 'ImageFileName')
+      netscan  JSONL: 'Owner'   (not 'ImageFileName')
+      dlllist  JSONL: 'Process', 'Name', 'Path'  (same as CSV)
+      pslist   JSONL: 'ImageFileName'             (same as CSV)
+      pstree   JSONL: 'ImageFileName'             (same as CSV)
+
+    Adds alias column 'ImageFileName' where engine expects it.
+    Also normalises PID/PPID to int.
+    """
+    if df.empty:
+        return df
+    df = df.copy()
+
+    if plugin == "cmdline":
+        if "Process" in df.columns and "ImageFileName" not in df.columns:
+            df["ImageFileName"] = df["Process"]
+
+    if plugin == "malfind":
+        if "Process" in df.columns and "ImageFileName" not in df.columns:
+            df["ImageFileName"] = df["Process"]
+
+    if plugin == "netscan":
+        if "Owner" in df.columns and "ImageFileName" not in df.columns:
+            df["ImageFileName"] = df["Owner"]
+
+    for col in ("PID", "PPID"):
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0).astype(int)
+
+    return df
+
+
+def safe_load_plugin(csv_dir, jsonl_dir, plugin_name):
+    """
+    Load a Volatility 3 plugin export.
+    Priority: CSV first (faster), then JSONL fallback.
+    Returns empty DataFrame if neither found.
+    """
+    csv_path   = os.path.join(csv_dir,   f"windows.{plugin_name}.csv")
+    jsonl_path = os.path.join(jsonl_dir, f"windows.{plugin_name}.jsonl")
+
+    # Try CSV first
+    if os.path.exists(csv_path):
+        df = safe_read_csv(csv_path)
+        if not df.empty:
+            return _normalise_columns(df, plugin_name)
+
+    # Fall back to JSONL
+    if os.path.exists(jsonl_path):
+        if plugin_name == "pstree":
+            df = safe_read_pstree_jsonl(jsonl_path)
+        else:
+            df = safe_read_jsonl(jsonl_path)
+        if not df.empty:
+            print(f"  [i] {plugin_name}: loaded from JSONL ({len(df)} rows)")
+            return _normalise_columns(df, plugin_name)
+
+    # Neither found — silent, engine handles empty DFs gracefully
+    return pd.DataFrame()
+
 
 def ensure_dir(path):
     os.makedirs(path, exist_ok=True)
@@ -93,20 +230,27 @@ def _save_fig(fig, path):
 
 
 # ============================================================
-# Load Case
+# Load Case  —  CSV-first, JSONL fallback, automatic
 # ============================================================
 
 def load_case(case_path: str) -> dict:
-    exports = os.path.join(case_path, "exports", "csv")
-    data = {
-        "pslist":  safe_read_csv(os.path.join(exports, "windows.pslist.csv")),
-        "pstree":  safe_read_csv(os.path.join(exports, "windows.pstree.csv")),
-        "cmdline": safe_read_csv(os.path.join(exports, "windows.cmdline.csv")),
-        "malfind": safe_read_csv(os.path.join(exports, "windows.malfind.csv")),
-        "netscan": safe_read_csv(os.path.join(exports, "windows.netscan.csv")),
-        "dlllist": safe_read_csv(os.path.join(exports, "windows.dlllist.csv")),
-        "threads": safe_read_csv(os.path.join(exports, "windows.threads.csv")),
-    }
+    """
+    Load all Volatility 3 exports for a case.
+    Tries exports/csv/ first, falls back to exports/jsonl/ automatically.
+    Every plugin that is missing produces an empty DataFrame.
+    The engine handles empty DataFrames gracefully at every stage.
+
+    Supported plugins: pslist, pstree, cmdline, malfind, netscan, dlllist, threads
+    """
+    csv_dir   = os.path.join(case_path, "exports", "csv")
+    jsonl_dir = os.path.join(case_path, "exports", "jsonl")
+
+    plugins = ["pslist", "pstree", "cmdline", "malfind", "netscan", "dlllist", "threads"]
+
+    data = {}
+    for plugin in plugins:
+        data[plugin] = safe_load_plugin(csv_dir, jsonl_dir, plugin)
+
     return data
 
 

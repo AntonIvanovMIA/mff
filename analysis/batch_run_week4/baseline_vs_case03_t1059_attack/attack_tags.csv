@@ -1,0 +1,7 @@
+PID,Process,MatchedText,MatchedKeyword,Tactic,Technique,TechniqueName,ATT&CK_URL
+7888,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+9608,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+9864,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+4200,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+7888,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,https://attack.mitre.org/techniques/T1562/001
+5496,MicrosoftEdgeU,C:\\Users\\lucif\\AppData\\Local\\Microsoft\\EdgeUpdate\\1.3.221.3\\msedgeupdate.dll,msedgeupdate.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001

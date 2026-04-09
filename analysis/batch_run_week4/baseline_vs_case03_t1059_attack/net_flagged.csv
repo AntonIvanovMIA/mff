@@ -1,0 +1,5 @@
+TreeDepth,Offset,Proto,LocalAddr,LocalPort,ForeignAddr,ForeignPort,State,PID,Owner,Created,ImageFileName,SuspiciousPort,PortMeaning
+0,0xa4827a562e10,TCPv4,0.0.0.0,135,0.0.0.0,0,LISTENING,920,svchost.exe,2026-02-17 23:49:54.000000 UTC,svchost.exe,135,DCOM/RPC
+0,0xa4827a563230,TCPv4,0.0.0.0,135,0.0.0.0,0,LISTENING,920,svchost.exe,2026-02-17 23:49:54.000000 UTC,svchost.exe,135,DCOM/RPC
+0,0xa4827a563230,TCPv6,::,135,::,0,LISTENING,920,svchost.exe,2026-02-17 23:49:54.000000 UTC,svchost.exe,135,DCOM/RPC
+0,0xa4827f8f3890,TCPv4,10.0.2.5,139,0.0.0.0,0,LISTENING,4,System,2026-03-11 13:27:02.000000 UTC,System,139,NetBIOS

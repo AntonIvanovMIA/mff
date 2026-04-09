@@ -39,11 +39,33 @@ def now_utc():
 # ─────────────────────────────────────────────────────────────
 
 def _img_b64(path: str) -> str:
-    if not os.path.exists(path):
-        return ""
-    with open(path, "rb") as f:
-        data = base64.b64encode(f.read()).decode()
-    return f"data:image/png;base64,{data}"
+    """
+    Read a PNG and return a full data URI ready for  src="..."
+    If the file is missing or unreadable, return a plain SVG placeholder
+    so the browser NEVER shows a broken-image icon.
+    """
+    if os.path.exists(path):
+        try:
+            with open(path, "rb") as f:
+                data = base64.b64encode(f.read()).decode("ascii")
+            if data:
+                return f"data:image/png;base64,{data}"
+        except Exception:
+            pass
+    # Inline SVG placeholder — always renders, never broken
+    label = os.path.basename(path).replace(".png","").replace("_"," ").replace("chart","").strip()
+    svg = (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="300">'
+        '<rect width="800" height="300" fill="#161b22" rx="8"/>'
+        f'<text x="400" y="140" text-anchor="middle" font-family="monospace" '
+        f'font-size="14" fill="#8b949e">⚠ Chart not found</text>'
+        f'<text x="400" y="165" text-anchor="middle" font-family="monospace" '
+        f'font-size="11" fill="#6e7681">{label}</text>'
+        f'<text x="400" y="185" text-anchor="middle" font-family="monospace" '
+        f'font-size="10" fill="#444c56">Run engine first to generate charts</text>'
+        '</svg>'
+    )
+    return "data:image/svg+xml;charset=utf-8," + svg.replace('"', "'")
 
 
 def _df_html(df: pd.DataFrame, table_id: str = "") -> str:
@@ -397,7 +419,7 @@ const TAC_COLORS  = {{"Execution":"#f78166","Defense Evasion":"#d29922","Defence
         img = charts.get(key,"")
         if not img: return f'<div class="chart-placeholder">📊 {esc(lbl)}</div>'
         cls = "chart-card full" if sz=="full" else "chart-card"
-        return f'<div class="{cls}"><p class="chart-lbl">{esc(lbl)}</p><img src="{img}" style="max-width:100%;border-radius:4px" loading="lazy"></div>'
+        return f'<div class="{cls}"><p class="chart-lbl">{esc(lbl)}</p><img src="{img}" style="max-width:100%;border-radius:4px;background:#161b22" loading="lazy"></div>'
 
     n_new  = stats.get("new_processes",0)
     n_gone = stats.get("gone_processes",0)
