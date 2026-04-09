@@ -780,3 +780,157 @@ This structured artefact schema allows the framework to transform raw memory ana
 
 
 
+# Memory Artefact Schema (Case 04 — DLL Hijacking + AMSI Bypass)
+
+## Overview
+
+This schema defines the structured artefacts used by the Memory Forensics Framework (MFF) to detect DLL hijacking and AMSI bypass behaviour.
+
+The schema combines process execution, DLL loading, and memory analysis to produce high-confidence detection results.
+
+---
+
+# 1. Process Artefact Schema (windows.pslist)
+
+| Field         | Description        |
+| ------------- | ------------------ |
+| PID           | Process identifier |
+| PPID          | Parent process     |
+| ImageFileName | Executable name    |
+| CreateTime    | Creation time      |
+
+### Observed Findings
+
+* Multiple PowerShell instances
+* Execution from non-standard directories
+
+### Interpretation
+
+Indicates:
+
+* Script execution activity
+* Potential attacker-controlled processes
+
+---
+
+# 2. Command-Line Artefact Schema (windows.cmdline)
+
+| Field   | Description        |
+| ------- | ------------------ |
+| PID     | Process identifier |
+| Process | Process name       |
+| Args    | Execution path     |
+
+### Observed Findings
+
+* C:\Temp\pshijack\powershell.exe
+* C:\temp\hijack\mspaint.exe
+
+### Interpretation
+
+* Execution from staging directories
+* Deviation from baseline system behaviour
+
+---
+
+# 3. DLL Artefact Schema (windows.dlllist)
+
+| Field   | Description        |
+| ------- | ------------------ |
+| PID     | Process identifier |
+| Process | Process name       |
+| DLLPath | Loaded DLL path    |
+
+### Observed Findings
+
+* C:\Temp\pshijack\amsi.dll
+* C:\temp\hijack\VERSION.dll
+
+### Interpretation
+
+* DLL loaded from attacker-controlled directory
+* Violation of expected System32 loading
+
+---
+
+# 4. Memory Injection Schema (windows.malware.malfind)
+
+| Field      | Description        |
+| ---------- | ------------------ |
+| PID        | Process identifier |
+| Protection | Memory permissions |
+
+### Observed Findings
+
+* PAGE_EXECUTE_READWRITE regions
+* Multiple RWX segments in PowerShell
+
+### Interpretation
+
+* In-memory execution
+* AMSI patching behaviour
+
+---
+
+# 5. Thread Artefact Schema (windows.threads)
+
+| Field        | Description        |
+| ------------ | ------------------ |
+| PID          | Process identifier |
+| TID          | Thread ID          |
+| StartAddress | Execution address  |
+
+### Interpretation
+
+* Threads executing within modified memory regions
+* Supports memory patching evidence
+
+---
+
+# 6. Risk Scoring Schema
+
+| Field      | Description       |
+| ---------- | ----------------- |
+| RiskScore  | Numerical score   |
+| RiskLevel  | Classification    |
+| Indicators | Detection reasons |
+
+### Observed Indicators
+
+* DLL from user directory
+* RWX memory regions
+* Suspicious process lineage
+
+---
+
+# 7. Baseline Comparison Schema
+
+| Field         | Description       |
+| ------------- | ----------------- |
+| ImageFileName | Process           |
+| DiffStatus    | Comparison result |
+
+### Observed Findings
+
+* Attack-only processes identified
+* New DLL paths detected
+
+---
+
+# Summary
+
+The schema enables detection of:
+
+* DLL search order hijacking
+* AMSI bypass behaviour
+* Execution anomalies
+
+By correlating:
+
+* process execution
+* DLL loading
+* memory permissions
+
+the framework produces **high-confidence forensic intelligence**.
+
+---
