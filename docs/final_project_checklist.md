@@ -2,187 +2,187 @@
 
 ## 1. Core Framework Completion
 - [x] The framework has a defined project structure under /MFF
-- [ ] The framework includes separate folders for cases, analysis outputs, source code, and documentation
-- [ ] The framework can process baseline and attack cases using comparison_engine_v2.py
-- [ ] The framework can generate HTML reports
-- [ ] The framework can generate PDF reports
-- [ ] The framework can perform batch processing across all completed attack cases
-- [ ] The framework can generate a cross-case comparison report
-- [ ] The framework includes enrichment features such as ATT&CK tagging, scoring, IOC extraction, and artifact correlation
+- [x] The framework includes separate folders for cases, analysis outputs, source code, and documentation
+- [x] The framework can process baseline and attack cases using comparison_engine_v2.py
+- [x] The framework can generate HTML reports
+- [x] The framework can generate PDF reports
+- [x] The framework can perform batch processing across all completed attack cases
+- [x] The framework can generate a cross-case comparison report
+- [x] The framework includes enrichment features such as ATT&CK tagging, scoring, IOC extraction, and artifact correlation
 
 ## 2. Project Directory Structure
-- [ ] /MFF/cases exists
-- [ ] /MFF/analysis exists
-- [ ] /MFF/src exists
-- [ ] /MFF/docs exists
-- [ ] /MFF/venv exists
-- [ ] Folder names are consistent and readable
-- [ ] Final outputs are stored in the correct locations
-- [ ] No critical files are left in temporary or ambiguous folders
+- [x] /MFF exists
+- [x] /MFF/analysis exists
+- [x] /MFF/cases exists
+- [x] /MFF/docs exists
+- [x] /MFF/src exists
+- [x] /MFF/venv exists
+- [x] /MFF/lab-notes exists
+- [x] /MFF/screenshots exists
+- [x] README.md exists
+- [x] Folder structure is suitable for final project submission
+- [ ] Final folder cleanup of optional support folders has been reviewed
 
-## 3. Baseline Case
-- [ ] /MFF/cases/case01_baseline exists
-- [ ] Baseline raw memory image exists
-- [ ] Baseline exports are present
-- [ ] Baseline is consistently used in all comparison commands
-- [ ] Baseline limitation is documented where necessary
+## 3. Source Code Structure
+- [x] comparison_engine_v2.py exists inside /MFF/src
+- [x] modules folder exists inside /MFF/src
+- [x] Source code folder is organised enough for execution and documentation
+- [ ] Backup files folder has been reviewed for what should remain in the final submission
+- [ ] __pycache__ cleanup decision has been made for final packaging
 
-## 4. Case 02 – T1055
-- [ ] /MFF/cases/case02_t1055_5_attack exists
-- [ ] Raw memory image exists
-- [ ] Required Volatility outputs exist
-- [ ] Comparison output directory exists
-- [ ] report_interactive.html exists
-- [ ] report_forensics.pdf exists
-- [ ] Key findings are documented
-- [ ] Hash record exists or is documented in hash_values.txt
+## 4. Analysis Structure
+- [x] /MFF/analysis/comparison exists
+- [x] /MFF/analysis/single exists
+- [x] /MFF/analysis/batch_run_final exists
+- [x] Analysis output layout is consistent with framework workflow
+- [ ] Final comparison subfolder contents have been re-checked locally
 
-## 5. Case 03 – T1059
-- [ ] /MFF/cases/case03_t1059_attack exists
-- [ ] Raw memory image exists
-- [ ] Required Volatility outputs exist
-- [ ] Comparison output directory exists
-- [ ] report_interactive.html exists
-- [ ] report_forensics.pdf exists
-- [ ] Key findings are documented
-- [ ] Hash record exists or is documented in hash_values.txt
+## 5. Baseline Case
+- [x] /MFF/cases/case01_baseline is used as the official reference baseline
+- [x] Baseline is consistently used in all comparison commands
+- [x] Baseline comparison works across Cases 02–05
+- [x] Baseline limitation is documented and understood
+- [ ] Baseline raw image presence has been manually rechecked
+- [ ] Baseline export completeness has been manually rechecked
 
-## 6. Case 04 – T1574
-- [ ] /MFF/cases/case04_t1574_attack exists
-- [ ] Raw memory image exists
-- [ ] Required Volatility outputs exist
-- [ ] Comparison output directory exists
-- [ ] report_interactive.html exists
-- [ ] report_forensics.pdf exists
-- [ ] Key findings are documented
-- [ ] Hash record exists or is documented in hash_values.txt
+## 6. Case 02 – T1055
+- [x] Case 02 comparison command exists and was used
+- [x] Case 02 comparison completed successfully
+- [x] Case 02 appears in batch processing
+- [x] Case 02 appears in cross-case comparison
+- [x] Case 02 has HTML output
+- [x] Case 02 has PDF output
+- [ ] Case 02 case folder contents have been manually rechecked one final time
 
-## 7. Case 05 – Multi-Attack
-- [ ] /MFF/cases/case05_multi_attack exists
-- [ ] T_multi.raw exists
-- [ ] MD5 recorded
-- [ ] SHA1 recorded
-- [ ] SHA256 recorded
-- [ ] Hash values added to /MFF/docs/hash_values.txt
-- [ ] exports/csv exists
-- [ ] exports/jsonl exists
-- [ ] windows.info.csv exists
-- [ ] windows.pslist.csv exists
-- [ ] windows.pstree.csv exists
-- [ ] windows.cmdline.csv exists
-- [ ] windows.dlllist.csv exists
-- [ ] windows.netscan.csv exists
-- [ ] windows.malfind.csv exists
-- [ ] windows.threads.csv exists
-- [ ] process_new.csv exists
-- [ ] process_gone.csv exists
-- [ ] cmdline_findings.csv exists
-- [ ] dll_hijack.csv exists
-- [ ] malfind.csv exists
-- [ ] net_new.csv exists
-- [ ] net_flagged.csv exists
-- [ ] iocs.csv exists
-- [ ] attack_tags.csv exists
-- [ ] scores.csv exists
-- [ ] tactic_summary.csv exists
-- [ ] timeline.csv exists
-- [ ] threat_summary.json.txt exists
-- [ ] report_interactive.html exists
-- [ ] report_forensics.pdf exists
-- [ ] suspicious PowerShell command-line evidence confirmed
-- [ ] staged amsi.dll evidence confirmed
-- [ ] PAGE_EXECUTE_READWRITE evidence confirmed
-- [ ] ATT&CK mapping confirmed
-- [ ] CRITICAL scoring confirmed
-- [ ] Case 05 notes are documented
+## 7. Case 03 – T1059
+- [x] Case 03 comparison command exists and was used
+- [x] Case 03 comparison completed successfully
+- [x] Case 03 appears in batch processing
+- [x] Case 03 appears in cross-case comparison
+- [x] Case 03 has HTML output
+- [x] Case 03 has PDF output
+- [ ] Case 03 case folder contents have been manually rechecked one final time
 
-## 8. Integrity and Chain of Custody
-- [ ] /MFF/docs/hash_values.txt exists
-- [ ] Case identifiers are clearly linked to their raw images
-- [ ] Hash values are present for each completed case where available
-- [ ] The acquisition method is documented
-- [ ] Transfer and preservation steps are documented
-- [ ] Evidence integrity explanation is ready for methodology chapter
+## 8. Case 04 – T1574
+- [x] Case 04 comparison command exists and was used
+- [x] Case 04 comparison completed successfully
+- [x] Case 04 appears in batch processing
+- [x] Case 04 appears in cross-case comparison
+- [x] Case 04 has HTML output
+- [x] Case 04 has PDF output
+- [ ] Case 04 case folder contents have been manually rechecked one final time
 
-## 9. Volatility Export Coverage
-- [ ] info outputs exist where needed
-- [ ] pslist outputs exist for each attack case
-- [ ] pstree outputs exist for each attack case
-- [ ] cmdline outputs exist for each attack case
-- [ ] dlllist outputs exist for each attack case
-- [ ] malfind outputs exist for each attack case
-- [ ] netscan outputs exist for each attack case
-- [ ] threads outputs exist for each attack case
-- [ ] Export naming is consistent enough for the framework to parse correctly
+## 9. Case 05 – Multi-Attack
+- [x] Case 05 comparison completed successfully
+- [x] T_multi.raw exists
+- [x] MD5 exists
+- [x] SHA1 exists
+- [x] SHA256 exists
+- [x] windows.info.csv exists
+- [x] windows.pslist.csv exists
+- [x] windows.pstree.csv exists
+- [x] windows.cmdline.csv exists
+- [x] windows.dlllist.csv exists
+- [x] windows.netscan.csv exists
+- [x] windows.malfind.csv exists
+- [x] windows.threads.csv exists
+- [x] process_new.csv exists
+- [x] process_gone.csv exists
+- [x] cmdline_findings.csv exists
+- [x] dll_hijack.csv exists
+- [x] malfind.csv exists
+- [x] net_new.csv exists
+- [x] net_flagged.csv exists
+- [x] iocs.csv exists
+- [x] attack_tags.csv exists
+- [x] scores.csv exists
+- [x] tactic_summary.csv exists
+- [x] timeline.csv exists
+- [x] threat_summary.json.txt exists
+- [x] report_interactive.html exists
+- [x] report_forensics.pdf exists
+- [x] suspicious PowerShell execution is confirmed
+- [x] hidden/bypass/encoded PowerShell evidence is confirmed
+- [x] staged amsi.dll evidence is confirmed
+- [x] PAGE_EXECUTE_READWRITE evidence is confirmed
+- [x] ATT&CK mapping is confirmed
+- [x] CRITICAL scoring is confirmed
+- [x] Case 05 is technically complete for dissertation writing
+- [ ] Case 05 documentation files have been saved and checked locally
 
-## 10. Comparison Engine Outputs
-- [ ] case01_vs_case02 output exists
-- [ ] case01_vs_case03 output exists
-- [ ] case01_vs_case04 output exists
-- [ ] case01_vs_case05 output exists
-- [ ] Each comparison folder contains the expected CSV, JSON, HTML, and PDF outputs
-- [ ] Each case has a usable executive summary
-- [ ] Each case has interpretable findings
-- [ ] Each case has at least one defendable evidence chain
+## 10. Integrity and Chain of Custody
+- [x] Case 05 hash values are recorded
+- [x] Acquisition method is documented
+- [x] Hypervisor-assisted dumping method is established in the project
+- [x] Integrity explanation is available for methodology writing
+- [ ] /MFF/docs/hash_values.txt has been rechecked locally
+- [ ] Earlier-case hash records have been rechecked locally where available
 
-## 11. Enrichment and Correlation Features
-- [ ] Command-line detection works
-- [ ] Process delta detection works
-- [ ] DLL anomaly detection works
-- [ ] RWX / malfind enrichment works
-- [ ] ATT&CK tagging works
-- [ ] Risk scoring works
-- [ ] IOC extraction works
-- [ ] Timeline generation works
-- [ ] Final reports reflect correlated findings rather than raw plugin output only
+## 11. Volatility Export and Comparison Coverage
+- [x] Volatility-based workflow is implemented
+- [x] Process analysis is implemented
+- [x] Process tree analysis is implemented
+- [x] Command-line analysis is implemented
+- [x] DLL analysis is implemented
+- [x] Malfind/RWX analysis is implemented
+- [x] Network analysis is implemented
+- [x] Timeline/correlation output is implemented
+- [x] Comparison workflow works across all completed cases
+- [ ] Earlier-case raw export completeness has been rechecked locally
 
-## 12. Batch and Cross-Case Processing
-- [ ] batch_summary.json.txt exists
-- [ ] Batch execution completed successfully
-- [ ] comparison_report.html exists
-- [ ] comparison_report.pdf exists
-- [ ] comparison_matrix.csv exists
-- [ ] Cross-case outputs include all attack cases
-- [ ] Cross-case outputs show metric comparison between cases
-- [ ] Cross-case outputs are suitable for the evaluation/results chapter
+## 12. Enrichment and Correlation Features
+- [x] ATT&CK tagging works
+- [x] Risk scoring works
+- [x] IOC extraction works
+- [x] Artifact correlation works
+- [x] Final reports show enriched findings, not just raw plugin outputs
 
-## 13. Documentation in /MFF/docs
-- [ ] case05_multi_attack_report_notes.md exists
-- [ ] case05_memory_acquisition_and_integrity.md exists
-- [ ] case05_evidence_index.md exists
-- [ ] case05_commands_log.md exists
-- [ ] case05_dissertation_section.md exists
-- [ ] case05_final_checklist.md exists
-- [ ] case05_report_mapping.md exists
-- [ ] case05_artifact_schema.md exists
-- [ ] final_project_checklist.md exists
-- [ ] Documentation matches the real commands and outputs used in the project
+## 13. Batch and Cross-Case Processing
+- [x] batch_summary.json.txt exists
+- [x] Batch processing completed successfully
+- [x] comparison_report.html exists
+- [x] comparison_report.pdf exists
+- [x] comparison_matrix.csv exists
+- [x] Cross-case report includes Cases 02, 03, 04, and 05
+- [x] Cross-case outputs are suitable for evaluation and discussion chapters
 
-## 14. Visual and Evidence Materials for the Report
-- [ ] At least one Case 05 dashboard screenshot selected
-- [ ] At least one command-line evidence screenshot selected
-- [ ] At least one artifact summary screenshot selected
-- [ ] Cross-case comparison PDF or screenshot selected
-- [ ] Important tables are identified for insertion into the report
-- [ ] Screenshots are clearly named and saved for later use
+## 14. Documentation in /MFF/docs
+- [x] /MFF/docs folder exists
+- [x] case05_multi_attack_report_notes.md saved locally
+- [x] case05_memory_acquisition_and_integrity.md saved locally
+- [x] case05_evidence_index.md saved locally
+- [x] case05_commands_log.md saved locally
+- [x] case05_dissertation_section.md saved locally
+- [x] case05_final_checklist.md saved locally
+- [x] case05_report_mapping.md saved locally
+- [x] case05_artifact_schema.md saved locally
+- [x] final_project_checklist.md saved locally
+- [x] All documentation files have been checked after saving
 
-## 15. Report Readiness
-- [ ] Methodology evidence is ready
-- [ ] Implementation evidence is ready
-- [ ] Results evidence is ready
-- [ ] Discussion points are ready
-- [ ] Limitations are identified
-- [ ] Future work ideas are identified
-- [ ] The framework can now be described as complete for FYP scope
-- [ ] No major technical feature still needs to be added before writing
+## 15. Visual and Report Evidence
+- [x] Case 05 dashboard screenshot exists
+- [x] Case 05 command-line screenshot exists
+- [x] Case 05 artifact summary screenshot exists
+- [x] Cross-case comparison report exists
+- [ ] Screenshots have been organised into final report figure selection
 
-## 16. Optional Features – Not Required for Submission
-- [ ] YARA integration intentionally skipped or clearly marked as future work
-- [ ] VirusTotal integration intentionally skipped or clearly marked as future work
-- [ ] Optional features are not blocking report writing
+## 16. Report Readiness
+- [x] Methodology evidence is ready
+- [x] Implementation evidence is ready
+- [x] Results evidence is ready
+- [x] Discussion points are ready
+- [x] Limitations are identified
+- [x] Future work ideas are identified
+- [x] The framework is complete for FYP scope
+- [x] Major technical feature expansion can stop now
 
-## 17. Final Freeze Decision
-- [ ] Codebase is stable enough to stop major feature expansion
-- [ ] Case outputs are preserved
-- [ ] Documentation is aligned with evidence
-- [ ] The project is ready to move into dissertation writing section by section
+## 17. Optional Features
+- [x] YARA can be left as future work
+- [x] VirusTotal can be left as future work
+- [x] Optional features are not required before dissertation writing
+
+## 18. Final Freeze Decision
+- [x] The framework is stable enough to freeze
+- [x] The project is ready to move into report writing
+- [ ] Local final cleanup has been completed
+- [ ] Final documentation save-check has been completed
