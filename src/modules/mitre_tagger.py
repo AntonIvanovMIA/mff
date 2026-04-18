@@ -13,10 +13,18 @@ import re
 # ============================================================
 ATTACK_MAP = [
     # ── Execution ────────────────────────────────────────────
+    # T1059.001 — SUSPICIOUS flags only (not just process present)
     {"tactic": "Execution",         "technique": "T1059.001", "name": "PowerShell",
-     "keywords": ["powershell", "pwsh"],  "source": ["cmdline", "pslist"]},
+     "keywords": ["-enc ", "-encoded", "-nop ", "-noprofile", "-w hidden",
+                  "-windowstyle hidden", "bypass", "iex ", "iex(",
+                  "invoke-expression", "downloadstring", "downloadfile",
+                  "invoke-webrequest", "reflection.assembly",
+                  "[system.convert]::frombase64", "frombase64string"],
+     "source": ["cmdline"]},
+    # T1059.003 — only when cmd.exe used WITH a payload
     {"tactic": "Execution",         "technique": "T1059.003", "name": "Windows Command Shell",
-     "keywords": ["cmd.exe", "cmd /c", "cmd /k"], "source": ["cmdline", "pslist"]},
+     "keywords": ["cmd /c ", "cmd /k ", "cmd.exe /c", "cmd.exe /k"],
+     "source": ["cmdline"]},
     {"tactic": "Execution",         "technique": "T1059.005", "name": "VBScript",
      "keywords": ["wscript", "cscript", "vbscript", ".vbs"], "source": ["cmdline"]},
     {"tactic": "Execution",         "technique": "T1059.007", "name": "JavaScript",
@@ -31,6 +39,14 @@ ATTACK_MAP = [
     {"tactic": "Defense Evasion",   "technique": "T1055.002", "name": "Portable Executable Injection",
      "keywords": ["CreateRemoteThread", "NtCreateThreadEx", "RtlCreateUserThread"],
      "source": ["cmdline", "malfind"]},
+    # T1055 direct from malfind — RWX memory region is the primary evidence
+    # PAGE_EXECUTE_READWRITE in malfind = injected shellcode / process hollowing
+    {"tactic": "Defense Evasion",   "technique": "T1055", "name": "Process Injection",
+     "keywords": ["PAGE_EXECUTE_READWRITE", "PAGE_EXECUTE_READ_WRITE", "EXECUTE_READWRITE"],
+     "source": ["malfind"]},
+    {"tactic": "Privilege Escalation", "technique": "T1055", "name": "Process Injection",
+     "keywords": ["PAGE_EXECUTE_READWRITE", "PAGE_EXECUTE_READ_WRITE", "EXECUTE_READWRITE"],
+     "source": ["malfind"]},
     {"tactic": "Defense Evasion",   "technique": "T1218.010", "name": "Regsvr32",
      "keywords": ["regsvr32"], "source": ["cmdline", "pslist"]},
     {"tactic": "Defense Evasion",   "technique": "T1218.011", "name": "Rundll32",
@@ -111,9 +127,11 @@ ATTACK_MAP = [
      "source": ["cmdline"]},
 
     # ── Collection ───────────────────────────────────────────
+    # T1005 — specific PS data access only, removed "type " (too broad)
     {"tactic": "Collection",  "technique": "T1005",  "name": "Data from Local System",
-     "keywords": ["get-content", "type ", "copy-item c:", "robocopy",
-                  "compress-archive", "[io.file]::readalltext"],
+     "keywords": ["get-content ", "copy-item c:\\", "robocopy ",
+                  "compress-archive ", "[io.file]::readalltext",
+                  "out-file ", "export-csv "],
      "source": ["cmdline"]},
     {"tactic": "Collection",  "technique": "T1113",  "name": "Screen Capture",
      "keywords": ["screenshot", "[drawing.bitmap]", "capturescreenshot",
@@ -183,18 +201,26 @@ def tag_dataframe(df: pd.DataFrame, source: str) -> pd.DataFrame:
     Given a DataFrame and a source label (pslist/cmdline/malfind/netscan),
     return a new DataFrame of ATT&CK hits with columns:
       PID, Process/Args, Tactic, Technique, TechniqueName, MatchedKeyword
+
+    For malfind: scans BOTH ImageFileName (process name) AND Protection column.
+    This ensures PAGE_EXECUTE_READWRITE triggers T1055 correctly.
     """
     if df.empty:
         return pd.DataFrame()
 
-    # pick the text column to scan
-    text_col = None
-    for candidate in ("Args", "ImageFileName", "Protection", "ForeignAddr", "LocalAddr"):
-        if candidate in df.columns:
-            text_col = candidate
-            break
+    # Determine which columns to scan for this source
+    # malfind needs both Protection (for RWX T1055) AND ImageFileName (for name checks)
+    if source == "malfind":
+        scan_cols = [c for c in ("Protection", "ImageFileName", "Process", "Args")
+                     if c in df.columns]
+    else:
+        scan_cols = []
+        for candidate in ("Args", "ImageFileName", "Protection", "ForeignAddr", "LocalAddr"):
+            if candidate in df.columns:
+                scan_cols = [candidate]
+                break
 
-    if text_col is None:
+    if not scan_cols:
         return pd.DataFrame()
 
     hits = []
@@ -204,23 +230,24 @@ def tag_dataframe(df: pd.DataFrame, source: str) -> pd.DataFrame:
             continue
 
         for kw in rule["keywords"]:
-            mask = df[text_col].astype(str).str.contains(
-                re.escape(kw), case=False, na=False)
-            matches = df[mask]
-            if matches.empty:
-                continue
+            for text_col in scan_cols:
+                mask = df[text_col].astype(str).str.contains(
+                    re.escape(kw), case=False, na=False)
+                matches = df[mask]
+                if matches.empty:
+                    continue
 
-            for _, row in matches.iterrows():
-                hits.append({
-                    "PID":           row.get("PID", ""),
-                    "Process":       row.get("ImageFileName", row.get("Process", "?")),
-                    "MatchedText":   str(row.get(text_col, ""))[:120],
-                    "MatchedKeyword":kw,
-                    "Tactic":        rule["tactic"],
-                    "Technique":     rule["technique"],
-                    "TechniqueName": rule["name"],
-                    "ATT&CK_URL":    f"https://attack.mitre.org/techniques/{rule['technique'].replace('.','/')}",
-                })
+                for _, row in matches.iterrows():
+                    hits.append({
+                        "PID":           row.get("PID", ""),
+                        "Process":       row.get("ImageFileName", row.get("Process", "?")),
+                        "MatchedText":   str(row.get(text_col, ""))[:120],
+                        "MatchedKeyword":kw,
+                        "Tactic":        rule["tactic"],
+                        "Technique":     rule["technique"],
+                        "TechniqueName": rule["name"],
+                        "ATT&CK_URL":    f"https://attack.mitre.org/techniques/{rule['technique'].replace('.','/')}",
+                    })
 
     if not hits:
         return pd.DataFrame()
@@ -248,10 +275,15 @@ def tag_all(pslist_df, cmdline_df, malfind_df, netscan_df) -> pd.DataFrame:
 
 
 def summary_by_tactic(tagged_df: pd.DataFrame) -> pd.DataFrame:
-    """Group ATT&CK hits by tactic for dashboard use."""
+    """Group ATT&CK hits by tactic. HIGH confidence only for summary counts."""
     if tagged_df.empty:
         return pd.DataFrame()
-    return (tagged_df.groupby(["Tactic", "Technique", "TechniqueName"])
-                     .size()
-                     .reset_index(name="HitCount")
-                     .sort_values("HitCount", ascending=False))
+    df = tagged_df
+    if "Confidence" in df.columns:
+        df = df[df["Confidence"] == "HIGH"]
+    if df.empty:
+        return pd.DataFrame()
+    return (df.groupby(["Tactic", "Technique", "TechniqueName"])
+              .size()
+              .reset_index(name="HitCount")
+              .sort_values("HitCount", ascending=False))

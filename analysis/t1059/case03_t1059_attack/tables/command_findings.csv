@@ -1,5 +1,0 @@
-PID,Process,CommandLine,MatchedPatterns,ArtifactType,WhySuspicious
-7888,powershell.exe,"""C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"" ",powershell,Command Line Evidence,Suspicious PowerShell/command execution pattern detected
-9608,powershell.exe,,powershell,Command Line Evidence,Suspicious PowerShell/command execution pattern detected
-9864,powershell.exe,,powershell,Command Line Evidence,Suspicious PowerShell/command execution pattern detected
-4200,powershell.exe,,powershell,Command Line Evidence,Suspicious PowerShell/command execution pattern detected

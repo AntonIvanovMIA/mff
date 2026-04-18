@@ -1,6 +1,6 @@
 {
   "schema_version": "mff-v2.0",
-  "generated_at": "2026-04-09 17:10:21 UTC",
+  "generated_at": "2026-04-09 20:15:36 UTC",
   "case_id": "case01_baseline_vs_case02_t1055_5_attack",
   "baseline_path": "/MFF/cases/case01_baseline",
   "attack_path": "/MFF/cases/case02_t1055_5_attack",
@@ -12,37 +12,25 @@
   "statistics": {
     "new_processes": 13,
     "gone_processes": 9,
-    "attack_techniques": 4,
-    "attack_tactics": 3,
+    "attack_techniques": 2,
+    "attack_tactics": 1,
     "iocs_extracted": 42,
     "new_network_conns": 131,
     "flagged_network_conns": 3
   },
   "mitre_attack": {
     "tactics_observed": [
-      "Collection",
-      "Defense Evasion",
-      "Execution"
+      "Defense Evasion"
     ],
     "techniques_observed": [
       {
-        "Technique": "T1005",
-        "TechniqueName": "Data from Local System",
-        "Tactic": "Collection"
-      },
-      {
-        "Technique": "T1059.001",
-        "TechniqueName": "PowerShell",
-        "Tactic": "Execution"
+        "Technique": "T1055",
+        "TechniqueName": "Process Injection",
+        "Tactic": "Defense Evasion"
       },
       {
         "Technique": "T1562.001",
         "TechniqueName": "Disable or Modify Tools - AMSI Memory Patch",
-        "Tactic": "Defense Evasion"
-      },
-      {
-        "Technique": "T1574.001",
-        "TechniqueName": "DLL Search Order Hijacking",
         "Tactic": "Defense Evasion"
       }
     ]

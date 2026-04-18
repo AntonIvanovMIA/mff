@@ -1,0 +1,52 @@
+PID,Process,MatchedText,MatchedKeyword,Tactic,Technique,TechniqueName,ATT&CK_URL
+4512,powershell.exe,PAGE_EXECUTE_READWRITE,PAGE_EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+2824,powershell.exe,PAGE_EXECUTE_READWRITE,PAGE_EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+10128,powershell.exe,PAGE_EXECUTE_READWRITE,PAGE_EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+3448,powershell.exe,PAGE_EXECUTE_READWRITE,PAGE_EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+3092,powershell.exe,PAGE_EXECUTE_READWRITE,PAGE_EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+260,powershell.exe,PAGE_EXECUTE_READWRITE,PAGE_EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+9508,powershell.exe,PAGE_EXECUTE_READWRITE,PAGE_EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+1676,powershell.exe,PAGE_EXECUTE_READWRITE,PAGE_EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+4512,powershell.exe,PAGE_EXECUTE_READWRITE,EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+2824,powershell.exe,PAGE_EXECUTE_READWRITE,EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+10128,powershell.exe,PAGE_EXECUTE_READWRITE,EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+3448,powershell.exe,PAGE_EXECUTE_READWRITE,EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+3092,powershell.exe,PAGE_EXECUTE_READWRITE,EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+260,powershell.exe,PAGE_EXECUTE_READWRITE,EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+9508,powershell.exe,PAGE_EXECUTE_READWRITE,EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+1676,powershell.exe,PAGE_EXECUTE_READWRITE,EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+260,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",ipconfig,Discovery,T1016,System Network Configuration Discovery,https://attack.mitre.org/techniques/T1016
+260,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",get-netipaddress,Discovery,T1016,System Network Configuration Discovery,https://attack.mitre.org/techniques/T1016
+260,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",whoami,Discovery,T1033,System Owner/User Discovery,https://attack.mitre.org/techniques/T1033
+260,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",get-localuser,Discovery,T1033,System Owner/User Discovery,https://attack.mitre.org/techniques/T1033
+260,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",tasklist,Discovery,T1057,Process Discovery,https://attack.mitre.org/techniques/T1057
+260,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",get-process,Discovery,T1057,Process Discovery,https://attack.mitre.org/techniques/T1057
+260,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",systeminfo,Discovery,T1082,System Information Discovery,https://attack.mitre.org/techniques/T1082
+260,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",get-computerinfo,Discovery,T1082,System Information Discovery,https://attack.mitre.org/techniques/T1082
+3448,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",-enc ,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+9508,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",-enc ,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+3448,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",-noprofile,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+3092,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",-noprofile,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+260,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",-noprofile,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+9508,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",-noprofile,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+1676,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",-noprofile,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+3448,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",-windowstyle hidden,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+3092,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",-windowstyle hidden,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+260,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",-windowstyle hidden,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+9508,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",-windowstyle hidden,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+1676,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",-windowstyle hidden,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+3448,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",bypass,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+3092,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",bypass,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+260,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",bypass,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+9508,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",bypass,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+1676,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden ",bypass,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+3092,powershell.exe,C:\\Temp\\mff_multi\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Bypass,https://attack.mitre.org/techniques/T1562/001
+1676,powershell.exe,C:\\Temp\\mff_multi\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Bypass,https://attack.mitre.org/techniques/T1562/001
+2824,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,https://attack.mitre.org/techniques/T1562/001
+4512,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,https://attack.mitre.org/techniques/T1562/001
+260,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,https://attack.mitre.org/techniques/T1562/001
+10128,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,https://attack.mitre.org/techniques/T1562/001
+3448,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,https://attack.mitre.org/techniques/T1562/001
+9508,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,https://attack.mitre.org/techniques/T1562/001
+1676,powershell.exe,C:\\Temp\\mff_multi\\amsi.dll,amsi.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001
+3092,powershell.exe,C:\\Temp\\mff_multi\\amsi.dll,amsi.dll,Defense Evasion,T1574.001,DLL Search Order Hijacking,https://attack.mitre.org/techniques/T1574/001

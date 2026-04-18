@@ -1,6 +1,0 @@
-PID,Process,Protection,PrivateMemory,Tag,ArtifactType,WhySuspicious
-7888,powershell.exe,PAGE_EXECUTE_READWRITE,1,VadS,In-Memory Execution,PowerShell has RWX executable memory region
-7888,powershell.exe,PAGE_EXECUTE_READWRITE,1,VadS,In-Memory Execution,PowerShell has RWX executable memory region
-7888,powershell.exe,PAGE_EXECUTE_READWRITE,1,VadS,In-Memory Execution,PowerShell has RWX executable memory region
-7888,powershell.exe,PAGE_EXECUTE_READWRITE,1,VadS,In-Memory Execution,PowerShell has RWX executable memory region
-7888,powershell.exe,PAGE_EXECUTE_READWRITE,1,VadS,In-Memory Execution,PowerShell has RWX executable memory region

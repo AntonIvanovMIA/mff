@@ -1,6 +1,6 @@
 {
   "schema_version": "mff-v2.0",
-  "generated_at": "2026-04-09 17:10:31 UTC",
+  "generated_at": "2026-04-09 20:15:45 UTC",
   "case_id": "case01_baseline_vs_case04_t1574_attack",
   "baseline_path": "/MFF/cases/case01_baseline",
   "attack_path": "/MFF/cases/case04_t1574_attack",
@@ -13,21 +13,20 @@
     "new_processes": 15,
     "gone_processes": 16,
     "attack_techniques": 3,
-    "attack_tactics": 2,
+    "attack_tactics": 1,
     "iocs_extracted": 49,
     "new_network_conns": 94,
     "flagged_network_conns": 3
   },
   "mitre_attack": {
     "tactics_observed": [
-      "Defense Evasion",
-      "Execution"
+      "Defense Evasion"
     ],
     "techniques_observed": [
       {
-        "Technique": "T1059.001",
-        "TechniqueName": "PowerShell",
-        "Tactic": "Execution"
+        "Technique": "T1055",
+        "TechniqueName": "Process Injection",
+        "Tactic": "Defense Evasion"
       },
       {
         "Technique": "T1562.001",

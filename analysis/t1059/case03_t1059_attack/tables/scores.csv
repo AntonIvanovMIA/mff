@@ -1,5 +1,0 @@
-PID,Process,RiskScore,Indicators
-7888,unknown,360,RWX memory region detected; Suspicious command line; T1059-linked process
-4200,unknown,60,Suspicious command line; T1059-linked process
-9608,unknown,60,Suspicious command line; T1059-linked process
-9864,unknown,60,Suspicious command line; T1059-linked process

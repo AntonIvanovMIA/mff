@@ -1,0 +1,5 @@
+Case,Severity,MaxRiskScore,CriticalProcesses,HighProcesses,MediumProcesses,NewProcesses,GoneProcesses,RWX_Regions,DLL_Hijack_Findings,Techniques_Detected,Tactics_Detected,Techniques_List,Tactics_List,IOCs,Net_New_Connections
+Baseline Vs Case02 T1055 5 Attack,CRITICAL,100,2,0,0,13,9,7,2,2,1,"T1055, T1562.001",Defense Evasion,40,131
+Baseline Vs Case03 T1059 Attack,CRITICAL,100,3,0,3,16,16,5,1,2,1,"T1055, T1562.001",Defense Evasion,52,133
+Baseline Vs Case04 T1574 Attack,CRITICAL,100,6,0,0,15,16,22,9,3,1,"T1055, T1562.001, T1574.001",Defense Evasion,49,94
+Baseline Vs Case05 Multi Attack,CRITICAL,100,8,0,0,16,16,42,12,8,3,"T1016, T1033, T1055, T1057, T1059.001, T1082, T1562.001, T1574.001","Defense Evasion, Discovery, Execution",59,139

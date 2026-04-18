@@ -1,0 +1,170 @@
+PID,Process,RiskScore,RiskLevel,Confidence,EvidenceCount,PrimaryTechnique,Indicators,IndicatorsFull
+5136,powershell.exe,100,CRITICAL,Very High — Multiple independent evidence sources corroborate,5,T1562.001,"AMSI DLL replaced from staging path; Execution from staging/non-standard path; 5× PAGE_EXECUTE_READWRITE memory regions; Cmdline staging path pattern(s): powershell, \temp\, pshijack; Spawned by high-risk parent (PID 1316, score 100)","[ 85pts] AMSI DLL replaced from staging path: HIGHEST CONFIDENCE T1562.001+T1574.001: amsi.dll from staging path, Volatility cannot dump file — replaced DLL confirmed. ACPO P2: two independent sources corroborate (dlllist path + file undumpable).
+[ 70pts] Execution from staging/non-standard path: Process cmdline references staging directory: ...c:\\temp\\pshijack\\powershell.exe c:\\te... T1574.001 — Windows loads DLLs from executable directory first, enabling attacker DLL substitution.
+[ 55pts] 5× PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001).
+[ 40pts] Cmdline staging path pattern(s): powershell, \temp\, pshijack: Command line arguments contain staging directory reference. Matched patterns: powershell, \temp\, pshijack
+[ 25pts] Spawned by high-risk parent (PID 1316, score 100): Process chain: this process was created by PID 1316 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution."
+8060,mspaint.exe,100,CRITICAL,Very High — Multiple independent evidence sources corroborate,4,T1574.001,"Protected DLL from staging directory; Execution from staging/non-standard path; Cmdline staging path pattern(s): \temp\, \hijack\; System executable mspaint.exe from non-System32 path","[ 70pts] Execution from staging/non-standard path: Process cmdline references staging directory: ...c:\\temp\\hijack\\mspaint.exe  c:\\temp\\... T1574.001 — Windows loads DLLs from executable directory first, enabling attacker DLL substitution.
+[ 50pts] Protected DLL from staging directory: T1574.001: Protected DLL (amsi.dll/version.dll) loaded from user-writable staging directory instead of System32.
+[ 40pts] Cmdline staging path pattern(s): \temp\, \hijack\: Command line arguments contain staging directory reference. Matched patterns: \temp\, \hijack\
+[ 20pts] System executable mspaint.exe from non-System32 path: mspaint.exe should only run from System32. Execution from staging directory confirms T1574.001 exploitation."
+5844,powershell.exe,100,CRITICAL,High — Three independent evidence sources,3,T1562.001,AMSI bypass via memory patching; 2× PAGE_EXECUTE_READWRITE region(s); Suspicious cmdline pattern(s): powershell,"[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID — AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).
+[ 20pts] Suspicious cmdline pattern(s): powershell: Command line matched detection signatures: powershell
+[ 20pts] 2× PAGE_EXECUTE_READWRITE region(s): 2 RWX region(s) — weak indicator alone; notable in conjunction with other evidence."
+6764,powershell.exe,100,CRITICAL,Very High — Multiple independent evidence sources corroborate,4,T1562.001,"AMSI bypass via memory patching; 5× PAGE_EXECUTE_READWRITE memory regions; Suspicious cmdline pattern(s): powershell; Spawned by high-risk parent (PID 7804, score 100)","[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID — AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).
+[ 55pts] 5× PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001).
+[ 25pts] Spawned by high-risk parent (PID 7804, score 100): Process chain: this process was created by PID 7804 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution.
+[ 20pts] Suspicious cmdline pattern(s): powershell: Command line matched detection signatures: powershell"
+7804,powershell.exe,100,CRITICAL,Very High — Multiple independent evidence sources corroborate,4,T1562.001,"AMSI bypass via memory patching; 5× PAGE_EXECUTE_READWRITE memory regions; Suspicious cmdline pattern(s): powershell; Spawned by high-risk parent (PID 5844, score 100)","[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID — AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).
+[ 55pts] 5× PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001).
+[ 25pts] Spawned by high-risk parent (PID 5844, score 100): Process chain: this process was created by PID 5844 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution.
+[ 20pts] Suspicious cmdline pattern(s): powershell: Command line matched detection signatures: powershell"
+1316,powershell.exe,100,CRITICAL,High — Three independent evidence sources,3,T1562.001,AMSI bypass via memory patching; 5× PAGE_EXECUTE_READWRITE memory regions; Suspicious cmdline pattern(s): powershell,"[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID — AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).
+[ 55pts] 5× PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001).
+[ 20pts] Suspicious cmdline pattern(s): powershell: Command line matched detection signatures: powershell"
+4024,conhost.exe,25,MEDIUM,Medium — Single evidence source,1,—,"Spawned by high-risk parent (PID 1316, score 100)","[ 25pts] Spawned by high-risk parent (PID 1316, score 100): Process chain: this process was created by PID 1316 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution."
+2068,conhost.exe,25,MEDIUM,Medium — Single evidence source,1,—,"Spawned by high-risk parent (PID 5844, score 100)","[ 25pts] Spawned by high-risk parent (PID 5844, score 100): Process chain: this process was created by PID 5844 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution."
+6544,conhost.exe,25,MEDIUM,Medium — Single evidence source,1,—,"Spawned by high-risk parent (PID 6764, score 100)","[ 25pts] Spawned by high-risk parent (PID 6764, score 100): Process chain: this process was created by PID 6764 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution."
+668,lsass.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+812,fontdrvhost.ex,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+788,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+904,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+960,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+376,dwm.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+820,fontdrvhost.ex,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4,System,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+92,Registry,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+336,smss.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+436,csrss.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+524,csrss.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+536,wininit.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+592,winlogon.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+656,services.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1236,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1228,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1180,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1132,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1112,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1100,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+684,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+520,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+8,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1288,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1504,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1456,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1648,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1680,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1700,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1548,VBoxService.ex,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2060,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2072,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2152,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2264,spoolsv.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2336,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2388,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2492,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1732,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1792,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1804,MemCompression,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1824,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1836,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1868,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1976,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1820,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2040,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2824,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2832,MsMpEng.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2844,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2860,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2976,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+3008,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+3128,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+3200,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+3308,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+3540,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+3572,dllhost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+3856,SearchIndexer.,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+3916,AggregatorHost,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+3796,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4148,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4728,sihost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4772,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4804,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4960,taskhostw.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+5000,MicrosoftEdgeU,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+5012,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+3800,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4360,ctfmon.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2524,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2532,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2664,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2680,OfficeClickToR,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2688,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2696,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2708,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2728,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2772,MpDefenderCore,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+5752,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+5692,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+5476,RuntimeBroker.,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4524,RuntimeBroker.,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4676,StartMenuExper,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2916,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4056,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1696,explorer.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4116,userinit.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+7460,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+5792,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+6160,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+6744,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+6828,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+6516,SgrmBroker.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+6620,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+5672,SecurityHealth,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+5584,SecurityHealth,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+5300,VBoxTray.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+5520,OneDrive.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+392,SecurityHealth,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+3552,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+552,SecHealthUI.ex,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4168,ApplicationFra,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+6904,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+7620,dllhost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+7252,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+7156,ShellExperienc,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+7036,RuntimeBroker.,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+6892,SystemSettings,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+6940,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4060,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+6408,UserOOBEBroker,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4260,RuntimeBroker.,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+6436,SystemSettings,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+5172,dllhost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+3680,TextInputHost.,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+6188,SearchApp.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+6036,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+8032,CalculatorApp.,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4176,msedgewebview2,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+2748,RuntimeBroker.,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+5352,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+532,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+6116,SearchApp.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+7520,msedgewebview2,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+7660,msedgewebview2,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+8048,msedgewebview2,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+600,msedgewebview2,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4540,RuntimeBroker.,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4812,M365Copilot.ex,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+6908,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+7748,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+7776,msedgewebview2,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+5392,msedgewebview2,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4836,msedgewebview2,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4472,msedgewebview2,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+3376,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4196,msedgewebview2,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+1528,msedgewebview2,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+4708,msedgewebview2,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+9048,CalculatorApp.,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+8844,svchost.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+9124,WmiPrvSE.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.

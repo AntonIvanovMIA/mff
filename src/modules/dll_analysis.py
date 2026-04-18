@@ -75,11 +75,30 @@ LEGITIMATE_PATH_PREFIXES_SINGLE = (
 AMSI_LEGITIMATE_LOADERS = {"mrt.exe", "msmpeng.exe", "msseces.exe"}
 
 BENIGN_BUNDLED_DLLS = {
+    # Generic redistributables
     "libcef.dll", "d3dcompiler_47.dll", "nw.dll",
     "vulkan-1.dll", "opengl32.dll", "libglesv2.dll", "libegl.dll",
     "msvcp140.dll", "vcruntime140.dll", "ucrtbase.dll",
     "domain_actions.dll",
+    # Microsoft OneDrive (always loads from AppData)
+    "filesyncshell64.dll", "filesyncshell32.dll",
+    "filecoauthlib64.dll", "filecoauthlib32.dll",
+    "odutil.dll", "filesyncclient.dll",
+    # Microsoft Edge (loads from AppData)
+    "well_known_domains.dll", "mojo_core.dll", "chrome_elf.dll",
 }
+
+# Legitimate vendor AppData substrings — not suspicious even in AppData
+LEGITIMATE_APPDATA_SUBSTRINGS = (
+    "microsoft\\\\onedrive\\\\",
+    "microsoft\\\\edge\\\\",
+    "google\\\\chrome\\\\",
+    "mozilla firefox\\\\",
+    "microsoft\\\\teams\\\\",
+    "microsoft\\\\windowsapps\\\\",
+    "microsoft\\\\onedrive",
+    "microsoft\\\\edge",
+)
 
 AMSI_BYPASS_EXCLUDE = {
     "msmpeng.exe", "mrt.exe", "msseces.exe",
@@ -133,15 +152,25 @@ def _win_basename(path_lo):
 
 
 def _is_legitimate(path_lo):
-    """Return True if path is from a legitimate Windows system location."""
-    # Check double-backslash prefixes (Volatility CSV format)
+    """
+    Return True if path is a legitimate Windows system or vendor location.
+    Covers System32/SysWOW64/Program Files AND known vendor AppData paths
+    (OneDrive, Edge, Chrome, Teams load DLLs from AppData legitimately).
+    """
+    # System paths — double-backslash (Volatility CSV format)
     for lp in LEGITIMATE_PATH_PREFIXES:
         if path_lo.startswith(lp):
             return True
-    # Fallback: check single-backslash (normalised format)
+    # System paths — single-backslash fallback
     path_single = path_lo.replace("\\\\", "\\")
     for lp in LEGITIMATE_PATH_PREFIXES_SINGLE:
         if path_single.startswith(lp):
+            return True
+    # Legitimate vendor AppData substrings
+    for sub in LEGITIMATE_APPDATA_SUBSTRINGS:
+        if sub in path_lo:
+            return True
+        if sub.replace("\\\\", "\\") in path_single:
             return True
     return False
 

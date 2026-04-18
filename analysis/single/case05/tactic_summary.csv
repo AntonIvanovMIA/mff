@@ -1,0 +1,10 @@
+Tactic,Technique,TechniqueName,HitCount
+Execution,T1059.001,PowerShell,17
+Defense Evasion,T1055,Process Injection,16
+Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,6
+Defense Evasion,T1574.001,DLL Search Order Hijacking,2
+Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Bypass,2
+Discovery,T1016,System Network Configuration Discovery,2
+Discovery,T1033,System Owner/User Discovery,2
+Discovery,T1057,Process Discovery,2
+Discovery,T1082,System Information Discovery,2

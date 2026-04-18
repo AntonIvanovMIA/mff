@@ -1,0 +1,2182 @@
+{
+  "schema_version": "mff-v2.0",
+  "generated_at": "2026-04-09 19:05:13 UTC",
+  "case_id": "case04_t1574_attack",
+  "baseline_path": "N/A (standalone analysis)",
+  "attack_path": "/MFF/cases/case04_t1574_attack",
+  "severity": {
+    "overall": "CRITICAL",
+    "critical_processes": 6,
+    "high_processes": 0
+  },
+  "statistics": {
+    "new_processes": 0,
+    "gone_processes": 0,
+    "attack_techniques": 3,
+    "attack_tactics": 2,
+    "iocs_extracted": 49,
+    "new_network_conns": 0,
+    "flagged_network_conns": 6
+  },
+  "mitre_attack": {
+    "tactics_observed": [
+      "Defense Evasion",
+      "Execution"
+    ],
+    "techniques_observed": [
+      {
+        "Technique": "T1059.001",
+        "TechniqueName": "PowerShell",
+        "Tactic": "Execution"
+      },
+      {
+        "Technique": "T1562.001",
+        "TechniqueName": "Disable or Modify Tools - AMSI Bypass",
+        "Tactic": "Defense Evasion"
+      },
+      {
+        "Technique": "T1562.001",
+        "TechniqueName": "Disable or Modify Tools - AMSI Memory Patch",
+        "Tactic": "Defense Evasion"
+      },
+      {
+        "Technique": "T1574.001",
+        "TechniqueName": "DLL Search Order Hijacking",
+        "Tactic": "Defense Evasion"
+      }
+    ]
+  },
+  "process_diff": {
+    "new": [],
+    "gone": []
+  },
+  "risk_scores": [
+    {
+      "PID": 5136,
+      "Process": "powershell.exe",
+      "RiskScore": 100,
+      "RiskLevel": "CRITICAL",
+      "Confidence": "Very High \u2014 Multiple independent evidence sources corroborate",
+      "EvidenceCount": 5,
+      "PrimaryTechnique": "T1562.001",
+      "Indicators": "AMSI DLL replaced from staging path; Execution from staging/non-standard path; 5\u00d7 PAGE_EXECUTE_READWRITE memory regions; Cmdline staging path pattern(s): powershell, \\temp\\, pshijack; Spawned by high-risk parent (PID 1316, score 100)",
+      "IndicatorsFull": "[ 85pts] AMSI DLL replaced from staging path: HIGHEST CONFIDENCE T1562.001+T1574.001: amsi.dll from staging path, Volatility cannot dump file \u2014 replaced DLL confirmed. ACPO P2: two independent sources corroborate (dlllist path + file undumpable).\n[ 70pts] Execution from staging/non-standard path: Process cmdline references staging directory: ...c:\\\\temp\\\\pshijack\\\\powershell.exe c:\\\\te... T1574.001 \u2014 Windows loads DLLs from executable directory first, enabling attacker DLL substitution.\n[ 55pts] 5\u00d7 PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001).\n[ 40pts] Cmdline staging path pattern(s): powershell, \\temp\\, pshijack: Command line arguments contain staging directory reference. Matched patterns: powershell, \\temp\\, pshijack\n[ 25pts] Spawned by high-risk parent (PID 1316, score 100): Process chain: this process was created by PID 1316 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution."
+    },
+    {
+      "PID": 8060,
+      "Process": "mspaint.exe",
+      "RiskScore": 100,
+      "RiskLevel": "CRITICAL",
+      "Confidence": "Very High \u2014 Multiple independent evidence sources corroborate",
+      "EvidenceCount": 4,
+      "PrimaryTechnique": "T1574.001",
+      "Indicators": "Protected DLL from staging directory; Execution from staging/non-standard path; Cmdline staging path pattern(s): \\temp\\, \\hijack\\; System executable mspaint.exe from non-System32 path",
+      "IndicatorsFull": "[ 70pts] Execution from staging/non-standard path: Process cmdline references staging directory: ...c:\\\\temp\\\\hijack\\\\mspaint.exe  c:\\\\temp\\\\... T1574.001 \u2014 Windows loads DLLs from executable directory first, enabling attacker DLL substitution.\n[ 50pts] Protected DLL from staging directory: T1574.001: Protected DLL (amsi.dll/version.dll) loaded from user-writable staging directory instead of System32.\n[ 40pts] Cmdline staging path pattern(s): \\temp\\, \\hijack\\: Command line arguments contain staging directory reference. Matched patterns: \\temp\\, \\hijack\\\n[ 20pts] System executable mspaint.exe from non-System32 path: mspaint.exe should only run from System32. Execution from staging directory confirms T1574.001 exploitation."
+    },
+    {
+      "PID": 5844,
+      "Process": "powershell.exe",
+      "RiskScore": 100,
+      "RiskLevel": "CRITICAL",
+      "Confidence": "High \u2014 Three independent evidence sources",
+      "EvidenceCount": 3,
+      "PrimaryTechnique": "T1562.001",
+      "Indicators": "AMSI bypass via memory patching; 2\u00d7 PAGE_EXECUTE_READWRITE region(s); Suspicious cmdline pattern(s): powershell",
+      "IndicatorsFull": "[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID \u2014 AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).\n[ 20pts] Suspicious cmdline pattern(s): powershell: Command line matched detection signatures: powershell\n[ 20pts] 2\u00d7 PAGE_EXECUTE_READWRITE region(s): 2 RWX region(s) \u2014 weak indicator alone; notable in conjunction with other evidence."
+    },
+    {
+      "PID": 6764,
+      "Process": "powershell.exe",
+      "RiskScore": 100,
+      "RiskLevel": "CRITICAL",
+      "Confidence": "Very High \u2014 Multiple independent evidence sources corroborate",
+      "EvidenceCount": 4,
+      "PrimaryTechnique": "T1562.001",
+      "Indicators": "AMSI bypass via memory patching; 5\u00d7 PAGE_EXECUTE_READWRITE memory regions; Suspicious cmdline pattern(s): powershell; Spawned by high-risk parent (PID 7804, score 100)",
+      "IndicatorsFull": "[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID \u2014 AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).\n[ 55pts] 5\u00d7 PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001).\n[ 25pts] Spawned by high-risk parent (PID 7804, score 100): Process chain: this process was created by PID 7804 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution.\n[ 20pts] Suspicious cmdline pattern(s): powershell: Command line matched detection signatures: powershell"
+    },
+    {
+      "PID": 7804,
+      "Process": "powershell.exe",
+      "RiskScore": 100,
+      "RiskLevel": "CRITICAL",
+      "Confidence": "Very High \u2014 Multiple independent evidence sources corroborate",
+      "EvidenceCount": 4,
+      "PrimaryTechnique": "T1562.001",
+      "Indicators": "AMSI bypass via memory patching; 5\u00d7 PAGE_EXECUTE_READWRITE memory regions; Suspicious cmdline pattern(s): powershell; Spawned by high-risk parent (PID 5844, score 100)",
+      "IndicatorsFull": "[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID \u2014 AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).\n[ 55pts] 5\u00d7 PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001).\n[ 25pts] Spawned by high-risk parent (PID 5844, score 100): Process chain: this process was created by PID 5844 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution.\n[ 20pts] Suspicious cmdline pattern(s): powershell: Command line matched detection signatures: powershell"
+    },
+    {
+      "PID": 1316,
+      "Process": "powershell.exe",
+      "RiskScore": 100,
+      "RiskLevel": "CRITICAL",
+      "Confidence": "High \u2014 Three independent evidence sources",
+      "EvidenceCount": 3,
+      "PrimaryTechnique": "T1562.001",
+      "Indicators": "AMSI bypass via memory patching; 5\u00d7 PAGE_EXECUTE_READWRITE memory regions; Suspicious cmdline pattern(s): powershell",
+      "IndicatorsFull": "[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID \u2014 AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).\n[ 55pts] 5\u00d7 PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001).\n[ 20pts] Suspicious cmdline pattern(s): powershell: Command line matched detection signatures: powershell"
+    },
+    {
+      "PID": 4024,
+      "Process": "conhost.exe",
+      "RiskScore": 25,
+      "RiskLevel": "MEDIUM",
+      "Confidence": "Medium \u2014 Single evidence source",
+      "EvidenceCount": 1,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "Spawned by high-risk parent (PID 1316, score 100)",
+      "IndicatorsFull": "[ 25pts] Spawned by high-risk parent (PID 1316, score 100): Process chain: this process was created by PID 1316 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution."
+    },
+    {
+      "PID": 2068,
+      "Process": "conhost.exe",
+      "RiskScore": 25,
+      "RiskLevel": "MEDIUM",
+      "Confidence": "Medium \u2014 Single evidence source",
+      "EvidenceCount": 1,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "Spawned by high-risk parent (PID 5844, score 100)",
+      "IndicatorsFull": "[ 25pts] Spawned by high-risk parent (PID 5844, score 100): Process chain: this process was created by PID 5844 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution."
+    },
+    {
+      "PID": 6544,
+      "Process": "conhost.exe",
+      "RiskScore": 25,
+      "RiskLevel": "MEDIUM",
+      "Confidence": "Medium \u2014 Single evidence source",
+      "EvidenceCount": 1,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "Spawned by high-risk parent (PID 6764, score 100)",
+      "IndicatorsFull": "[ 25pts] Spawned by high-risk parent (PID 6764, score 100): Process chain: this process was created by PID 6764 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution."
+    },
+    {
+      "PID": 668,
+      "Process": "lsass.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 812,
+      "Process": "fontdrvhost.ex",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 788,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 904,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 960,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 376,
+      "Process": "dwm.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 820,
+      "Process": "fontdrvhost.ex",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4,
+      "Process": "System",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 92,
+      "Process": "Registry",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 336,
+      "Process": "smss.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 436,
+      "Process": "csrss.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 524,
+      "Process": "csrss.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 536,
+      "Process": "wininit.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 592,
+      "Process": "winlogon.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 656,
+      "Process": "services.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1236,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1228,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1180,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1132,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1112,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1100,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 684,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 520,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 8,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1288,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1504,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1456,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1648,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1680,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1700,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1548,
+      "Process": "VBoxService.ex",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2060,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2072,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2152,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2264,
+      "Process": "spoolsv.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2336,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2388,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2492,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1732,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1792,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1804,
+      "Process": "MemCompression",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1824,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1836,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1868,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1976,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1820,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2040,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2824,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2832,
+      "Process": "MsMpEng.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2844,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2860,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2976,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 3008,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 3128,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 3200,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 3308,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 3540,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 3572,
+      "Process": "dllhost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 3856,
+      "Process": "SearchIndexer.",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 3916,
+      "Process": "AggregatorHost",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 3796,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4148,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4728,
+      "Process": "sihost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4772,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4804,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4960,
+      "Process": "taskhostw.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 5000,
+      "Process": "MicrosoftEdgeU",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 5012,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 3800,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4360,
+      "Process": "ctfmon.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2524,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2532,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2664,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2680,
+      "Process": "OfficeClickToR",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2688,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2696,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2708,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2728,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2772,
+      "Process": "MpDefenderCore",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 5752,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 5692,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 5476,
+      "Process": "RuntimeBroker.",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4524,
+      "Process": "RuntimeBroker.",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4676,
+      "Process": "StartMenuExper",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2916,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4056,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1696,
+      "Process": "explorer.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4116,
+      "Process": "userinit.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 7460,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 5792,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 6160,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 6744,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 6828,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 6516,
+      "Process": "SgrmBroker.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 6620,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 5672,
+      "Process": "SecurityHealth",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 5584,
+      "Process": "SecurityHealth",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 5300,
+      "Process": "VBoxTray.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 5520,
+      "Process": "OneDrive.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 392,
+      "Process": "SecurityHealth",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 3552,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 552,
+      "Process": "SecHealthUI.ex",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4168,
+      "Process": "ApplicationFra",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 6904,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 7620,
+      "Process": "dllhost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 7252,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 7156,
+      "Process": "ShellExperienc",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 7036,
+      "Process": "RuntimeBroker.",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 6892,
+      "Process": "SystemSettings",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 6940,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4060,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 6408,
+      "Process": "UserOOBEBroker",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4260,
+      "Process": "RuntimeBroker.",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 6436,
+      "Process": "SystemSettings",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 5172,
+      "Process": "dllhost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 3680,
+      "Process": "TextInputHost.",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 6188,
+      "Process": "SearchApp.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 6036,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 8032,
+      "Process": "CalculatorApp.",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4176,
+      "Process": "msedgewebview2",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2748,
+      "Process": "RuntimeBroker.",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 5352,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 532,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 6116,
+      "Process": "SearchApp.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 7520,
+      "Process": "msedgewebview2",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 7660,
+      "Process": "msedgewebview2",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 8048,
+      "Process": "msedgewebview2",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 600,
+      "Process": "msedgewebview2",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4540,
+      "Process": "RuntimeBroker.",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4812,
+      "Process": "M365Copilot.ex",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 6908,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 7748,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 7776,
+      "Process": "msedgewebview2",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 5392,
+      "Process": "msedgewebview2",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4836,
+      "Process": "msedgewebview2",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4472,
+      "Process": "msedgewebview2",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 3376,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4196,
+      "Process": "msedgewebview2",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 1528,
+      "Process": "msedgewebview2",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 4708,
+      "Process": "msedgewebview2",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 9048,
+      "Process": "CalculatorApp.",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 8844,
+      "Process": "svchost.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 9124,
+      "Process": "WmiPrvSE.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    }
+  ],
+  "iocs": {
+    "all": [
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\system32\\\\svchost.exe",
+        "Source": "cmdline",
+        "Count": 48
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\System32\\\\svchost.exe",
+        "Source": "cmdline",
+        "Count": 27
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Program",
+        "Source": "cmdline",
+        "Count": 20
+      },
+      {
+        "Type": "FilePath",
+        "Value": "Microsoft\\\\EdgeWebView\\\\Application\\\\146.0.3856.109\\\\msedgewebview2.exe",
+        "Source": "cmdline",
+        "Count": 14
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Users\\\\lucif\\\\AppData\\\\Local\\\\Packages\\\\Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe\\\\LocalState\\\\EBWebView",
+        "Source": "cmdline",
+        "Count": 7
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Users\\\\lucif\\\\AppData\\\\Local\\\\Packages\\\\Microsoft.Windows.Search_cw5n1h2txyewy\\\\LocalState\\\\EBWebView",
+        "Source": "cmdline",
+        "Count": 7
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\System32\\\\RuntimeBroker.exe",
+        "Source": "cmdline",
+        "Count": 6
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe",
+        "Source": "cmdline",
+        "Count": 4
+      },
+      {
+        "Type": "FilePath",
+        "Value": "??\\\\C:\\\\Windows\\\\system32\\\\conhost.exe",
+        "Source": "cmdline",
+        "Count": 3
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\system32\\\\DllHost.exe",
+        "Source": "cmdline",
+        "Count": 3
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\ProgramData\\\\Microsoft\\\\Windows",
+        "Source": "cmdline",
+        "Count": 2
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\SystemApps\\\\Microsoft.Windows.Search_cw5n1h2txyewy\\\\SearchApp.exe",
+        "Source": "cmdline",
+        "Count": 2
+      },
+      {
+        "Type": "FilePath",
+        "Value": "Microsoft",
+        "Source": "cmdline",
+        "Count": 2
+      },
+      {
+        "Type": "FilePath",
+        "Value": "Windows",
+        "Source": "cmdline",
+        "Count": 2
+      },
+      {
+        "Type": "FilePath",
+        "Value": "WindowsApps\\\\Microsoft.WindowsCalculator_11.2508.4.0_x64__8wekyb3d8bbwe\\\\CalculatorApp.exe",
+        "Source": "cmdline",
+        "Count": 2
+      },
+      {
+        "Type": "FilePath",
+        "Value": "system32\\\\csrss.exe",
+        "Source": "cmdline",
+        "Count": 2
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Temp\\\\pshijack\\\\powershell.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Users\\\\lucif\\\\AppData\\\\Local\\\\Packages\\\\Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe\\\\LocalState\\\\EBWebView\\\\Crashpad",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Users\\\\lucif\\\\AppData\\\\Local\\\\Packages\\\\Microsoft.Windows.Search_cw5n1h2txyewy\\\\LocalState\\\\EBWebView\\\\Crashpad",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\Explorer.EXE",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\System32\\\\SecurityHealthHost.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\System32\\\\SecurityHealthSystray.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\System32\\\\SystemSettingsBroker.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\System32\\\\VBoxService.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\System32\\\\VBoxTray.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\System32\\\\oobe\\\\UserOOBEBroker.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\System32\\\\spoolsv.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\SystemApps\\\\Microsoft.Windows.SecHealthUI_cw5n1h2txyewy\\\\SecHealthUI.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\SystemApps\\\\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\\\\StartMenuExperienceHost.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\SystemApps\\\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\\\TextInputHost.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\SystemApps\\\\ShellExperienceHost_cw5n1h2txyewy\\\\ShellExperienceHost.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\system32\\\\ApplicationFrameHost.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\system32\\\\SearchIndexer.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\system32\\\\SecurityHealthService.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\system32\\\\SgrmBroker.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\system32\\\\lsass.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\system32\\\\services.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\Windows\\\\system32\\\\wbem\\\\wmiprvse.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "C:\\\\temp\\\\hijack\\\\mspaint.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "ClickToRun\\\\OfficeClickToRun.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "Common",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "Microsoft\\\\EdgeUpdate\\\\MicrosoftEdgeUpdate.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "OneDrive.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "Platform\\\\4.18.26010.5-0\\\\MpDefenderCoreService.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "Platform\\\\4.18.26010.5-0\\\\MsMpEng.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "SystemRoot\\\\System32\\\\smss.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "FilePath",
+        "Value": "WindowsApps\\\\Microsoft.MicrosoftOfficeHub_19.2603.36011.0_x64__8wekyb3d8bbwe\\\\M365Copilot.exe",
+        "Source": "cmdline",
+        "Count": 1
+      },
+      {
+        "Type": "IPv4",
+        "Value": "0.0.0.0",
+        "Source": "netscan",
+        "Count": 77
+      }
+    ],
+    "ipv4": [
+      "0.0.0.0"
+    ],
+    "domains": [],
+    "hashes": [],
+    "urls": [],
+    "paths": [
+      "C:\\\\Windows\\\\system32\\\\svchost.exe",
+      "C:\\\\Windows\\\\System32\\\\svchost.exe",
+      "C:\\\\Program",
+      "Microsoft\\\\EdgeWebView\\\\Application\\\\146.0.3856.109\\\\msedgewebview2.exe",
+      "C:\\\\Users\\\\lucif\\\\AppData\\\\Local\\\\Packages\\\\Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe\\\\LocalState\\\\EBWebView",
+      "C:\\\\Users\\\\lucif\\\\AppData\\\\Local\\\\Packages\\\\Microsoft.Windows.Search_cw5n1h2txyewy\\\\LocalState\\\\EBWebView",
+      "C:\\\\Windows\\\\System32\\\\RuntimeBroker.exe",
+      "C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe",
+      "??\\\\C:\\\\Windows\\\\system32\\\\conhost.exe",
+      "C:\\\\Windows\\\\system32\\\\DllHost.exe",
+      "C:\\\\ProgramData\\\\Microsoft\\\\Windows",
+      "C:\\\\Windows\\\\SystemApps\\\\Microsoft.Windows.Search_cw5n1h2txyewy\\\\SearchApp.exe",
+      "Microsoft",
+      "Windows",
+      "WindowsApps\\\\Microsoft.WindowsCalculator_11.2508.4.0_x64__8wekyb3d8bbwe\\\\CalculatorApp.exe",
+      "system32\\\\csrss.exe",
+      "C:\\\\Temp\\\\pshijack\\\\powershell.exe",
+      "C:\\\\Users\\\\lucif\\\\AppData\\\\Local\\\\Packages\\\\Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe\\\\LocalState\\\\EBWebView\\\\Crashpad",
+      "C:\\\\Users\\\\lucif\\\\AppData\\\\Local\\\\Packages\\\\Microsoft.Windows.Search_cw5n1h2txyewy\\\\LocalState\\\\EBWebView\\\\Crashpad",
+      "C:\\\\Windows\\\\Explorer.EXE",
+      "C:\\\\Windows\\\\ImmersiveControlPanel\\\\SystemSettings.exe",
+      "C:\\\\Windows\\\\System32\\\\SecurityHealthHost.exe",
+      "C:\\\\Windows\\\\System32\\\\SecurityHealthSystray.exe",
+      "C:\\\\Windows\\\\System32\\\\SystemSettingsBroker.exe",
+      "C:\\\\Windows\\\\System32\\\\VBoxService.exe",
+      "C:\\\\Windows\\\\System32\\\\VBoxTray.exe",
+      "C:\\\\Windows\\\\System32\\\\oobe\\\\UserOOBEBroker.exe",
+      "C:\\\\Windows\\\\System32\\\\spoolsv.exe",
+      "C:\\\\Windows\\\\SystemApps\\\\Microsoft.Windows.SecHealthUI_cw5n1h2txyewy\\\\SecHealthUI.exe",
+      "C:\\\\Windows\\\\SystemApps\\\\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\\\\StartMenuExperienceHost.exe",
+      "C:\\\\Windows\\\\SystemApps\\\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\\\TextInputHost.exe",
+      "C:\\\\Windows\\\\SystemApps\\\\ShellExperienceHost_cw5n1h2txyewy\\\\ShellExperienceHost.exe",
+      "C:\\\\Windows\\\\system32\\\\ApplicationFrameHost.exe",
+      "C:\\\\Windows\\\\system32\\\\SearchIndexer.exe",
+      "C:\\\\Windows\\\\system32\\\\SecurityHealthService.exe",
+      "C:\\\\Windows\\\\system32\\\\SgrmBroker.exe",
+      "C:\\\\Windows\\\\system32\\\\lsass.exe",
+      "C:\\\\Windows\\\\system32\\\\services.exe",
+      "C:\\\\Windows\\\\system32\\\\wbem\\\\wmiprvse.exe",
+      "C:\\\\temp\\\\hijack\\\\mspaint.exe",
+      "ClickToRun\\\\OfficeClickToRun.exe",
+      "Common",
+      "Microsoft\\\\EdgeUpdate\\\\MicrosoftEdgeUpdate.exe",
+      "OneDrive.exe",
+      "Platform\\\\4.18.26010.5-0\\\\MpDefenderCoreService.exe",
+      "Platform\\\\4.18.26010.5-0\\\\MsMpEng.exe",
+      "SystemRoot\\\\System32\\\\smss.exe",
+      "WindowsApps\\\\Microsoft.MicrosoftOfficeHub_19.2603.36011.0_x64__8wekyb3d8bbwe\\\\M365Copilot.exe"
+    ]
+  },
+  "network": {
+    "new_connections": [],
+    "flagged_connections": [
+      {
+        "TreeDepth": 0,
+        "Offset": "0xba8ee7f531b0",
+        "Proto": "TCPv4",
+        "LocalAddr": "0.0.0.0",
+        "LocalPort": 135,
+        "ForeignAddr": "0.0.0.0",
+        "ForeignPort": 0,
+        "State": "LISTENING",
+        "PID": 904,
+        "Owner": "svchost.exe",
+        "Created": "2026-04-08 18:51:57.000000 UTC",
+        "ImageFileName": "svchost.exe",
+        "SuspiciousPort": 135,
+        "PortMeaning": "DCOM/RPC"
+      },
+      {
+        "TreeDepth": 0,
+        "Offset": "0xba8ee7f531b0",
+        "Proto": "TCPv6",
+        "LocalAddr": "::",
+        "LocalPort": 135,
+        "ForeignAddr": "::",
+        "ForeignPort": 0,
+        "State": "LISTENING",
+        "PID": 904,
+        "Owner": "svchost.exe",
+        "Created": "2026-04-08 18:51:57.000000 UTC",
+        "ImageFileName": "svchost.exe",
+        "SuspiciousPort": 135,
+        "PortMeaning": "DCOM/RPC"
+      },
+      {
+        "TreeDepth": 0,
+        "Offset": "0xba8ee7f54390",
+        "Proto": "TCPv4",
+        "LocalAddr": "0.0.0.0",
+        "LocalPort": 135,
+        "ForeignAddr": "0.0.0.0",
+        "ForeignPort": 0,
+        "State": "LISTENING",
+        "PID": 904,
+        "Owner": "svchost.exe",
+        "Created": "2026-04-08 18:51:57.000000 UTC",
+        "ImageFileName": "svchost.exe",
+        "SuspiciousPort": 135,
+        "PortMeaning": "DCOM/RPC"
+      },
+      {
+        "TreeDepth": 0,
+        "Offset": "0xba8ee8fe77b0",
+        "Proto": "TCPv4",
+        "LocalAddr": "0.0.0.0",
+        "LocalPort": 445,
+        "ForeignAddr": "0.0.0.0",
+        "ForeignPort": 0,
+        "State": "LISTENING",
+        "PID": 4,
+        "Owner": "System",
+        "Created": "2026-04-08 18:52:03.000000 UTC",
+        "ImageFileName": "System",
+        "SuspiciousPort": 445,
+        "PortMeaning": "SMB"
+      },
+      {
+        "TreeDepth": 0,
+        "Offset": "0xba8ee8fe77b0",
+        "Proto": "TCPv6",
+        "LocalAddr": "::",
+        "LocalPort": 445,
+        "ForeignAddr": "::",
+        "ForeignPort": 0,
+        "State": "LISTENING",
+        "PID": 4,
+        "Owner": "System",
+        "Created": "2026-04-08 18:52:03.000000 UTC",
+        "ImageFileName": "System",
+        "SuspiciousPort": 445,
+        "PortMeaning": "SMB"
+      },
+      {
+        "TreeDepth": 0,
+        "Offset": "0xba8eecffdbd0",
+        "Proto": "TCPv4",
+        "LocalAddr": "192.168.56.102",
+        "LocalPort": 139,
+        "ForeignAddr": "0.0.0.0",
+        "ForeignPort": 0,
+        "State": "LISTENING",
+        "PID": 4,
+        "Owner": "System",
+        "Created": "2026-04-09 02:17:48.000000 UTC",
+        "ImageFileName": "System",
+        "SuspiciousPort": 139,
+        "PortMeaning": "NetBIOS"
+      }
+    ]
+  }
+}

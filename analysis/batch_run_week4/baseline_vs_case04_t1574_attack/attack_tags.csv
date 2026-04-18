@@ -1,9 +1,18 @@
 PID,Process,MatchedText,MatchedKeyword,Tactic,Technique,TechniqueName,ATT&CK_URL
-5844,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
-1316,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
-7804,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
-6764,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
-5136,powershell.exe,powershell.exe,powershell,Execution,T1059.001,PowerShell,https://attack.mitre.org/techniques/T1059/001
+2832,MsMpEng.exe,PAGE_EXECUTE_READWRITE,PAGE_EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+6188,SearchApp.exe,PAGE_EXECUTE_READWRITE,PAGE_EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+5844,powershell.exe,PAGE_EXECUTE_READWRITE,PAGE_EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+1316,powershell.exe,PAGE_EXECUTE_READWRITE,PAGE_EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+7804,powershell.exe,PAGE_EXECUTE_READWRITE,PAGE_EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+6764,powershell.exe,PAGE_EXECUTE_READWRITE,PAGE_EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+5136,powershell.exe,PAGE_EXECUTE_READWRITE,PAGE_EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+2832,MsMpEng.exe,PAGE_EXECUTE_READWRITE,EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+6188,SearchApp.exe,PAGE_EXECUTE_READWRITE,EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+5844,powershell.exe,PAGE_EXECUTE_READWRITE,EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+1316,powershell.exe,PAGE_EXECUTE_READWRITE,EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+7804,powershell.exe,PAGE_EXECUTE_READWRITE,EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+6764,powershell.exe,PAGE_EXECUTE_READWRITE,EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
+5136,powershell.exe,PAGE_EXECUTE_READWRITE,EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
 5136,powershell.exe,C:\\Temp\\pshijack\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Bypass,https://attack.mitre.org/techniques/T1562/001
 1316,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,https://attack.mitre.org/techniques/T1562/001
 5844,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,https://attack.mitre.org/techniques/T1562/001

@@ -149,7 +149,10 @@ def extract_iocs(pslist_df, cmdline_df, malfind_df, netscan_df) -> pd.DataFrame:
     source_map = {
         "pslist":  (pslist_df,  ["ImageFileName", "PPID"]),
         "cmdline": (cmdline_df, ["Args", "ImageFileName"]),
-        "malfind": (malfind_df, ["Protection", "Hexdump", "Disasm"]),
+        # Hexdump and Disasm excluded — they contain binary-to-ASCII garbage
+        # that produces massive false positive IOC matches (x.Fr, q.... etc.)
+        # Protection column contains only strings like PAGE_EXECUTE_READWRITE
+        "malfind": (malfind_df, ["Process"]),
         "netscan": (netscan_df, ["LocalAddr", "ForeignAddr", "Owner"]),
     }
 

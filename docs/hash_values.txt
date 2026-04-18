@@ -32,3 +32,10 @@ T1574.raw
 SHA256: 374b66923a6d00ba945951e0a1abce1c6c62fbdfc30df6e11189e00fdae2e1fc
 MD5:    17877102d656683d24ca099592be4c50
 --------------------------------------
+
+Case: case05_multi_attack
+File: T_multi.raw
+MD5: 8c4f8c763f78993b30b2ac4a230952a2
+SHA1: 3d1825d640cbf425b54c83464eea9076ba251463
+SHA256: a0983f4df938595db7ffdb377b743defdd02428f6b1d97b9f653821690a8f1d0
+--------------------------------------

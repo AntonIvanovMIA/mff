@@ -1,32 +1,37 @@
 {
   "schema_version": "mff-v2.0",
-  "generated_at": "2026-03-12 00:20:12 UTC",
+  "generated_at": "2026-04-18 19:44:14 UTC",
   "case_id": "case01_baseline_vs_case03_t1059_attack",
   "baseline_path": "/MFF/cases/case01_baseline",
   "attack_path": "/MFF/cases/case03_t1059_attack",
   "severity": {
     "overall": "CRITICAL",
-    "critical_processes": 1,
-    "high_processes": 2
+    "critical_processes": 3,
+    "high_processes": 0
   },
   "statistics": {
     "new_processes": 16,
     "gone_processes": 16,
-    "attack_techniques": 1,
+    "attack_techniques": 2,
     "attack_tactics": 1,
-    "iocs_extracted": 56,
+    "iocs_extracted": 52,
     "new_network_conns": 133,
     "flagged_network_conns": 4
   },
   "mitre_attack": {
     "tactics_observed": [
-      "Execution"
+      "Defense Evasion"
     ],
     "techniques_observed": [
       {
-        "Technique": "T1059.001",
-        "TechniqueName": "PowerShell",
-        "Tactic": "Execution"
+        "Technique": "T1055",
+        "TechniqueName": "Process Injection",
+        "Tactic": "Defense Evasion"
+      },
+      {
+        "Technique": "T1562.001",
+        "TechniqueName": "Disable or Modify Tools - AMSI Memory Patch",
+        "Tactic": "Defense Evasion"
       }
     ]
   },
@@ -522,112 +527,176 @@
       "Process": "powershell.exe",
       "RiskScore": 100,
       "RiskLevel": "CRITICAL",
-      "Indicators": "Suspicious cmdline pattern; RWX executable memory region (malfind)"
+      "Confidence": "High \u2014 Three independent evidence sources",
+      "EvidenceCount": 3,
+      "PrimaryTechnique": "T1562.001",
+      "Indicators": "AMSI bypass via memory patching; 5\u00d7 PAGE_EXECUTE_READWRITE memory regions; Suspicious cmdline pattern(s): powershell",
+      "IndicatorsFull": "[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID \u2014 AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).\n[ 55pts] 5\u00d7 PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001).\n[ 20pts] Suspicious cmdline pattern(s): powershell: Command line matched detection signatures: powershell"
     },
     {
       "PID": 3288,
       "Process": "SOAPHound.exe",
-      "RiskScore": 65,
-      "RiskLevel": "HIGH",
-      "Indicators": "Known-malicious name: SOAPHound.exe; Anomalous process name keyword"
+      "RiskScore": 90,
+      "RiskLevel": "CRITICAL",
+      "Confidence": "Medium \u2014 Single evidence source",
+      "EvidenceCount": 1,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "Known offensive tool: SOAPHound.exe",
+      "IndicatorsFull": "[ 90pts] Known offensive tool: SOAPHound.exe: Exact name match against curated malicious toolset database. High specificity \u2014 this executable should never exist on a healthy system."
     },
     {
       "PID": 6276,
       "Process": "SOAPHound.exe",
-      "RiskScore": 65,
-      "RiskLevel": "HIGH",
-      "Indicators": "Known-malicious name: SOAPHound.exe; Anomalous process name keyword"
+      "RiskScore": 90,
+      "RiskLevel": "CRITICAL",
+      "Confidence": "Medium \u2014 Single evidence source",
+      "EvidenceCount": 1,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "Known offensive tool: SOAPHound.exe",
+      "IndicatorsFull": "[ 90pts] Known offensive tool: SOAPHound.exe: Exact name match against curated malicious toolset database. High specificity \u2014 this executable should never exist on a healthy system."
     },
     {
       "PID": 9608,
       "Process": "powershell.exe",
-      "RiskScore": 40,
+      "RiskScore": 25,
       "RiskLevel": "MEDIUM",
-      "Indicators": "Suspicious cmdline pattern"
+      "Confidence": "Medium \u2014 Single evidence source",
+      "EvidenceCount": 1,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "Spawned by high-risk parent (PID 7888, score 100)",
+      "IndicatorsFull": "[ 25pts] Spawned by high-risk parent (PID 7888, score 100): Process chain: this process was created by PID 7888 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution."
     },
     {
       "PID": 4200,
       "Process": "powershell.exe",
-      "RiskScore": 40,
+      "RiskScore": 25,
       "RiskLevel": "MEDIUM",
-      "Indicators": "Suspicious cmdline pattern"
+      "Confidence": "Medium \u2014 Single evidence source",
+      "EvidenceCount": 1,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "Spawned by high-risk parent (PID 7888, score 100)",
+      "IndicatorsFull": "[ 25pts] Spawned by high-risk parent (PID 7888, score 100): Process chain: this process was created by PID 7888 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution."
     },
     {
       "PID": 9864,
       "Process": "powershell.exe",
-      "RiskScore": 40,
+      "RiskScore": 25,
       "RiskLevel": "MEDIUM",
-      "Indicators": "Suspicious cmdline pattern"
+      "Confidence": "Medium \u2014 Single evidence source",
+      "EvidenceCount": 1,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "Spawned by high-risk parent (PID 7888, score 100)",
+      "IndicatorsFull": "[ 25pts] Spawned by high-risk parent (PID 7888, score 100): Process chain: this process was created by PID 7888 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution."
     },
     {
-      "PID": 2628,
-      "Process": "OfficeClickToR",
-      "RiskScore": 0,
+      "PID": 7684,
+      "Process": "notepad.exe",
+      "RiskScore": 10,
       "RiskLevel": "LOW",
-      "Indicators": "None"
+      "Confidence": "Medium \u2014 Single evidence source",
+      "EvidenceCount": 1,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "Spawned by medium-risk parent (PID 9864, score 25)",
+      "IndicatorsFull": "[ 10pts] Spawned by medium-risk parent (PID 9864, score 25): Parent PID 9864 has risk score 25/100."
     },
     {
-      "PID": 664,
-      "Process": "WerFault.exe",
-      "RiskScore": 0,
+      "PID": 9780,
+      "Process": "notepad.exe",
+      "RiskScore": 10,
       "RiskLevel": "LOW",
-      "Indicators": "None"
+      "Confidence": "Medium \u2014 Single evidence source",
+      "EvidenceCount": 1,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "Spawned by medium-risk parent (PID 9608, score 25)",
+      "IndicatorsFull": "[ 10pts] Spawned by medium-risk parent (PID 9608, score 25): Parent PID 9608 has risk score 25/100."
     },
     {
       "PID": 9912,
       "Process": "CalculatorApp.",
       "RiskScore": 0,
-      "RiskLevel": "LOW",
-      "Indicators": "None"
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
     },
     {
       "PID": 6148,
       "Process": "ApplicationFra",
       "RiskScore": 0,
-      "RiskLevel": "LOW",
-      "Indicators": "None"
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
     },
     {
       "PID": 6564,
       "Process": "SystemSettings",
       "RiskScore": 0,
-      "RiskLevel": "LOW",
-      "Indicators": "None"
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
     },
     {
       "PID": 5008,
       "Process": "SgrmBroker.exe",
       "RiskScore": 0,
-      "RiskLevel": "LOW",
-      "Indicators": "None"
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 664,
+      "Process": "WerFault.exe",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
+    },
+    {
+      "PID": 2628,
+      "Process": "OfficeClickToR",
+      "RiskScore": 0,
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
     },
     {
       "PID": 1736,
       "Process": "PhoneExperienc",
       "RiskScore": 0,
-      "RiskLevel": "LOW",
-      "Indicators": "None"
-    },
-    {
-      "PID": 7684,
-      "Process": "notepad.exe",
-      "RiskScore": 0,
-      "RiskLevel": "LOW",
-      "Indicators": "None"
-    },
-    {
-      "PID": 9780,
-      "Process": "notepad.exe",
-      "RiskScore": 0,
-      "RiskLevel": "LOW",
-      "Indicators": "None"
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
     },
     {
       "PID": 9744,
       "Process": "SystemSettings",
       "RiskScore": 0,
-      "RiskLevel": "LOW",
-      "Indicators": "None"
+      "RiskLevel": "CLEAN",
+      "Confidence": "Low \u2014 No adverse indicators",
+      "EvidenceCount": 0,
+      "PrimaryTechnique": "\u2014",
+      "Indicators": "None",
+      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
     }
   ],
   "iocs": {
@@ -670,12 +739,6 @@
       },
       {
         "Type": "FilePath",
-        "Value": ".............",
-        "Source": "malfind",
-        "Count": 4
-      },
-      {
-        "Type": "FilePath",
         "Value": "C:\\\\ProgramData\\\\Microsoft\\\\Windows",
         "Source": "cmdline",
         "Count": 2
@@ -703,24 +766,6 @@
         "Value": "system32\\\\csrss.exe",
         "Source": "cmdline",
         "Count": 2
-      },
-      {
-        "Type": "FilePath",
-        "Value": ".....",
-        "Source": "malfind",
-        "Count": 1
-      },
-      {
-        "Type": "FilePath",
-        "Value": "......",
-        "Source": "malfind",
-        "Count": 1
-      },
-      {
-        "Type": "FilePath",
-        "Value": ".......",
-        "Source": "malfind",
-        "Count": 1
       },
       {
         "Type": "FilePath",
@@ -991,15 +1036,11 @@
       "C:\\\\Users\\\\lucif\\\\AppData\\\\Local\\\\Packages\\\\Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe\\\\LocalState\\\\EBWebView",
       "Microsoft\\\\EdgeWebView\\\\Application\\\\144.0.3719.115\\\\msedgewebview2.exe",
       "C:\\\\Windows\\\\System32\\\\RuntimeBroker.exe",
-      ".............",
       "C:\\\\ProgramData\\\\Microsoft\\\\Windows",
       "C:\\\\Windows\\\\system32\\\\DllHost.exe",
       "Microsoft",
       "Windows",
       "system32\\\\csrss.exe",
-      ".....",
-      "......",
-      ".......",
       "??\\\\C:\\\\Windows\\\\system32\\\\conhost.exe",
       "C:\\\\Users\\\\lucif\\\\AppData\\\\Local\\\\Microsoft\\\\EdgeUpdate\\\\MicrosoftEdgeUpdate.exe",
       "C:\\\\Users\\\\lucif\\\\AppData\\\\Local\\\\Packages\\\\Microsoft.MicrosoftOfficeHub_8wekyb3d8bbwe\\\\LocalState\\\\EBWebView\\\\Crashpad",
@@ -1046,7 +1087,8 @@
         "State": "LISTENING",
         "PID": 524,
         "Owner": "wininit.exe",
-        "Created": "2026-02-17 23:49:55.000000 UTC"
+        "Created": "2026-02-17 23:49:55.000000 UTC",
+        "ImageFileName": "wininit.exe"
       },
       {
         "TreeDepth": 0,
@@ -1059,7 +1101,8 @@
         "State": "LISTENING",
         "PID": 1340,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:45:23.000000 UTC"
+        "Created": "2026-02-18 03:45:23.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1072,7 +1115,8 @@
         "State": "LISTENING",
         "PID": 920,
         "Owner": "svchost.exe",
-        "Created": "2026-02-17 23:49:54.000000 UTC"
+        "Created": "2026-02-17 23:49:54.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1085,7 +1129,8 @@
         "State": "LISTENING",
         "PID": 524,
         "Owner": "wininit.exe",
-        "Created": "2026-02-17 23:49:55.000000 UTC"
+        "Created": "2026-02-17 23:49:55.000000 UTC",
+        "ImageFileName": "wininit.exe"
       },
       {
         "TreeDepth": 0,
@@ -1098,7 +1143,8 @@
         "State": "LISTENING",
         "PID": 524,
         "Owner": "wininit.exe",
-        "Created": "2026-02-17 23:49:55.000000 UTC"
+        "Created": "2026-02-17 23:49:55.000000 UTC",
+        "ImageFileName": "wininit.exe"
       },
       {
         "TreeDepth": 0,
@@ -1111,7 +1157,8 @@
         "State": "LISTENING",
         "PID": 920,
         "Owner": "svchost.exe",
-        "Created": "2026-02-17 23:49:54.000000 UTC"
+        "Created": "2026-02-17 23:49:54.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1124,7 +1171,8 @@
         "State": "LISTENING",
         "PID": 920,
         "Owner": "svchost.exe",
-        "Created": "2026-02-17 23:49:54.000000 UTC"
+        "Created": "2026-02-17 23:49:54.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1137,7 +1185,8 @@
         "State": "LISTENING",
         "PID": 688,
         "Owner": "lsass.exe",
-        "Created": "2026-02-17 23:49:54.000000 UTC"
+        "Created": "2026-02-17 23:49:54.000000 UTC",
+        "ImageFileName": "lsass.exe"
       },
       {
         "TreeDepth": 0,
@@ -1150,7 +1199,8 @@
         "State": "LISTENING",
         "PID": 688,
         "Owner": "lsass.exe",
-        "Created": "2026-02-17 23:49:54.000000 UTC"
+        "Created": "2026-02-17 23:49:54.000000 UTC",
+        "ImageFileName": "lsass.exe"
       },
       {
         "TreeDepth": 0,
@@ -1163,7 +1213,8 @@
         "State": "LISTENING",
         "PID": 688,
         "Owner": "lsass.exe",
-        "Created": "2026-02-17 23:49:54.000000 UTC"
+        "Created": "2026-02-17 23:49:54.000000 UTC",
+        "ImageFileName": "lsass.exe"
       },
       {
         "TreeDepth": 0,
@@ -1176,7 +1227,8 @@
         "State": "LISTENING",
         "PID": 1048,
         "Owner": "svchost.exe",
-        "Created": "2026-02-17 23:49:57.000000 UTC"
+        "Created": "2026-02-17 23:49:57.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1189,7 +1241,8 @@
         "State": "LISTENING",
         "PID": 1048,
         "Owner": "svchost.exe",
-        "Created": "2026-02-17 23:49:57.000000 UTC"
+        "Created": "2026-02-17 23:49:57.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1202,7 +1255,8 @@
         "State": "LISTENING",
         "PID": 1048,
         "Owner": "svchost.exe",
-        "Created": "2026-02-17 23:49:57.000000 UTC"
+        "Created": "2026-02-17 23:49:57.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1215,7 +1269,8 @@
         "State": "",
         "PID": 4304,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:28:00.000000 UTC"
+        "Created": "2026-03-11 13:28:00.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1228,7 +1283,8 @@
         "State": "",
         "PID": 936,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:28:01.000000 UTC"
+        "Created": "2026-03-11 13:28:01.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1241,7 +1297,8 @@
         "State": "",
         "PID": 936,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:28:01.000000 UTC"
+        "Created": "2026-03-11 13:28:01.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1254,7 +1311,8 @@
         "State": "",
         "PID": 936,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:28:01.000000 UTC"
+        "Created": "2026-03-11 13:28:01.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1267,7 +1325,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:28:01.000000 UTC"
+        "Created": "2026-03-11 13:28:01.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1280,7 +1339,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:28:01.000000 UTC"
+        "Created": "2026-03-11 13:28:01.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1293,7 +1353,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:28:01.000000 UTC"
+        "Created": "2026-03-11 13:28:01.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1306,7 +1367,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:28:01.000000 UTC"
+        "Created": "2026-03-11 13:28:01.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1319,7 +1381,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:28:01.000000 UTC"
+        "Created": "2026-03-11 13:28:01.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1332,7 +1395,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:37:33.000000 UTC"
+        "Created": "2026-03-11 13:37:33.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1345,7 +1409,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:37:33.000000 UTC"
+        "Created": "2026-03-11 13:37:33.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1358,7 +1423,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:37:33.000000 UTC"
+        "Created": "2026-03-11 13:37:33.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1371,7 +1437,8 @@
         "State": "",
         "PID": 1204,
         "Owner": "VBoxService.ex",
-        "Created": "2026-03-11 13:37:24.000000 UTC"
+        "Created": "2026-03-11 13:37:24.000000 UTC",
+        "ImageFileName": "VBoxService.ex"
       },
       {
         "TreeDepth": 0,
@@ -1384,7 +1451,8 @@
         "State": "",
         "PID": 1204,
         "Owner": "VBoxService.ex",
-        "Created": "2026-03-11 13:37:32.000000 UTC"
+        "Created": "2026-03-11 13:37:32.000000 UTC",
+        "ImageFileName": "VBoxService.ex"
       },
       {
         "TreeDepth": 0,
@@ -1397,7 +1465,8 @@
         "State": "",
         "PID": 1660,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:32:55.000000 UTC"
+        "Created": "2026-03-11 13:32:55.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1410,7 +1479,8 @@
         "State": "",
         "PID": 1660,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:32:55.000000 UTC"
+        "Created": "2026-03-11 13:32:55.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1423,7 +1493,8 @@
         "State": "",
         "PID": 1160,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:37:33.000000 UTC"
+        "Created": "2026-03-11 13:37:33.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1436,7 +1507,8 @@
         "State": "",
         "PID": 1204,
         "Owner": "VBoxService.ex",
-        "Created": "2026-03-11 13:35:02.000000 UTC"
+        "Created": "2026-03-11 13:35:02.000000 UTC",
+        "ImageFileName": "VBoxService.ex"
       },
       {
         "TreeDepth": 0,
@@ -1449,7 +1521,8 @@
         "State": "",
         "PID": 1204,
         "Owner": "VBoxService.ex",
-        "Created": "2026-03-11 13:35:52.000000 UTC"
+        "Created": "2026-03-11 13:35:52.000000 UTC",
+        "ImageFileName": "VBoxService.ex"
       },
       {
         "TreeDepth": 0,
@@ -1462,7 +1535,8 @@
         "State": "",
         "PID": 4,
         "Owner": "System",
-        "Created": "2026-03-11 13:27:02.000000 UTC"
+        "Created": "2026-03-11 13:27:02.000000 UTC",
+        "ImageFileName": "System"
       },
       {
         "TreeDepth": 0,
@@ -1475,7 +1549,8 @@
         "State": "",
         "PID": 1204,
         "Owner": "VBoxService.ex",
-        "Created": "2026-03-11 13:36:13.000000 UTC"
+        "Created": "2026-03-11 13:36:13.000000 UTC",
+        "ImageFileName": "VBoxService.ex"
       },
       {
         "TreeDepth": 0,
@@ -1488,7 +1563,8 @@
         "State": "",
         "PID": 1204,
         "Owner": "VBoxService.ex",
-        "Created": "2026-03-11 13:35:30.000000 UTC"
+        "Created": "2026-03-11 13:35:30.000000 UTC",
+        "ImageFileName": "VBoxService.ex"
       },
       {
         "TreeDepth": 0,
@@ -1501,7 +1577,8 @@
         "State": "",
         "PID": 1204,
         "Owner": "VBoxService.ex",
-        "Created": "2026-03-11 13:34:50.000000 UTC"
+        "Created": "2026-03-11 13:34:50.000000 UTC",
+        "ImageFileName": "VBoxService.ex"
       },
       {
         "TreeDepth": 0,
@@ -1514,7 +1591,8 @@
         "State": "",
         "PID": 4,
         "Owner": "System",
-        "Created": "2026-03-11 13:27:02.000000 UTC"
+        "Created": "2026-03-11 13:27:02.000000 UTC",
+        "ImageFileName": "System"
       },
       {
         "TreeDepth": 0,
@@ -1527,7 +1605,8 @@
         "State": "",
         "PID": 1204,
         "Owner": "VBoxService.ex",
-        "Created": "2026-03-11 13:32:45.000000 UTC"
+        "Created": "2026-03-11 13:32:45.000000 UTC",
+        "ImageFileName": "VBoxService.ex"
       },
       {
         "TreeDepth": 0,
@@ -1540,7 +1619,8 @@
         "State": "",
         "PID": 1204,
         "Owner": "VBoxService.ex",
-        "Created": "2026-03-11 13:35:09.000000 UTC"
+        "Created": "2026-03-11 13:35:09.000000 UTC",
+        "ImageFileName": "VBoxService.ex"
       },
       {
         "TreeDepth": 0,
@@ -1553,7 +1633,8 @@
         "State": "",
         "PID": 1228,
         "Owner": "msedgewebview2",
-        "Created": "2026-03-11 13:32:29.000000 UTC"
+        "Created": "2026-03-11 13:32:29.000000 UTC",
+        "ImageFileName": "msedgewebview2"
       },
       {
         "TreeDepth": 0,
@@ -1566,7 +1647,8 @@
         "State": "",
         "PID": 1228,
         "Owner": "msedgewebview2",
-        "Created": "2026-03-11 13:32:29.000000 UTC"
+        "Created": "2026-03-11 13:32:29.000000 UTC",
+        "ImageFileName": "msedgewebview2"
       },
       {
         "TreeDepth": 0,
@@ -1579,7 +1661,8 @@
         "State": "",
         "PID": 1204,
         "Owner": "VBoxService.ex",
-        "Created": "2026-03-11 13:36:06.000000 UTC"
+        "Created": "2026-03-11 13:36:06.000000 UTC",
+        "ImageFileName": "VBoxService.ex"
       },
       {
         "TreeDepth": 0,
@@ -1592,7 +1675,8 @@
         "State": "",
         "PID": 1204,
         "Owner": "VBoxService.ex",
-        "Created": "2026-03-11 13:35:45.000000 UTC"
+        "Created": "2026-03-11 13:35:45.000000 UTC",
+        "ImageFileName": "VBoxService.ex"
       },
       {
         "TreeDepth": 0,
@@ -1605,7 +1689,8 @@
         "State": "",
         "PID": 1204,
         "Owner": "VBoxService.ex",
-        "Created": "2026-03-11 13:34:45.000000 UTC"
+        "Created": "2026-03-11 13:34:45.000000 UTC",
+        "ImageFileName": "VBoxService.ex"
       },
       {
         "TreeDepth": 0,
@@ -1618,7 +1703,8 @@
         "State": "",
         "PID": 1204,
         "Owner": "VBoxService.ex",
-        "Created": "2026-03-11 13:36:00.000000 UTC"
+        "Created": "2026-03-11 13:36:00.000000 UTC",
+        "ImageFileName": "VBoxService.ex"
       },
       {
         "TreeDepth": 0,
@@ -1631,7 +1717,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:37:33.000000 UTC"
+        "Created": "2026-03-11 13:37:33.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1644,7 +1731,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:37:33.000000 UTC"
+        "Created": "2026-03-11 13:37:33.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1657,7 +1745,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:37:33.000000 UTC"
+        "Created": "2026-03-11 13:37:33.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1670,7 +1759,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:37:33.000000 UTC"
+        "Created": "2026-03-11 13:37:33.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1683,7 +1773,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:37:33.000000 UTC"
+        "Created": "2026-03-11 13:37:33.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1696,7 +1787,8 @@
         "State": "",
         "PID": 4428,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:48:04.000000 UTC"
+        "Created": "2026-02-18 03:48:04.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1709,7 +1801,8 @@
         "State": "",
         "PID": 1204,
         "Owner": "VBoxService.ex",
-        "Created": "2026-03-11 13:37:39.000000 UTC"
+        "Created": "2026-03-11 13:37:39.000000 UTC",
+        "ImageFileName": "VBoxService.ex"
       },
       {
         "TreeDepth": 0,
@@ -1722,7 +1815,8 @@
         "State": "",
         "PID": 7160,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:31:51.000000 UTC"
+        "Created": "2026-03-11 13:31:51.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1735,7 +1829,8 @@
         "State": "",
         "PID": 7160,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:31:51.000000 UTC"
+        "Created": "2026-03-11 13:31:51.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1748,7 +1843,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:45:56.000000 UTC"
+        "Created": "2026-02-18 03:45:56.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1761,7 +1857,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:45:56.000000 UTC"
+        "Created": "2026-02-18 03:45:56.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1774,7 +1871,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:45:56.000000 UTC"
+        "Created": "2026-02-18 03:45:56.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1787,7 +1885,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:45:56.000000 UTC"
+        "Created": "2026-02-18 03:45:56.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1800,7 +1899,8 @@
         "State": "LISTENING",
         "PID": 656,
         "Owner": "services.exe",
-        "Created": "2026-02-18 03:46:01.000000 UTC"
+        "Created": "2026-02-18 03:46:01.000000 UTC",
+        "ImageFileName": "services.exe"
       },
       {
         "TreeDepth": 0,
@@ -1813,7 +1913,8 @@
         "State": "LISTENING",
         "PID": 656,
         "Owner": "services.exe",
-        "Created": "2026-02-18 03:46:01.000000 UTC"
+        "Created": "2026-02-18 03:46:01.000000 UTC",
+        "ImageFileName": "services.exe"
       },
       {
         "TreeDepth": 0,
@@ -1826,7 +1927,8 @@
         "State": "LISTENING",
         "PID": 1340,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:45:23.000000 UTC"
+        "Created": "2026-02-18 03:45:23.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1839,7 +1941,8 @@
         "State": "LISTENING",
         "PID": 1340,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:45:23.000000 UTC"
+        "Created": "2026-02-18 03:45:23.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1852,7 +1955,8 @@
         "State": "LISTENING",
         "PID": 4428,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:48:04.000000 UTC"
+        "Created": "2026-02-18 03:48:04.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1865,7 +1969,8 @@
         "State": "LISTENING",
         "PID": 2308,
         "Owner": "spoolsv.exe",
-        "Created": "2026-02-18 03:45:57.000000 UTC"
+        "Created": "2026-02-18 03:45:57.000000 UTC",
+        "ImageFileName": "spoolsv.exe"
       },
       {
         "TreeDepth": 0,
@@ -1878,7 +1983,8 @@
         "State": "LISTENING",
         "PID": 2308,
         "Owner": "spoolsv.exe",
-        "Created": "2026-02-18 03:45:57.000000 UTC"
+        "Created": "2026-02-18 03:45:57.000000 UTC",
+        "ImageFileName": "spoolsv.exe"
       },
       {
         "TreeDepth": 0,
@@ -1891,7 +1997,8 @@
         "State": "LISTENING",
         "PID": 656,
         "Owner": "services.exe",
-        "Created": "2026-02-18 03:46:00.000000 UTC"
+        "Created": "2026-02-18 03:46:00.000000 UTC",
+        "ImageFileName": "services.exe"
       },
       {
         "TreeDepth": 0,
@@ -1904,7 +2011,8 @@
         "State": "LISTENING",
         "PID": 2308,
         "Owner": "spoolsv.exe",
-        "Created": "2026-02-18 03:45:57.000000 UTC"
+        "Created": "2026-02-18 03:45:57.000000 UTC",
+        "ImageFileName": "spoolsv.exe"
       },
       {
         "TreeDepth": 0,
@@ -1917,7 +2025,8 @@
         "State": "",
         "PID": 2572,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:45:59.000000 UTC"
+        "Created": "2026-02-18 03:45:59.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1930,7 +2039,8 @@
         "State": "",
         "PID": 2572,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:45:59.000000 UTC"
+        "Created": "2026-02-18 03:45:59.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1943,7 +2053,8 @@
         "State": "",
         "PID": 2992,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:46:01.000000 UTC"
+        "Created": "2026-02-18 03:46:01.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1956,7 +2067,8 @@
         "State": "",
         "PID": 2572,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:45:59.000000 UTC"
+        "Created": "2026-02-18 03:45:59.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1969,7 +2081,8 @@
         "State": "",
         "PID": 2572,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:45:59.000000 UTC"
+        "Created": "2026-02-18 03:45:59.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1982,7 +2095,8 @@
         "State": "",
         "PID": 2572,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:45:59.000000 UTC"
+        "Created": "2026-02-18 03:45:59.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -1995,7 +2109,8 @@
         "State": "",
         "PID": 2572,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:45:59.000000 UTC"
+        "Created": "2026-02-18 03:45:59.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2008,7 +2123,8 @@
         "State": "",
         "PID": 2572,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:45:59.000000 UTC"
+        "Created": "2026-02-18 03:45:59.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2021,7 +2137,8 @@
         "State": "",
         "PID": 1204,
         "Owner": "VBoxService.ex",
-        "Created": "2026-03-11 13:38:56.000000 UTC"
+        "Created": "2026-03-11 13:38:56.000000 UTC",
+        "ImageFileName": "VBoxService.ex"
       },
       {
         "TreeDepth": 0,
@@ -2034,7 +2151,8 @@
         "State": "",
         "PID": 936,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:48:06.000000 UTC"
+        "Created": "2026-02-18 03:48:06.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2047,7 +2165,8 @@
         "State": "",
         "PID": 936,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:48:06.000000 UTC"
+        "Created": "2026-02-18 03:48:06.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2060,7 +2179,8 @@
         "State": "",
         "PID": 2572,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:45:59.000000 UTC"
+        "Created": "2026-02-18 03:45:59.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2073,7 +2193,8 @@
         "State": "",
         "PID": 2580,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:45:59.000000 UTC"
+        "Created": "2026-02-18 03:45:59.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2086,7 +2207,8 @@
         "State": "",
         "PID": 2580,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:45:59.000000 UTC"
+        "Created": "2026-02-18 03:45:59.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2099,7 +2221,8 @@
         "State": "",
         "PID": 1204,
         "Owner": "VBoxService.ex",
-        "Created": "2026-03-11 13:38:32.000000 UTC"
+        "Created": "2026-03-11 13:38:32.000000 UTC",
+        "ImageFileName": "VBoxService.ex"
       },
       {
         "TreeDepth": 0,
@@ -2112,7 +2235,8 @@
         "State": "",
         "PID": 4304,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:28:00.000000 UTC"
+        "Created": "2026-03-11 13:28:00.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2125,7 +2249,8 @@
         "State": "",
         "PID": 4304,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:28:00.000000 UTC"
+        "Created": "2026-03-11 13:28:00.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2138,7 +2263,8 @@
         "State": "",
         "PID": 4304,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:28:00.000000 UTC"
+        "Created": "2026-03-11 13:28:00.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2151,7 +2277,8 @@
         "State": "",
         "PID": 1204,
         "Owner": "VBoxService.ex",
-        "Created": "2026-03-11 13:38:21.000000 UTC"
+        "Created": "2026-03-11 13:38:21.000000 UTC",
+        "ImageFileName": "VBoxService.ex"
       },
       {
         "TreeDepth": 0,
@@ -2164,7 +2291,8 @@
         "State": "",
         "PID": 2580,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:45:59.000000 UTC"
+        "Created": "2026-02-18 03:45:59.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2177,7 +2305,8 @@
         "State": "",
         "PID": 4304,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:28:00.000000 UTC"
+        "Created": "2026-03-11 13:28:00.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2190,7 +2319,8 @@
         "State": "",
         "PID": 4304,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:28:00.000000 UTC"
+        "Created": "2026-03-11 13:28:00.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2203,7 +2333,8 @@
         "State": "",
         "PID": 936,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:48:06.000000 UTC"
+        "Created": "2026-02-18 03:48:06.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2216,7 +2347,8 @@
         "State": "",
         "PID": 4304,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:28:00.000000 UTC"
+        "Created": "2026-03-11 13:28:00.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2229,7 +2361,8 @@
         "State": "",
         "PID": 2572,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:45:59.000000 UTC"
+        "Created": "2026-02-18 03:45:59.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2242,7 +2375,8 @@
         "State": "",
         "PID": 1204,
         "Owner": "VBoxService.ex",
-        "Created": "2026-03-11 13:31:00.000000 UTC"
+        "Created": "2026-03-11 13:31:00.000000 UTC",
+        "ImageFileName": "VBoxService.ex"
       },
       {
         "TreeDepth": 0,
@@ -2255,7 +2389,8 @@
         "State": "",
         "PID": 1204,
         "Owner": "VBoxService.ex",
-        "Created": "2026-03-11 13:31:08.000000 UTC"
+        "Created": "2026-03-11 13:31:08.000000 UTC",
+        "ImageFileName": "VBoxService.ex"
       },
       {
         "TreeDepth": 0,
@@ -2268,7 +2403,8 @@
         "State": "",
         "PID": 1228,
         "Owner": "msedgewebview2",
-        "Created": "2026-03-11 13:31:15.000000 UTC"
+        "Created": "2026-03-11 13:31:15.000000 UTC",
+        "ImageFileName": "msedgewebview2"
       },
       {
         "TreeDepth": 0,
@@ -2281,7 +2417,8 @@
         "State": "",
         "PID": 1228,
         "Owner": "msedgewebview2",
-        "Created": "2026-03-11 13:31:15.000000 UTC"
+        "Created": "2026-03-11 13:31:15.000000 UTC",
+        "ImageFileName": "msedgewebview2"
       },
       {
         "TreeDepth": 0,
@@ -2294,7 +2431,8 @@
         "State": "",
         "PID": 1228,
         "Owner": "msedgewebview2",
-        "Created": "2026-03-11 13:31:12.000000 UTC"
+        "Created": "2026-03-11 13:31:12.000000 UTC",
+        "ImageFileName": "msedgewebview2"
       },
       {
         "TreeDepth": 0,
@@ -2307,7 +2445,8 @@
         "State": "",
         "PID": 1228,
         "Owner": "msedgewebview2",
-        "Created": "2026-03-11 13:31:12.000000 UTC"
+        "Created": "2026-03-11 13:31:12.000000 UTC",
+        "ImageFileName": "msedgewebview2"
       },
       {
         "TreeDepth": 0,
@@ -2320,7 +2459,8 @@
         "State": "",
         "PID": 1228,
         "Owner": "msedgewebview2",
-        "Created": "2026-03-11 13:31:00.000000 UTC"
+        "Created": "2026-03-11 13:31:00.000000 UTC",
+        "ImageFileName": "msedgewebview2"
       },
       {
         "TreeDepth": 0,
@@ -2333,7 +2473,8 @@
         "State": "",
         "PID": 1228,
         "Owner": "msedgewebview2",
-        "Created": "2026-03-11 13:31:00.000000 UTC"
+        "Created": "2026-03-11 13:31:00.000000 UTC",
+        "ImageFileName": "msedgewebview2"
       },
       {
         "TreeDepth": 0,
@@ -2346,7 +2487,8 @@
         "State": "",
         "PID": 1228,
         "Owner": "msedgewebview2",
-        "Created": "2026-03-11 13:30:36.000000 UTC"
+        "Created": "2026-03-11 13:30:36.000000 UTC",
+        "ImageFileName": "msedgewebview2"
       },
       {
         "TreeDepth": 0,
@@ -2359,7 +2501,8 @@
         "State": "",
         "PID": 1228,
         "Owner": "msedgewebview2",
-        "Created": "2026-03-11 13:30:36.000000 UTC"
+        "Created": "2026-03-11 13:30:36.000000 UTC",
+        "ImageFileName": "msedgewebview2"
       },
       {
         "TreeDepth": 0,
@@ -2372,7 +2515,8 @@
         "State": "",
         "PID": 1228,
         "Owner": "msedgewebview2",
-        "Created": "2026-03-11 13:30:17.000000 UTC"
+        "Created": "2026-03-11 13:30:17.000000 UTC",
+        "ImageFileName": "msedgewebview2"
       },
       {
         "TreeDepth": 0,
@@ -2385,7 +2529,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:31:12.000000 UTC"
+        "Created": "2026-03-11 13:31:12.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2398,7 +2543,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:31:12.000000 UTC"
+        "Created": "2026-03-11 13:31:12.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2411,7 +2557,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:31:07.000000 UTC"
+        "Created": "2026-03-11 13:31:07.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2424,7 +2571,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:31:07.000000 UTC"
+        "Created": "2026-03-11 13:31:07.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2437,7 +2585,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:28:35.000000 UTC"
+        "Created": "2026-03-11 13:28:35.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2450,7 +2599,8 @@
         "State": "",
         "PID": 1572,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:28:35.000000 UTC"
+        "Created": "2026-03-11 13:28:35.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2463,7 +2613,8 @@
         "State": "",
         "PID": 1228,
         "Owner": "msedgewebview2",
-        "Created": "2026-03-11 13:30:13.000000 UTC"
+        "Created": "2026-03-11 13:30:13.000000 UTC",
+        "ImageFileName": "msedgewebview2"
       },
       {
         "TreeDepth": 0,
@@ -2476,7 +2627,8 @@
         "State": "",
         "PID": 1228,
         "Owner": "msedgewebview2",
-        "Created": "2026-03-11 13:30:17.000000 UTC"
+        "Created": "2026-03-11 13:30:17.000000 UTC",
+        "ImageFileName": "msedgewebview2"
       },
       {
         "TreeDepth": 0,
@@ -2489,7 +2641,8 @@
         "State": "",
         "PID": 1228,
         "Owner": "msedgewebview2",
-        "Created": "2026-03-11 13:30:52.000000 UTC"
+        "Created": "2026-03-11 13:30:52.000000 UTC",
+        "ImageFileName": "msedgewebview2"
       },
       {
         "TreeDepth": 0,
@@ -2502,7 +2655,8 @@
         "State": "",
         "PID": 1228,
         "Owner": "msedgewebview2",
-        "Created": "2026-03-11 13:30:52.000000 UTC"
+        "Created": "2026-03-11 13:30:52.000000 UTC",
+        "ImageFileName": "msedgewebview2"
       },
       {
         "TreeDepth": 0,
@@ -2515,7 +2669,8 @@
         "State": "",
         "PID": 4304,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:28:00.000000 UTC"
+        "Created": "2026-03-11 13:28:00.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2528,7 +2683,8 @@
         "State": "SYN_SENT",
         "PID": 4584,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:38:49.000000 UTC"
+        "Created": "2026-03-11 13:38:49.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2541,7 +2697,8 @@
         "State": "CLOSED",
         "PID": 7160,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:31:45.000000 UTC"
+        "Created": "2026-03-11 13:31:45.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2554,7 +2711,8 @@
         "State": "LISTENING",
         "PID": 4,
         "Owner": "System",
-        "Created": "2026-03-11 13:27:02.000000 UTC"
+        "Created": "2026-03-11 13:27:02.000000 UTC",
+        "ImageFileName": "System"
       },
       {
         "TreeDepth": 0,
@@ -2567,7 +2725,8 @@
         "State": "LISTENING",
         "PID": 2580,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:46:08.000000 UTC"
+        "Created": "2026-02-18 03:46:08.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2580,7 +2739,8 @@
         "State": "LISTENING",
         "PID": 2580,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:46:08.000000 UTC"
+        "Created": "2026-02-18 03:46:08.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2593,7 +2753,8 @@
         "State": "LISTENING",
         "PID": 2580,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:46:08.000000 UTC"
+        "Created": "2026-02-18 03:46:08.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2606,7 +2767,8 @@
         "State": "LISTENING",
         "PID": 4584,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:48:04.000000 UTC"
+        "Created": "2026-02-18 03:48:04.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2619,7 +2781,8 @@
         "State": "LISTENING",
         "PID": 4584,
         "Owner": "svchost.exe",
-        "Created": "2026-02-18 03:48:04.000000 UTC"
+        "Created": "2026-02-18 03:48:04.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2632,7 +2795,8 @@
         "State": "CLOSED",
         "PID": 2640,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:29:35.000000 UTC"
+        "Created": "2026-03-11 13:29:35.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2645,7 +2809,8 @@
         "State": "CLOSED",
         "PID": 1228,
         "Owner": "msedgewebview2",
-        "Created": "2026-03-11 13:32:01.000000 UTC"
+        "Created": "2026-03-11 13:32:01.000000 UTC",
+        "ImageFileName": "msedgewebview2"
       },
       {
         "TreeDepth": 0,
@@ -2658,7 +2823,8 @@
         "State": "ESTABLISHED",
         "PID": 2840,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:29:20.000000 UTC"
+        "Created": "2026-03-11 13:29:20.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2671,7 +2837,8 @@
         "State": "ESTABLISHED",
         "PID": 2840,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:28:12.000000 UTC"
+        "Created": "2026-03-11 13:28:12.000000 UTC",
+        "ImageFileName": "svchost.exe"
       },
       {
         "TreeDepth": 0,
@@ -2684,7 +2851,8 @@
         "State": "CLOSED",
         "PID": 1228,
         "Owner": "msedgewebview2",
-        "Created": "2026-03-11 13:32:26.000000 UTC"
+        "Created": "2026-03-11 13:32:26.000000 UTC",
+        "ImageFileName": "msedgewebview2"
       },
       {
         "TreeDepth": 0,
@@ -2697,7 +2865,8 @@
         "State": "ESTABLISHED",
         "PID": 1228,
         "Owner": "msedgewebview2",
-        "Created": "2026-03-11 13:38:28.000000 UTC"
+        "Created": "2026-03-11 13:38:28.000000 UTC",
+        "ImageFileName": "msedgewebview2"
       },
       {
         "TreeDepth": 0,
@@ -2710,7 +2879,8 @@
         "State": "CLOSED",
         "PID": 2628,
         "Owner": "OfficeClickToR",
-        "Created": "2026-03-11 13:31:07.000000 UTC"
+        "Created": "2026-03-11 13:31:07.000000 UTC",
+        "ImageFileName": "OfficeClickToR"
       },
       {
         "TreeDepth": 0,
@@ -2723,7 +2893,8 @@
         "State": "CLOSE_WAIT",
         "PID": 9744,
         "Owner": "SystemSettings",
-        "Created": "2026-03-11 13:32:56.000000 UTC"
+        "Created": "2026-03-11 13:32:56.000000 UTC",
+        "ImageFileName": "SystemSettings"
       },
       {
         "TreeDepth": 0,
@@ -2736,7 +2907,8 @@
         "State": "CLOSE_WAIT",
         "PID": 9744,
         "Owner": "SystemSettings",
-        "Created": "2026-03-11 13:32:57.000000 UTC"
+        "Created": "2026-03-11 13:32:57.000000 UTC",
+        "ImageFileName": "SystemSettings"
       },
       {
         "TreeDepth": 0,
@@ -2749,7 +2921,8 @@
         "State": "CLOSED",
         "PID": 6016,
         "Owner": "explorer.exe",
-        "Created": "2026-03-11 13:35:21.000000 UTC"
+        "Created": "2026-03-11 13:35:21.000000 UTC",
+        "ImageFileName": "explorer.exe"
       },
       {
         "TreeDepth": 0,
@@ -2762,7 +2935,8 @@
         "State": "CLOSED",
         "PID": 4584,
         "Owner": "svchost.exe",
-        "Created": "2026-03-11 13:32:56.000000 UTC"
+        "Created": "2026-03-11 13:32:56.000000 UTC",
+        "ImageFileName": "svchost.exe"
       }
     ],
     "flagged_connections": [
@@ -2778,6 +2952,7 @@
         "PID": 920,
         "Owner": "svchost.exe",
         "Created": "2026-02-17 23:49:54.000000 UTC",
+        "ImageFileName": "svchost.exe",
         "SuspiciousPort": 135,
         "PortMeaning": "DCOM/RPC"
       },
@@ -2793,6 +2968,7 @@
         "PID": 920,
         "Owner": "svchost.exe",
         "Created": "2026-02-17 23:49:54.000000 UTC",
+        "ImageFileName": "svchost.exe",
         "SuspiciousPort": 135,
         "PortMeaning": "DCOM/RPC"
       },
@@ -2808,6 +2984,7 @@
         "PID": 920,
         "Owner": "svchost.exe",
         "Created": "2026-02-17 23:49:54.000000 UTC",
+        "ImageFileName": "svchost.exe",
         "SuspiciousPort": 135,
         "PortMeaning": "DCOM/RPC"
       },
@@ -2823,6 +3000,7 @@
         "PID": 4,
         "Owner": "System",
         "Created": "2026-03-11 13:27:02.000000 UTC",
+        "ImageFileName": "System",
         "SuspiciousPort": 139,
         "PortMeaning": "NetBIOS"
       }
