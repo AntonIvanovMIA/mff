@@ -1,9 +1,0 @@
-PID,Process,MatchedText,MatchedKeyword,Tactic,Technique,TechniqueName,ATT&CK_URL
-2796,MsMpEng.exe,PAGE_EXECUTE_READWRITE,PAGE_EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
-992,powershell.exe,PAGE_EXECUTE_READWRITE,PAGE_EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
-7764,powershell.exe,PAGE_EXECUTE_READWRITE,PAGE_EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
-2796,MsMpEng.exe,PAGE_EXECUTE_READWRITE,EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
-992,powershell.exe,PAGE_EXECUTE_READWRITE,EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
-7764,powershell.exe,PAGE_EXECUTE_READWRITE,EXECUTE_READWRITE,Defense Evasion,T1055,Process Injection,https://attack.mitre.org/techniques/T1055
-992,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,https://attack.mitre.org/techniques/T1562/001
-7764,powershell.exe,C:\\Windows\\SYSTEM32\\amsi.dll,amsi.dll,Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,https://attack.mitre.org/techniques/T1562/001

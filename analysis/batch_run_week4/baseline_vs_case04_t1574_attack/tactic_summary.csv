@@ -1,5 +1,0 @@
-Tactic,Technique,TechniqueName,HitCount
-Defense Evasion,T1055,Process Injection,14
-Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Memory Patch,4
-Defense Evasion,T1574.001,DLL Search Order Hijacking,3
-Defense Evasion,T1562.001,Disable or Modify Tools - AMSI Bypass,1

@@ -1,2 +1,0 @@
-PID,Process,DLL,LoadPath,HijackType,Technique,TechniqueName,Tactic,RiskScore,DLL_Indicator,Description
-7888,powershell.exe,amsi.dll,C:\\Windows\\SYSTEM32\\amsi.dll,AMSI_BYPASS_MEMORY_PATCH,T1562.001,Disable or Modify Tools - AMSI Memory Patch,Defense Evasion,80,amsi.dll in 'powershell.exe' + 5 RWX region(s) = AMSI bypass,HIGH CONFIDENCE T1562.001: 'powershell.exe' (PID=7888) loads amsi.dll AND has 5 PAGE_EXECUTE_READWRITE region(s). Standard pattern for PowerShell AMSI bypass via memory patching.

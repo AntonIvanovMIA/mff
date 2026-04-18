@@ -1,3 +1,0 @@
-TreeDepth,PID,Process,Args,ImageFileName,MatchedPattern
-0,992,powershell.exe,"""C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"" ",powershell.exe,powershell
-0,7764,powershell.exe,"\\??\\C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -Command ""Add-Type -AssemblyName PresentationFramework; [System.Windows.MessageBox]::Show('Atomic Red Team', 'Warning', 'OK', 'Warning'); Start-Process 'notepad.exe'""",powershell.exe,powershell
