@@ -331,13 +331,13 @@ Performed from **Windows 11 host machine** immediately after attack, while VM is
 ```cmd
 cd "C:\Program Files\Oracle\VirtualBox"
 
-VBoxManage debugvm "Windows 10" dumpvmcore --filename "D:\2.ROEHAMPTON\Final year\FYPROJECT\Memory forensics framework tools for analyse and visualisation\shared\T_multi.raw"
+VBoxManage debugvm "Windows 10" dumpvmcore --filename "D:\2.ROEHAMPTON\Final year\FYPROJECT\Memory forensics framework tools for analyse and visualisation\shared\......raw"
 ```
 
 ### Step 2 — Hash on host immediately
 
 ```cmd
-certutil -hashfile "D:\2.ROEHAMPTON\Final year\FYPROJECT\Memory forensics framework tools for analyse and visualisation\shared\T_multi.raw" SHA256
+certutil -hashfile "D:\2.ROEHAMPTON\Final year\FYPROJECT\Memory forensics framework tools for analyse and visualisation\shared\......raw" SHA256
 ```
 
 Write down the SHA256. This is the chain of custody hash.
@@ -346,14 +346,14 @@ Write down the SHA256. This is the chain of custody hash.
 
 ```bash
 cp /media/sf_shared/T_multi.raw /MFF/cases/case05_multi_attack/T_multi.raw
-ls -lh /MFF/cases/case05_multi_attack/T_multi.raw   # verify ~4 GB
+ls -lh /MFF/cases/case05_multi_attack/......raw   # verify ~4 GB
 ```
 
 ### Step 4 — Hash on Kali and verify
 
 ```bash
-sha256sum /MFF/cases/case05_multi_attack/T_multi.raw
-md5sum    /MFF/cases/case05_multi_attack/T_multi.raw
+sha256sum /MFF/cases/case05_multi_attack/.....raw
+md5sum    /MFF/cases/case05_multi_attack/...raw
 ```
 
 SHA256 must match the host value. If it does not match, the dump is corrupted — repeat acquisition.
@@ -361,7 +361,8 @@ SHA256 must match the host value. If it does not match, the dump is corrupted �
 ### Step 5 — Lock evidence and record hashes
 
 ```bash
-chmod 444 /MFF/cases/case05_multi_attack/T_multi.raw
+chmod 444 /MFF/cases/case05_multi_attack/.....raw
+example:
 
 echo "Case: case05_multi_attack"        >> /MFF/docs/hash_values.txt
 echo "File: T_multi.raw"                >> /MFF/docs/hash_values.txt
@@ -1000,7 +1001,12 @@ git push origin main
 # Verify
 git log --oneline | head -10
 git status
-```
+`in conflict is used this :
+cd /MFF
+
+git fetch origin
+git pull --rebase origin main
+git push origin main``
 
 ### .gitignore — important entries
 

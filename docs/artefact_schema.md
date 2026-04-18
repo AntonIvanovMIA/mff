@@ -933,4 +933,298 @@ By correlating:
 
 the framework produces **high-confidence forensic intelligence**.
 
----
+---------------------------------------------------------------------------
+
+
+# Case 05 – Real Artifact Schema
+
+## 1. Case Identity
+- Case Name: case05_multi_attack
+- Baseline Reference: case01_baseline
+- Attack Image: /MFF/cases/case05_multi_attack/T_multi.raw
+- Comparison Output Directory: /MFF/analysis/comparison/case01_vs_case05
+
+## 2. Primary Acquisition Artifact
+### T_multi.raw
+- Type: Raw memory image
+- Role: Primary forensic evidence source for Case 05
+- Acquisition Method: Hypervisor-assisted VirtualBox memory dump
+- Analytical Importance: All Volatility outputs and all MFF comparison outputs for Case 05 were derived from this image
+
+## 3. Integrity Record
+The following hash values were recorded for the Case 05 memory image:
+
+- MD5: 8c4f8c763f78993b30b2ac4a230952a2
+- SHA1: 3d1825d640cbf425b54c83464eea9076ba251463
+- SHA256: a0983f4df938595db7ffdb377b743defdd02428f6b1d97b9f653821690a8f1d0
+
+Interpretation:
+These values form the integrity record for the acquired memory image and support chain-of-custody documentation for Case 05.
+
+## 4. Case-Level Evidence Summary
+The final processed outputs for Case 05 reported the following high-level findings:
+
+- Overall Severity: CRITICAL
+- Critical Processes: 8
+- New Processes: 16
+- Gone Processes: 16
+- ATT&CK Techniques Detected: 8
+- ATT&CK Tactics Detected: 3
+- IOCs Extracted: 59
+- New Network Connections: 139
+- Flagged Network Connections: 4
+- RWX Memory Regions (cross-case summary): 42
+- DLL Hijack / DLL Anomaly Findings (cross-case summary): 12
+
+Interpretation:
+Case 05 produced the richest and widest behavioural coverage of all completed attack cases. It was the strongest case for demonstrating multi-artefact correlation within the framework.
+
+## 5. Real Artifacts Found by Evidence Class
+
+### 5.1 Process Delta Artifacts
+**Source Files:**
+- process_new.csv
+- process_gone.csv
+- windows.pslist.csv
+- windows.pstree.csv
+- timeline.csv
+
+**Actual Artifacts Found:**
+The attack-only process diff included several `powershell.exe` instances associated with the scenario, including the following suspicious PIDs:
+
+- 4512
+- 2824
+- 10128
+- 3448
+- 3092
+- 260
+- 9508
+- 1676
+
+Other new processes were also observed, such as:
+- OfficeClickToR
+- PhoneExperienc
+- m365copilot_au
+- SystemSettings
+- ApplicationFra
+- CalculatorApp
+
+**Analytical Interpretation:**
+The presence of multiple new `powershell.exe` processes strongly supports attack execution in memory. However, some non-PowerShell new processes are likely environmental drift rather than malicious activity. For this reason, process delta alone is not sufficient and must be interpreted together with command-line, DLL, and malfind evidence.
+
+### 5.2 Command-Line Artifacts
+**Source Files:**
+- windows.cmdline.csv
+- cmdline_findings.csv
+
+**Actual Artifacts Found:**
+The command-line outputs captured the following real suspicious patterns:
+
+1. Execution from a non-standard PowerShell path:
+   - `C:\Temp\multiattack\powershell.exe`
+
+2. Hidden PowerShell with bypass and encoded execution:
+   - `powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -enc ...`
+
+3. Hidden PowerShell executing the staged script:
+   - `powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File C:\Temp\mff_multi\case05_rwx_amsi.ps1`
+
+4. Discovery and enumeration activity visible in command-line evidence:
+   - `whoami`
+   - `systeminfo`
+   - `Get-ComputerInfo`
+   - `ipconfig /all`
+   - `Get-NetIPAddress`
+   - `Get-LocalUser`
+   - `Get-Process`
+   - `tasklist`
+   - `Start-Sleep -Seconds 600`
+
+**Analytical Interpretation:**
+These command-line artefacts provide direct evidence of:
+- suspicious PowerShell execution
+- hidden and bypass-oriented PowerShell activity
+- encoded command use
+- staged execution from temporary directories
+- system, user, process, and network discovery behaviour
+
+This is one of the strongest evidence classes in Case 05.
+
+### 5.3 DLL / AMSI Artifacts
+**Source Files:**
+- windows.dlllist.csv
+- dll_hijack.csv
+
+**Actual Artifacts Found:**
+The strongest confirmed staged DLL findings were:
+
+- PID 3092 – `powershell.exe` loaded `amsi.dll` from:
+  - `C:\Temp\mff_multi\amsi.dll`
+
+- PID 1676 – `powershell.exe` loaded `amsi.dll` from:
+  - `C:\Temp\mff_multi\amsi.dll`
+
+These findings were recorded with:
+- Technique: `T1562.001`
+- Technique Name: Disable or Modify Tools – AMSI Bypass
+- Risk Score: 90
+
+The output explicitly described these as:
+- non-System32 DLL loads
+- replaced DLL confirmed
+- high-confidence AMSI-related defence evasion evidence
+
+**Analytical Interpretation:**
+This is the strongest DLL-related evidence in the case. It shows that `powershell.exe` loaded `amsi.dll` from a temporary staging directory rather than the expected System32 location. This strongly supports DLL abuse and AMSI-related evasion behaviour.
+
+### 5.4 RWX / Malfind Artifacts
+**Source Files:**
+- windows.malfind.csv
+- malfind.csv
+- scores.csv
+
+**Actual Artifacts Found:**
+The Case 05 outputs showed repeated `PAGE_EXECUTE_READWRITE` memory regions associated with `powershell.exe`. The scored findings explicitly referenced:
+
+- `5× PAGE_EXECUTE_READWRITE memory regions`
+
+for multiple critical PowerShell processes.
+
+The cross-case comparison summary reported:
+- RWX Regions in Case 05: 42
+
+The raw `windows.malfind.csv` also showed that not every RWX region in memory belonged to the attack process. For example, RWX entries also appeared in `MsMpEng.exe`.
+
+**Analytical Interpretation:**
+RWX evidence in `powershell.exe` is highly significant in this case because it is correlated with suspicious PowerShell command lines and staged AMSI DLL loading. However, the presence of RWX alone should not automatically be treated as malicious, because some legitimate Windows processes may also show RWX memory regions. The strongest interpretation therefore comes from correlation, not from isolated malfind output.
+
+### 5.5 ATT&CK Technique Artifacts
+**Source Files:**
+- attack_tags.csv
+- tactic_summary.csv
+- threat_summary.json.txt
+
+**Actual Artifacts Found:**
+The following ATT&CK techniques were detected in Case 05:
+
+- T1016 – System Network Configuration Discovery
+- T1033 – System Owner/User Discovery
+- T1055 – Process Injection
+- T1057 – Process Discovery
+- T1059.001 – PowerShell
+- T1082 – System Information Discovery
+- T1562.001 – Disable or Modify Tools / AMSI-related evasion
+- T1574.001 – DLL Search Order Hijacking
+
+**Observed Tactics:**
+- Defense Evasion
+- Discovery
+- Execution
+
+**Technique Hit Counts from tactic_summary.csv:**
+- T1059.001 PowerShell: 17
+- T1055 Process Injection: 16
+- T1562.001 AMSI Memory Patch: 6
+- T1574.001 DLL Search Order Hijacking: 2
+- T1562.001 AMSI Bypass: 2
+- T1016 System Network Configuration Discovery: 2
+- T1033 System Owner/User Discovery: 2
+- T1057 Process Discovery: 2
+- T1082 System Information Discovery: 2
+
+**Analytical Interpretation:**
+Case 05 had the broadest ATT&CK coverage of all completed cases. This confirms that the scenario successfully generated multi-technique evidence rather than remaining limited to one behaviour type.
+
+### 5.6 Scoring Artifacts
+**Source Files:**
+- scores.csv
+- threat_summary.json.txt
+- report_forensics.pdf
+
+**Actual Artifacts Found:**
+The final outputs classified the case as:
+- Overall Severity: CRITICAL
+- Critical Processes: 8
+- Max Risk Score: 100
+
+Critical high-risk `powershell.exe` processes included:
+- PID 4512
+- PID 1676
+- PID 260
+- PID 9508
+- PID 3092
+- PID 3448
+- PID 10128
+- PID 2824
+
+The score explanations referenced evidence such as:
+- AMSI bypass via memory patching
+- 5× PAGE_EXECUTE_READWRITE memory regions
+- suspicious command-line patterns
+- multiple independent evidence sources
+
+**Analytical Interpretation:**
+The scoring output demonstrates the value of evidence correlation. Instead of flagging only one suspicious string or one plugin result, the framework combined multiple findings into a prioritised critical-risk assessment.
+
+### 5.7 IOC Artifacts
+**Source Files:**
+- iocs.csv
+- threat_summary.json.txt
+
+**Actual Artifacts Found:**
+Case 05 extracted 59 IOCs. Examples visible in the IOC output included:
+
+- `C:\Temp\mff_multi\case05_rwx_amsi.ps1`
+- `C:\Temp\multiattack\powershell.exe`
+- `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
+
+**Analytical Interpretation:**
+The IOC output is useful for triage, documentation, and appendix material. It also demonstrates that the framework can transform raw forensic findings into a structured list of actionable indicators.
+
+### 5.8 Network Artifacts
+**Source Files:**
+- windows.netscan.csv
+- net_new.csv
+- net_flagged.csv
+
+**Actual Artifacts Found:**
+The case reported:
+- 139 new network connections
+- 4 flagged network connections
+
+Examples visible in the network outputs included common system-related entries such as:
+- TCP 139 LISTENING
+- TCP 135 LISTENING
+
+**Analytical Interpretation:**
+The network outputs provide supporting context, but they are not the strongest primary evidence in this case. Some entries likely reflect normal system or virtualised environment activity. For Case 05, the command-line, DLL, and malfind outputs are much stronger than netscan alone.
+
+## 6. Real Correlated Evidence Chain
+The strongest forensic interpretation in Case 05 comes from the following real evidence chain:
+
+1. `powershell.exe` executed from a non-standard temporary path  
+2. hidden PowerShell used `-ExecutionPolicy Bypass`, `-NoProfile`, and encoded execution  
+3. discovery commands were captured in command-line output  
+4. `powershell.exe` loaded `amsi.dll` from `C:\Temp\mff_multi\amsi.dll`  
+5. `powershell.exe` showed repeated `PAGE_EXECUTE_READWRITE` memory regions  
+6. ATT&CK mapping identified Discovery, Execution, and Defense Evasion techniques  
+7. multiple `powershell.exe` processes were assigned CRITICAL risk scores
+
+## 7. Analytical Cautions
+- Process delta output contains some background noise due to baseline drift
+- Network deltas contain benign system activity
+- RWX regions should not be treated as malicious in isolation
+- The strongest conclusions are the ones supported by multiple evidence classes at the same time
+
+## 8. Case 05 Completion Criteria
+Case 05 should be considered technically complete when the following evidence categories all exist and match the findings above:
+
+- raw memory image
+- hash integrity record
+- raw Volatility outputs
+- processed comparison outputs
+- ATT&CK mapping outputs
+- scoring outputs
+- HTML and PDF final reports
+- documentation notes for methodology and reporting
+
