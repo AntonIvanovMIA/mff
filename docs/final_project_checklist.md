@@ -1,7 +1,7 @@
 # Memory Forensics Framework – Full Project Final Checklist
 
 ## 1. Core Framework Completion
-- [ ] The framework has a defined project structure under /MFF
+- [x] The framework has a defined project structure under /MFF
 - [ ] The framework includes separate folders for cases, analysis outputs, source code, and documentation
 - [ ] The framework can process baseline and attack cases using comparison_engine_v2.py
 - [ ] The framework can generate HTML reports
