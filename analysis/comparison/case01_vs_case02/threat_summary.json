@@ -1,12 +1,12 @@
 {
   "schema_version": "mff-v2.0",
-  "generated_at": "2026-04-18 19:42:24 UTC",
+  "generated_at": "2026-04-19 19:10:53 UTC",
   "case_id": "case01_baseline_vs_case02_t1055_5_attack",
   "baseline_path": "/MFF/cases/case01_baseline",
   "attack_path": "/MFF/cases/case02_t1055_5_attack",
   "severity": {
     "overall": "CRITICAL",
-    "critical_processes": 2,
+    "critical_processes": 3,
     "high_processes": 0
   },
   "statistics": {
@@ -373,17 +373,6 @@
   },
   "risk_scores": [
     {
-      "PID": 992,
-      "Process": "powershell.exe",
-      "RiskScore": 100,
-      "RiskLevel": "CRITICAL",
-      "Confidence": "High \u2014 Three independent evidence sources",
-      "EvidenceCount": 3,
-      "PrimaryTechnique": "T1562.001",
-      "Indicators": "AMSI bypass via memory patching; 2\u00d7 PAGE_EXECUTE_READWRITE region(s); Suspicious cmdline pattern(s): powershell",
-      "IndicatorsFull": "[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID \u2014 AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).\n[ 20pts] Suspicious cmdline pattern(s): powershell: Command line matched detection signatures: powershell\n[ 20pts] 2\u00d7 PAGE_EXECUTE_READWRITE region(s): 2 RWX region(s) \u2014 weak indicator alone; notable in conjunction with other evidence."
-    },
-    {
       "PID": 7764,
       "Process": "powershell.exe",
       "RiskScore": 100,
@@ -391,23 +380,34 @@
       "Confidence": "High \u2014 Three independent evidence sources",
       "EvidenceCount": 3,
       "PrimaryTechnique": "T1562.001",
-      "Indicators": "AMSI bypass via memory patching; 5\u00d7 PAGE_EXECUTE_READWRITE memory regions; Suspicious cmdline pattern(s): powershell",
-      "IndicatorsFull": "[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID \u2014 AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).\n[ 55pts] 5\u00d7 PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001).\n[ 20pts] Suspicious cmdline pattern(s): powershell: Command line matched detection signatures: powershell"
+      "Indicators": "AMSI bypass via memory patching; 5\u00d7 PAGE_EXECUTE_READWRITE memory regions; Spawned by high-risk parent (PID 2184, score 90)",
+      "IndicatorsFull": "[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID \u2014 AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).\n[ 55pts] 5\u00d7 PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001).\n[ 25pts] Spawned by high-risk parent (PID 2184, score 90): Process chain: this process was created by PID 2184 which has risk score 90/100. Adversary process chains are a strong indicator of lateral process injection or staged execution."
+    },
+    {
+      "PID": 2184,
+      "Process": "RWXinjectionLo",
+      "RiskScore": 90,
+      "RiskLevel": "CRITICAL",
+      "Confidence": "Medium \u2014 Single evidence source",
+      "EvidenceCount": 1,
+      "PrimaryTechnique": "T1055",
+      "Indicators": "Known offensive tool: RWXinjectionLo",
+      "IndicatorsFull": "[ 90pts] Known offensive tool: RWXinjectionLo: Exact name match against curated malicious toolset database. High specificity \u2014 this executable should never exist on a healthy system."
+    },
+    {
+      "PID": 992,
+      "Process": "powershell.exe",
+      "RiskScore": 85,
+      "RiskLevel": "CRITICAL",
+      "Confidence": "Medium-High \u2014 Two independent evidence sources",
+      "EvidenceCount": 2,
+      "PrimaryTechnique": "T1562.001",
+      "Indicators": "AMSI bypass via memory patching; 2\u00d7 PAGE_EXECUTE_READWRITE region(s)",
+      "IndicatorsFull": "[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID \u2014 AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).\n[ 20pts] 2\u00d7 PAGE_EXECUTE_READWRITE region(s): 2 RWX region(s) \u2014 weak indicator alone; notable in conjunction with other evidence."
     },
     {
       "PID": 7980,
       "Process": "ApplicationFra",
-      "RiskScore": 0,
-      "RiskLevel": "CLEAN",
-      "Confidence": "Low \u2014 No adverse indicators",
-      "EvidenceCount": 0,
-      "PrimaryTechnique": "\u2014",
-      "Indicators": "None",
-      "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
-    },
-    {
-      "PID": 3016,
-      "Process": "OfficeClickToR",
       "RiskScore": 0,
       "RiskLevel": "CLEAN",
       "Confidence": "Low \u2014 No adverse indicators",
@@ -439,8 +439,8 @@
       "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
     },
     {
-      "PID": 9704,
-      "Process": "CredentialEnro",
+      "PID": 3016,
+      "Process": "OfficeClickToR",
       "RiskScore": 0,
       "RiskLevel": "CLEAN",
       "Confidence": "Low \u2014 No adverse indicators",
@@ -450,8 +450,8 @@
       "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
     },
     {
-      "PID": 10236,
-      "Process": "SystemSettings",
+      "PID": 9704,
+      "Process": "CredentialEnro",
       "RiskScore": 0,
       "RiskLevel": "CLEAN",
       "Confidence": "Low \u2014 No adverse indicators",
@@ -483,8 +483,8 @@
       "IndicatorsFull": "No adverse indicators detected at this evidential threshold."
     },
     {
-      "PID": 2184,
-      "Process": "RWXinjectionLo",
+      "PID": 10236,
+      "Process": "SystemSettings",
       "RiskScore": 0,
       "RiskLevel": "CLEAN",
       "Confidence": "Low \u2014 No adverse indicators",

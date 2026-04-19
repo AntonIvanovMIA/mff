@@ -43,21 +43,17 @@ LEGITIMATE_PATH_PREFIXES = (
 )
 
 # Substring match - these work with double-backslash paths too
-# Suspicious staging path keywords — must be specific enough to not fire on
-# legitimate user-space applications (VS Code, Python, node_modules etc.)
-# \\users\\ removed — too broad, many legitimate programs install there
-# \\appdata\\ covered by LEGITIMATE_APPDATA_SUBSTRINGS exclusions instead
 SUSPICIOUS_PATH_KEYWORDS = (
     "\\\\temp\\\\",
     "\\\\tmp\\\\",
+    "\\\\appdata\\\\",
+    "\\\\users\\\\",
     "\\\\downloads\\\\",
     "\\\\desktop\\\\",
     "\\\\public\\\\",
     "\\\\recycle",
     "\\\\pshijack\\\\",
     "\\\\hijack\\\\",
-    "\\\\mff_multi\\\\",
-    "\\\\multiattack\\\\",
 )
 
 TEMP_ROOT_PATTERNS = (

@@ -931,9 +931,13 @@ if __name__ == "__main__":
         import glob as _glob
         batch_root  = os.path.abspath(args.batch_root)
         out_dir     = os.path.abspath(args.out)
+        # Skip the comparison_report output dir itself — it has CSVs
+        # (comparison_matrix.csv) but is not a case directory
+        SKIP_DIR_NAMES = {"comparison_report", "comparison", "cross_case", "reports"}
         subdirs     = sorted([
             d for d in os.listdir(batch_root)
             if os.path.isdir(os.path.join(batch_root, d))
+            and d.lower() not in SKIP_DIR_NAMES
         ])
         if not subdirs:
             print(f"[!] No subdirectories found in {batch_root}")

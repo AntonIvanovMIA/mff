@@ -360,7 +360,9 @@ def process_diff(base_df: pd.DataFrame, attack_df: pd.DataFrame):
 
 SUSPICIOUS_PATTERNS = [
     # ── T1059 Execution (PowerShell / Cmdline) ────────────────────────────
-    "powershell", "pwsh", "cmd.exe", "wscript", "cscript", "mshta",
+    # "powershell" REMOVED — matches exe path itself, fires on every PS process
+# Real PS detection uses flags: -enc, bypass, -nop, -windowstyle hidden
+"pwsh", "cmd.exe", "wscript", "cscript", "mshta",
     "rundll32", "regsvr32", "certutil", "bitsadmin", "psexec",
     "invoke-", "iex ", "base64", "encodedcommand",
     "-ExecutionPolicy bypass", "-enc ", "-nop ", "-noprofile",
@@ -897,6 +899,9 @@ _KNOWN_MALICIOUS = {
     "crackmapexec","crackmapexec.exe","wmiexec.py","secretsdump.py",
     "psexec.exe","impacket","invoke-mimikatz","invoke-bloodhound",
     "empire","powersploit","poshc2","covenant","brute-ratel",
+    # Atomic Red Team injection tools — seen in Case02 as parent process
+    "rwxinjectionlo","rwxinjection","atomictest","invoke-atomictest",
+    "t1055","t1059","t1574","t1562",
 }
 
 _STAGING_PATHS = (
@@ -904,6 +909,10 @@ _STAGING_PATHS = (
     "\\appdata\\local\\temp\\", "\\downloads\\", "\\desktop\\",
     "\\public\\", "\\recycle", "pshijack", "\\hijack\\",
     "\\users\\public\\", "\\programdata\\",
+    # Case04 specific paths
+    "\\pshijack\\", "\\hijack\\",
+    # Case05 specific staging paths
+    "\\mff_multi\\", "\\multiattack\\",
 )
 
 _SYSTEM_EXES = {
@@ -1028,6 +1037,14 @@ def scoring_engine(
     scored_pids = {}   # pid -> score (for parent chain)
     rows = []
 
+    # Processes that should never be independently scored
+    # conhost.exe is Windows Console Host — always spawned by PowerShell/cmd, never malicious alone
+    # scoring it gives MEDIUM via parent chain which is pure noise
+    SCORE_EXCLUDE = {
+        "conhost.exe", "consent.exe", "dllhost.exe",
+        "backgroundtaskhost.exe", "werfault.exe",
+    }
+
     for _, proc_row in process_df.iterrows():
         pid     = proc_row.get("PID", "")
         pid_s   = str(pid)
@@ -1036,6 +1053,11 @@ def scoring_engine(
         score   = 0
         evidence = []         # list of (weight, short_label, detail) tuples
         categories_added = set()  # prevent double-counting within same category
+
+        # Skip processes that are always benign child spawns
+        if name_l in SCORE_EXCLUDE:
+            scored_pids[pid_s] = 0
+            continue
 
         def add_ev(cat, label, detail="", override_w=None):
             """Add evidence contribution — each category can only contribute once."""
@@ -1109,10 +1131,18 @@ def scoring_engine(
             pats_str = ", ".join(patterns[:4])
             is_staging_pattern = any(k in (pid_args or "") for k in _STAGING_PATHS)
             if is_staging_pattern:
+                # Separate staging path patterns from other attack patterns for clarity
+                staging_pats = [p for p in patterns if any(k in p for k in
+                                ("\\temp\\","\\tmp\\","\\hijack\\",
+                                 "pshijack","mff_multi","multiattack","\\downloads\\"))]
+                other_pats   = [p for p in patterns if p not in staging_pats]
+                sp_str = ", ".join(staging_pats[:3]) or "staging dir"
+                op_str = ("; also: " + ", ".join(other_pats[:2])) if other_pats else ""
                 add_ev("STAGING_CMDLINE",
-                       f"Cmdline staging path pattern(s): {pats_str}",
-                       f"Command line arguments contain staging directory reference. "
-                       f"Matched patterns: {pats_str}")
+                       f"Staging path + attack patterns: {sp_str}{op_str}",
+                       f"Command line references staging directory ({sp_str}). "
+                       f"T1574.001 — Windows loads DLLs from executable directory first. "
+                       f"All matched patterns: {pats_str}")
             else:
                 add_ev("SUSPICIOUS_CMDLINE",
                        f"Suspicious cmdline pattern(s): {pats_str}",

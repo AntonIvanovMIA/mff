@@ -1,6 +1,6 @@
 {
   "schema_version": "mff-v2.0",
-  "generated_at": "2026-04-18 19:45:13 UTC",
+  "generated_at": "2026-04-19 18:52:06 UTC",
   "case_id": "case01_baseline_vs_case04_t1574_attack",
   "baseline_path": "/MFF/cases/case01_baseline",
   "attack_path": "/MFF/cases/case04_t1574_attack",
@@ -518,15 +518,15 @@
   },
   "risk_scores": [
     {
-      "PID": 5844,
+      "PID": 6764,
       "Process": "powershell.exe",
       "RiskScore": 100,
       "RiskLevel": "CRITICAL",
       "Confidence": "High \u2014 Three independent evidence sources",
       "EvidenceCount": 3,
       "PrimaryTechnique": "T1562.001",
-      "Indicators": "AMSI bypass via memory patching; 2\u00d7 PAGE_EXECUTE_READWRITE region(s); Suspicious cmdline pattern(s): powershell",
-      "IndicatorsFull": "[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID \u2014 AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).\n[ 20pts] Suspicious cmdline pattern(s): powershell: Command line matched detection signatures: powershell\n[ 20pts] 2\u00d7 PAGE_EXECUTE_READWRITE region(s): 2 RWX region(s) \u2014 weak indicator alone; notable in conjunction with other evidence."
+      "Indicators": "AMSI bypass via memory patching; 5\u00d7 PAGE_EXECUTE_READWRITE memory regions; Spawned by high-risk parent (PID 7804, score 100)",
+      "IndicatorsFull": "[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID \u2014 AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).\n[ 55pts] 5\u00d7 PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001).\n[ 25pts] Spawned by high-risk parent (PID 7804, score 100): Process chain: this process was created by PID 7804 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution."
     },
     {
       "PID": 8060,
@@ -536,8 +536,8 @@
       "Confidence": "Very High \u2014 Multiple independent evidence sources corroborate",
       "EvidenceCount": 4,
       "PrimaryTechnique": "T1574.001",
-      "Indicators": "Protected DLL from staging directory; Execution from staging/non-standard path; Cmdline staging path pattern(s): \\temp\\, \\hijack\\; System executable mspaint.exe from non-System32 path",
-      "IndicatorsFull": "[ 70pts] Execution from staging/non-standard path: Process cmdline references staging directory: ...c:\\\\temp\\\\hijack\\\\mspaint.exe  c:\\\\temp\\\\... T1574.001 \u2014 Windows loads DLLs from executable directory first, enabling attacker DLL substitution.\n[ 50pts] Protected DLL from staging directory: T1574.001: Protected DLL (amsi.dll/version.dll) loaded from user-writable staging directory instead of System32.\n[ 40pts] Cmdline staging path pattern(s): \\temp\\, \\hijack\\: Command line arguments contain staging directory reference. Matched patterns: \\temp\\, \\hijack\\\n[ 20pts] System executable mspaint.exe from non-System32 path: mspaint.exe should only run from System32. Execution from staging directory confirms T1574.001 exploitation."
+      "Indicators": "Protected DLL from staging directory; Execution from staging/non-standard path; Staging path + attack patterns: \\temp\\, \\hijack\\; System executable mspaint.exe from non-System32 path",
+      "IndicatorsFull": "[ 70pts] Execution from staging/non-standard path: Process cmdline references staging directory: ...c:\\\\temp\\\\hijack\\\\mspaint.exe  c:\\\\temp\\\\... T1574.001 \u2014 Windows loads DLLs from executable directory first, enabling attacker DLL substitution.\n[ 50pts] Protected DLL from staging directory: T1574.001: Protected DLL (amsi.dll/version.dll) loaded from user-writable staging directory instead of System32.\n[ 40pts] Staging path + attack patterns: \\temp\\, \\hijack\\: Command line references staging directory (\\temp\\, \\hijack\\). T1574.001 \u2014 Windows loads DLLs from executable directory first. All matched patterns: \\temp\\, \\hijack\\\n[ 20pts] System executable mspaint.exe from non-System32 path: mspaint.exe should only run from System32. Execution from staging directory confirms T1574.001 exploitation."
     },
     {
       "PID": 5136,
@@ -547,41 +547,41 @@
       "Confidence": "Very High \u2014 Multiple independent evidence sources corroborate",
       "EvidenceCount": 5,
       "PrimaryTechnique": "T1562.001",
-      "Indicators": "AMSI DLL replaced from staging path; Execution from staging/non-standard path; 5\u00d7 PAGE_EXECUTE_READWRITE memory regions; Cmdline staging path pattern(s): powershell, \\temp\\, pshijack; Spawned by high-risk parent (PID 1316, score 100)",
-      "IndicatorsFull": "[ 85pts] AMSI DLL replaced from staging path: HIGHEST CONFIDENCE T1562.001+T1574.001: amsi.dll from staging path, Volatility cannot dump file \u2014 replaced DLL confirmed. ACPO P2: two independent sources corroborate (dlllist path + file undumpable).\n[ 70pts] Execution from staging/non-standard path: Process cmdline references staging directory: ...c:\\\\temp\\\\pshijack\\\\powershell.exe c:\\\\te... T1574.001 \u2014 Windows loads DLLs from executable directory first, enabling attacker DLL substitution.\n[ 55pts] 5\u00d7 PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001).\n[ 40pts] Cmdline staging path pattern(s): powershell, \\temp\\, pshijack: Command line arguments contain staging directory reference. Matched patterns: powershell, \\temp\\, pshijack\n[ 25pts] Spawned by high-risk parent (PID 1316, score 100): Process chain: this process was created by PID 1316 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution."
+      "Indicators": "AMSI DLL replaced from staging path; Execution from staging/non-standard path; 5\u00d7 PAGE_EXECUTE_READWRITE memory regions; Staging path + attack patterns: \\temp\\, pshijack; Spawned by high-risk parent (PID 1316, score 100)",
+      "IndicatorsFull": "[ 85pts] AMSI DLL replaced from staging path: HIGHEST CONFIDENCE T1562.001+T1574.001: amsi.dll from staging path, Volatility cannot dump file \u2014 replaced DLL confirmed. ACPO P2: two independent sources corroborate (dlllist path + file undumpable).\n[ 70pts] Execution from staging/non-standard path: Process cmdline references staging directory: ...c:\\\\temp\\\\pshijack\\\\powershell.exe c:\\\\te... T1574.001 \u2014 Windows loads DLLs from executable directory first, enabling attacker DLL substitution.\n[ 55pts] 5\u00d7 PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001).\n[ 40pts] Staging path + attack patterns: \\temp\\, pshijack: Command line references staging directory (\\temp\\, pshijack). T1574.001 \u2014 Windows loads DLLs from executable directory first. All matched patterns: \\temp\\, pshijack\n[ 25pts] Spawned by high-risk parent (PID 1316, score 100): Process chain: this process was created by PID 1316 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution."
     },
     {
       "PID": 7804,
       "Process": "powershell.exe",
       "RiskScore": 100,
       "RiskLevel": "CRITICAL",
-      "Confidence": "Very High \u2014 Multiple independent evidence sources corroborate",
-      "EvidenceCount": 4,
+      "Confidence": "High \u2014 Three independent evidence sources",
+      "EvidenceCount": 3,
       "PrimaryTechnique": "T1562.001",
-      "Indicators": "AMSI bypass via memory patching; 5\u00d7 PAGE_EXECUTE_READWRITE memory regions; Suspicious cmdline pattern(s): powershell; Spawned by high-risk parent (PID 5844, score 100)",
-      "IndicatorsFull": "[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID \u2014 AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).\n[ 55pts] 5\u00d7 PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001).\n[ 25pts] Spawned by high-risk parent (PID 5844, score 100): Process chain: this process was created by PID 5844 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution.\n[ 20pts] Suspicious cmdline pattern(s): powershell: Command line matched detection signatures: powershell"
-    },
-    {
-      "PID": 6764,
-      "Process": "powershell.exe",
-      "RiskScore": 100,
-      "RiskLevel": "CRITICAL",
-      "Confidence": "Very High \u2014 Multiple independent evidence sources corroborate",
-      "EvidenceCount": 4,
-      "PrimaryTechnique": "T1562.001",
-      "Indicators": "AMSI bypass via memory patching; 5\u00d7 PAGE_EXECUTE_READWRITE memory regions; Suspicious cmdline pattern(s): powershell; Spawned by high-risk parent (PID 7804, score 100)",
-      "IndicatorsFull": "[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID \u2014 AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).\n[ 55pts] 5\u00d7 PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001).\n[ 25pts] Spawned by high-risk parent (PID 7804, score 100): Process chain: this process was created by PID 7804 which has risk score 100/100. Adversary process chains are a strong indicator of lateral process injection or staged execution.\n[ 20pts] Suspicious cmdline pattern(s): powershell: Command line matched detection signatures: powershell"
+      "Indicators": "AMSI bypass via memory patching; 5\u00d7 PAGE_EXECUTE_READWRITE memory regions; Spawned by high-risk parent (PID 5844, score 85)",
+      "IndicatorsFull": "[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID \u2014 AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).\n[ 55pts] 5\u00d7 PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001).\n[ 25pts] Spawned by high-risk parent (PID 5844, score 85): Process chain: this process was created by PID 5844 which has risk score 85/100. Adversary process chains are a strong indicator of lateral process injection or staged execution."
     },
     {
       "PID": 1316,
       "Process": "powershell.exe",
       "RiskScore": 100,
       "RiskLevel": "CRITICAL",
-      "Confidence": "High \u2014 Three independent evidence sources",
-      "EvidenceCount": 3,
+      "Confidence": "Medium-High \u2014 Two independent evidence sources",
+      "EvidenceCount": 2,
       "PrimaryTechnique": "T1562.001",
-      "Indicators": "AMSI bypass via memory patching; 5\u00d7 PAGE_EXECUTE_READWRITE memory regions; Suspicious cmdline pattern(s): powershell",
-      "IndicatorsFull": "[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID \u2014 AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).\n[ 55pts] 5\u00d7 PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001).\n[ 20pts] Suspicious cmdline pattern(s): powershell: Command line matched detection signatures: powershell"
+      "Indicators": "AMSI bypass via memory patching; 5\u00d7 PAGE_EXECUTE_READWRITE memory regions",
+      "IndicatorsFull": "[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID \u2014 AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).\n[ 55pts] 5\u00d7 PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001)."
+    },
+    {
+      "PID": 5844,
+      "Process": "powershell.exe",
+      "RiskScore": 85,
+      "RiskLevel": "CRITICAL",
+      "Confidence": "Medium-High \u2014 Two independent evidence sources",
+      "EvidenceCount": 2,
+      "PrimaryTechnique": "T1562.001",
+      "Indicators": "AMSI bypass via memory patching; 2\u00d7 PAGE_EXECUTE_READWRITE region(s)",
+      "IndicatorsFull": "[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID \u2014 AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).\n[ 20pts] 2\u00d7 PAGE_EXECUTE_READWRITE region(s): 2 RWX region(s) \u2014 weak indicator alone; notable in conjunction with other evidence."
     },
     {
       "PID": 6516,

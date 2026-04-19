@@ -1,4 +1,4 @@
-[mff_lab_structure.html](https://github.com/user-attachments/files/26864550/mff_lab_structure.html)# MFF v2 — Memory Forensics Framework
+# MFF v2 — Memory Forensics Framework
 
 > **Post-Volatility 3 Analysis & Visualization Framework**  
 > FYP — University of Roehampton 2026  
@@ -809,10 +809,8 @@ OneDrive, Edge, Chrome, Teams load DLLs from AppData legitimately — excluded f
 ---
 
 ## 13. Project Directory Structure
-
-
 ```
-mff/
+`mff/
 ├── analysis/
 │   ├── comparison/
 │   │   ├── case01_vs_case02/
@@ -916,7 +914,8 @@ mff/
 │   │   └── Unique_compare.py
 │   └── comparison_engine_v2.py
 ├── .gitignore
-└── README.md
+└── README.md`
+
 ```
 
 ---

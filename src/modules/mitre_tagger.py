@@ -47,10 +47,12 @@ ATTACK_MAP = [
     {"tactic": "Privilege Escalation", "technique": "T1055", "name": "Process Injection",
      "keywords": ["PAGE_EXECUTE_READWRITE", "PAGE_EXECUTE_READ_WRITE", "EXECUTE_READWRITE"],
      "source": ["malfind"]},
+    # T1218.010 Regsvr32 — cmdline only (regsvr32.exe always in pslist on Windows)
     {"tactic": "Defense Evasion",   "technique": "T1218.010", "name": "Regsvr32",
-     "keywords": ["regsvr32"], "source": ["cmdline", "pslist"]},
+     "keywords": ["regsvr32"], "source": ["cmdline"]},
+    # T1218.011 Rundll32 — cmdline only (rundll32.exe always in pslist on Windows)
     {"tactic": "Defense Evasion",   "technique": "T1218.011", "name": "Rundll32",
-     "keywords": ["rundll32"], "source": ["cmdline", "pslist"]},
+     "keywords": ["rundll32"], "source": ["cmdline"]},
     {"tactic": "Defense Evasion",   "technique": "T1140",     "name": "Deobfuscate/Decode Files",
      "keywords": ["certutil", "-decode", "-urlcache", "base64"], "source": ["cmdline"]},
     {"tactic": "Defense Evasion",   "technique": "T1036",     "name": "Masquerading",
@@ -146,8 +148,10 @@ ATTACK_MAP = [
      "keywords": ["net use", "psexec", "\\\\admin$", "\\\\c$", "\\\\ipc$"], "source": ["cmdline", "netscan"]},
 
     # ── Persistence ──────────────────────────────────────────
+    # T1053.005 Scheduled Task — cmdline only (taskschd.dll always present on Windows)
     {"tactic": "Persistence",       "technique": "T1053.005", "name": "Scheduled Task",
-     "keywords": ["schtasks", "at.exe", "taskschd"], "source": ["cmdline", "pslist"]},
+     "keywords": ["schtasks /create", "schtasks /run", "at.exe /create"],
+     "source": ["cmdline"]},
     {"tactic": "Persistence",       "technique": "T1547.001", "name": "Registry Run Keys",
      "keywords": ["reg add", "currentversion\\run", "userinit"], "source": ["cmdline"]},
     {"tactic": "Persistence",       "technique": "T1546.003", "name": "WMI Event Subscription",
@@ -161,8 +165,9 @@ ATTACK_MAP = [
     {"tactic": "Command and Control","technique": "T1105",    "name": "Ingress Tool Transfer",
      "keywords": ["bitsadmin", "wget", "curl", "certutil -urlcache", "invoke-webrequest"],
      "source": ["cmdline"]},
-    {"tactic": "Command and Control","technique": "T1071.001","name": "Web Protocols",
-     "keywords": [":80", ":443", ":8080", ":8443"], "source": ["netscan"]},
+    # T1071.001 Web Protocols REMOVED — matching :443/:80 fires on every browser,
+    # Windows Update, Teams, OneDrive. Every Windows system would be flagged.
+    # Real C2 detection requires IP reputation, not port number alone.
     {"tactic": "Command and Control","technique": "T1095",    "name": "Non-Application Layer Protocol",
      "keywords": [":4444", ":1337", ":31337", "meterpreter"], "source": ["netscan", "cmdline"]},
 

@@ -1,4 +1,0 @@
-Tactic,Technique,TechniqueName,HitCount
-Defense Evasion,T1574.001,DLL Search Order Hijacking,148
-Defense Evasion,T1562.001,Disable or Modify Tools — AMSI Bypass,9
-Execution,T1059.001,PowerShell,5

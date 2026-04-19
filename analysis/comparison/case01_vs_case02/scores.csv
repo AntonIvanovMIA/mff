@@ -1,18 +1,17 @@
 PID,Process,RiskScore,RiskLevel,Confidence,EvidenceCount,PrimaryTechnique,Indicators,IndicatorsFull
-992,powershell.exe,100,CRITICAL,High — Three independent evidence sources,3,T1562.001,AMSI bypass via memory patching; 2× PAGE_EXECUTE_READWRITE region(s); Suspicious cmdline pattern(s): powershell,"[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID — AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).
-[ 20pts] Suspicious cmdline pattern(s): powershell: Command line matched detection signatures: powershell
-[ 20pts] 2× PAGE_EXECUTE_READWRITE region(s): 2 RWX region(s) — weak indicator alone; notable in conjunction with other evidence."
-7764,powershell.exe,100,CRITICAL,High — Three independent evidence sources,3,T1562.001,AMSI bypass via memory patching; 5× PAGE_EXECUTE_READWRITE memory regions; Suspicious cmdline pattern(s): powershell,"[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID — AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).
+7764,powershell.exe,100,CRITICAL,High — Three independent evidence sources,3,T1562.001,"AMSI bypass via memory patching; 5× PAGE_EXECUTE_READWRITE memory regions; Spawned by high-risk parent (PID 2184, score 90)","[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID — AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).
 [ 55pts] 5× PAGE_EXECUTE_READWRITE memory regions: Volatility malfind: 5 executable+writable memory regions in powershell.exe. Substantial allocation of RWX memory indicates code injection (T1055) or AMSI bypass via memory patching (T1562.001).
-[ 20pts] Suspicious cmdline pattern(s): powershell: Command line matched detection signatures: powershell"
+[ 25pts] Spawned by high-risk parent (PID 2184, score 90): Process chain: this process was created by PID 2184 which has risk score 90/100. Adversary process chains are a strong indicator of lateral process injection or staged execution."
+2184,RWXinjectionLo,90,CRITICAL,Medium — Single evidence source,1,T1055,Known offensive tool: RWXinjectionLo,[ 90pts] Known offensive tool: RWXinjectionLo: Exact name match against curated malicious toolset database. High specificity — this executable should never exist on a healthy system.
+992,powershell.exe,85,CRITICAL,Medium-High — Two independent evidence sources,2,T1562.001,AMSI bypass via memory patching; 2× PAGE_EXECUTE_READWRITE region(s),"[ 65pts] AMSI bypass via memory patching: HIGH CONFIDENCE T1562.001: amsi.dll loaded AND PAGE_EXECUTE_READWRITE regions in same PID — AMSI bypass via AmsiScanBuffer() memory patching. Two-source corroboration (dlllist + malfind).
+[ 20pts] 2× PAGE_EXECUTE_READWRITE region(s): 2 RWX region(s) — weak indicator alone; notable in conjunction with other evidence."
 7980,ApplicationFra,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
-3016,OfficeClickToR,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
 2864,SgrmBroker.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
 5076,SettingSyncHos,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+3016,OfficeClickToR,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
 9704,CredentialEnro,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
-10236,SystemSettings,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
 8912,AppVShNotify.e,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
 3136,CalculatorApp.,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
-2184,RWXinjectionLo,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
+10236,SystemSettings,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
 6372,audiodg.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.
 4680,WmiPrvSE.exe,0,CLEAN,Low — No adverse indicators,0,—,None,No adverse indicators detected at this evidential threshold.

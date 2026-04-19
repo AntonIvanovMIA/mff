@@ -133,19 +133,32 @@ def _build_attack_narrative(summary, scores_df, tagged_df,
     if has_cred:   attack_types.append("Credential Access")
     attack_label = " + ".join(attack_types) if attack_types else "Unknown"
 
-    # Extract real DLL staging paths from actual dll_findings_df
+    # Extract DLL staging paths — ONLY paths that are genuinely not System32
+    # AMSI_BYPASS_MEMORY_PATCH uses amsi.dll FROM System32 (patched in memory)
+    # — do NOT report that as staging. Only AMSI_FILE_OUTPUT_DISABLED and
+    # PROTECTED_DLL_USER_DIR involve actual non-System32 staging paths.
+    STAGING_HIJACK_TYPES = {
+        "AMSI_FILE_OUTPUT_DISABLED", "PROTECTED_DLL_USER_DIR",
+        "SYSTEM_EXE_FROM_WRONG_DIR", "SUSPICIOUS_PATH",
+    }
     dll_staging = []
     if dll_findings_df is not None and not dll_findings_df.empty:
         path_col = "LoadPath" if "LoadPath" in dll_findings_df.columns else "Path"
         for _, r in dll_findings_df.drop_duplicates(subset=["PID"]).head(4).iterrows():
             path = str(r.get(path_col, ""))
-            if path and path != "nan":
+            htype = str(r.get("HijackType", ""))
+            # Only include if path is genuinely a staging/non-System32 path
+            path_lo = path.lower()
+            is_system32 = ("system32" in path_lo or "syswow64" in path_lo or
+                           "winsxs" in path_lo or "program files" in path_lo)
+            is_staging_type = htype in STAGING_HIJACK_TYPES
+            if path and path != "nan" and not is_system32 and is_staging_type:
                 dll_staging.append({
                     "pid":  str(r.get("PID", "")),
                     "proc": str(r.get("Process", "")),
                     "dll":  str(r.get("DLL", "")),
                     "path": path,
-                    "type": str(r.get("HijackType", "")),
+                    "type": htype,
                 })
 
     # Extract non-standard PS execution paths
@@ -197,16 +210,28 @@ def _build_attack_narrative(summary, scores_df, tagged_df,
         dll_note = ""
         if dll_staging:
             p = dll_staging[0]
-            dll_note = (" " + p["dll"] + " loaded from " + p["path"] +
-                        " (not System32) — DLL staging confirmed in PID " + p["pid"] + ".")
+            dll_note = (" " + p["dll"] + " loaded from staging path: " + p["path"] +
+                        " (NOT System32) — confirmed T1574.001 DLL staging in PID " + p["pid"] + ".")
         rwx = len(malfind_df) if malfind_df is not None and not malfind_df.empty else 0
+        if dll_staging:
+            # Genuine staging path found — T1574 + T1562
+            _p1_label = "Defence Evasion — DLL Hijacking + AMSI Bypass"
+            _p1_desc  = ("T1574.001: Protected DLL (amsi.dll) placed in staging directory "
+                         "ahead of System32 in DLL search order." + dll_note +
+                         " T1562.001: " + str(rwx) +
+                         " PAGE_EXECUTE_READWRITE regions confirm AMSI bypass via memory patching "
+                         "— AmsiScanBuffer() patched to return AMSI_RESULT_CLEAN.")
+        else:
+            # No staging path — amsi.dll IS from System32, bypass is purely in-memory
+            _p1_label = "Defence Evasion — AMSI Bypass via Memory Patching (T1562.001)"
+            _p1_desc  = ("T1562.001: AMSI bypass via in-memory patching. "
+                         "amsi.dll loaded from C:\\Windows\\System32\\ (legitimate path), "
+                         "then AmsiScanBuffer() patched in-memory to return AMSI_RESULT_CLEAN. "
+                         "Confirmed by " + str(rwx) + " PAGE_EXECUTE_READWRITE regions "
+                         "corroborated across Volatility malfind + dlllist (ACPO P2). "
+                         "No T1574 DLL staging — attack used memory patching only.")
         phases.append({"num": pnum, "icon": "🛡", "color": "#d29922",
-                        "label": "Defence Evasion — DLL Hijacking + AMSI Bypass",
-                        "desc": ("T1574.001: Protected DLL (amsi.dll) placed in staging directory "
-                                 "ahead of System32 in DLL search order." + dll_note +
-                                 " T1562.001: " + str(rwx) +
-                                 " PAGE_EXECUTE_READWRITE regions confirm AMSI bypass via memory patching "
-                                 "— AmsiScanBuffer() patched to return AMSI_RESULT_CLEAN.")})
+                        "label": _p1_label, "desc": _p1_desc})
         pnum += 1
 
     if has_inject:
@@ -1007,7 +1032,7 @@ Name-based differential eliminates &gt;90% false-positive churn from PID-based a
 <h2>&#128281; DLL Analysis — T1574.001 / T1562.001 Findings</h2>
 <div class="alert {'a-red' if n_dll>0 else 'a-green'}">
 <b>{'⚠ ' + str(n_dll) + ' DLL Findings Detected' if n_dll>0 else '✓ No DLL Findings'}</b>
-{'— Highest confidence: AMSI_FILE_OUTPUT_DISABLED (score 85/100) — amsi.dll from staging path, Volatility undumpable. Click any row to expand full forensic description.' if n_dll>0 else ''}
+{'— Highest confidence: ' + (dll_findings_df["HijackType"].iloc[0] + ' (score ' + str(int(dll_findings_df["RiskScore"].iloc[0])) + '/100). Click any row to expand full forensic description.' if (dll_findings_df is not None and not dll_findings_df.empty and 'HijackType' in dll_findings_df.columns) else 'Click any row to expand full forensic description.') if n_dll>0 else ''}
 </div>
 <div class="tc">
 <input class="search" data-tbl="tdll" placeholder="Search DLL findings…" type="search">
