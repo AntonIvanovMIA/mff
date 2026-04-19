@@ -811,38 +811,10 @@ OneDrive, Edge, Chrome, Teams load DLLs from AppData legitimately — excluded f
 ## 13. Project Directory Structure
 
 ```
-/MFF/
-├── venv/                                      ← Python 3.13 virtual environment
-├── src/
-│   ├── comparison_engine_v2.py                ← Master analysis engine
-│   └── modules/
-│       ├── dll_analysis.py                    ← T1574 + T1562 detection
-│       ├── mitre_tagger.py                    ← 42 ATT&CK rules
-│       ├── network_ioc.py                     ← Network diff + IOC extraction
-│       ├── process_tree.py                    ← Process tree + heatmap
-│       ├── export_alert.py                    ← JSON summary + webhooks
-│       ├── report_generator.py                ← HTML + PDF reports
-│       ├── automation.py                      ← batch/analyse/compare modes
-│       ├── case_comparison.py                 ← Cross-case comparison
-│       └── mff_dashboard.py                   ← Terminal dashboard
-├── cases/
-│   ├── case01_baseline/
-│   │   └── exports/csv/ + jsonl/              ← 7 plugins each
-│   ├── case02_t1055_5_attack/
-│   │   ├── T1055.raw                          ← chmod 444
-│   │   └── exports/csv/ + jsonl/
-│   ├── case03_t1059_attack/
-│   │   ├── T1059.raw
-│   │   └── exports/csv/ + jsonl/
-│   ├── case04_t1574_attack/
-│   │   ├── T1574.raw
-│   │   └── exports/csv/ + jsonl/
-│   └── case05_multi_attack/
-│       ├── T_multi.raw                        ← SHA256: a0983f4df938595d...
-│       └── exports/csv/ + jsonl/
+mff/
 ├── analysis/
 │   ├── comparison/
-│   │   ├── case01_vs_case02/                  ← 22 output files
+│   │   ├── case01_vs_case02/
 │   │   ├── case01_vs_case03/
 │   │   ├── case01_vs_case04/
 │   │   └── case01_vs_case05/
@@ -856,12 +828,94 @@ OneDrive, Edge, Chrome, Teams load DLLs from AppData legitimately — excluded f
 │       ├── case03_t1059_attack/
 │       ├── case04_t1574_attack/
 │       ├── case05_multi_attack/
-│       └── comparison_report/                 ← Cross-case report
-└── docs/
-    ├── hash_values.txt                        ← Chain of custody hashes
-    ├── ARCHITECTURE.md
-    ├── INSTALLATION.md
-    └── TROUBLESHOOTING.md
+│       └── comparison_report/
+├── cases/
+│   ├── case01_baseline/
+│   │   └── exports/
+│   │       ├── csv/
+│   │       │   ├── windows.pslist.csv
+│   │       │   ├── windows.pstree.csv
+│   │       │   ├── windows.cmdline.csv
+│   │       │   ├── windows.dlllist.csv
+│   │       │   ├── windows.malfind.csv
+│   │       │   ├── windows.netscan.csv
+│   │       │   └── windows.threads.csv
+│   │       └── jsonl/
+│   │           ├── windows.pslist.jsonl
+│   │           ├── windows.pstree.jsonl
+│   │           ├── windows.cmdline.jsonl
+│   │           ├── windows.dlllist.jsonl
+│   │           ├── windows.malfind.jsonl
+│   │           ├── windows.netscan.jsonl
+│   │           └── windows.threads.jsonl
+│   ├── case02_t1055_5_attack/
+│   │   ├── T1055.raw
+│   │   └── exports/
+│   │       ├── csv/    [same 7 plugin outputs]
+│   │       └── jsonl/  [same 7 plugin outputs]
+│   ├── case03_t1059_attack/
+│   │   ├── T1059.raw
+│   │   └── exports/
+│   │       ├── csv/    [same 7 plugin outputs]
+│   │       └── jsonl/  [same 7 plugin outputs]
+│   ├── case04_t1574_attack/
+│   │   ├── T1574.raw
+│   │   └── exports/
+│   │       ├── csv/    [same 7 plugin outputs]
+│   │       └── jsonl/  [same 7 plugin outputs]
+│   └── case05_multi_attack/
+│       ├── T_multi.raw
+│       └── exports/
+│           ├── csv/    [same 7 plugin outputs]
+│           └── jsonl/  [same 7 plugin outputs]
+├── docs/
+│   ├── Case 04 — Artefact Analysis.md
+│   ├── MFF_COMMANDS.md
+│   ├── artefact_schema.md
+│   ├── case01_baseline_artefact_analysis.md
+│   ├── case03_t1059_artefact_analysis.md
+│   ├── case04_t1574_artefact_analysis.md
+│   ├── case04_t1574_artefact_schema.md
+│   ├── case05_commands_log.md
+│   ├── case05_dissertation_section.md
+│   ├── case05_evidence_index.md
+│   ├── case05_final_checklist.md
+│   ├── case05_memory_acquisition_and_integrity.md
+│   ├── case05_multi_attack_report_notes.md
+│   ├── case05_report_mapping.md
+│   ├── commands.md
+│   ├── final_project_checklist.md
+│   └── hash_values.txt
+├── lab-notes/
+│   ├── docs/
+│   │   └── acquisition_log.md
+│   ├── MFF_COMMANDS2.md
+│   ├── README.md
+│   └── TEST 1Document.txt
+├── screenshots/
+│   ├── week1/
+│   ├── week2/
+│   ├── week3/
+│   ├── week4/
+│   └── week5/
+│       └── case 5 screenshots/
+├── src/
+│   ├── bak files/
+│   │   └── comparison_engine_v2.py.bak
+│   ├── modules/
+│   │   ├── dll_analysis.py
+│   │   ├── mitre_tagger.py
+│   │   ├── network_ioc.py
+│   │   ├── process_tree.py
+│   │   ├── export_alert.py
+│   │   ├── report_generator.py
+│   │   ├── automation.py
+│   │   ├── case_comparison.py
+│   │   ├── mff_dashboard.py
+│   │   └── Unique_compare.py
+│   └── comparison_engine_v2.py
+├── .gitignore
+└── README.md
 ```
 
 ---
